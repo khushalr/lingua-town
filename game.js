@@ -1,0 +1,811 @@
+/* Lingua Town — original pixel-art teaching adventure. No framework or backend required. */
+(() => {
+  'use strict';
+  const T = 32, W = 26, H = 18;
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  const portraitCanvas = document.getElementById('portraitCanvas');
+  const pctx = portraitCanvas.getContext('2d');
+  pctx.imageSmoothingEnabled = false;
+  const dialogueContent = document.getElementById('dialogueContent');
+  const nearbyTip = document.getElementById('nearbyTip');
+  const introModal = document.getElementById('introModal');
+  const topScreen = document.querySelector('.top-screen');
+  const dialoguePanel = document.getElementById('dialoguePanel');
+  const overlayBody = document.getElementById('overlayBody');
+  const overlaySpeaker = document.getElementById('overlaySpeaker');
+  const STORAGE_KEY = 'lingua-town-v1-progress';
+
+  const characters = [
+    {
+      id:'mina', name:'Mina', role:'The Café Regular', subject:'Register & Audience', x:7, y:8,
+      icon:'☕', hair:'#26244d', skin:'#db9a70', outfit:'#df8099', accent:'#ffd0a7',
+      greeting:"Hey, traveler! I keep accidentally sounding like I'm writing business emails to my friends. Help?",
+      done:"I finally get it: different people and situations call for different registers. Thanks, friend!",
+      badge:'THE SOCIAL CHAMELEON',
+      questions:[
+        {
+          title:'A friend, not a formal report',
+          prompt:"I'm inviting my best friend to grab bubble tea after class. What should I text?",
+          choices:["Would you be available for refreshments this afternoon?","Bubble tea after class? I'm buying 🧋","Tea mission? I'll buy if you help me choose a flavor."],
+          discussion:"A quiet invitation or a playful one can both work. Even a formal-sounding invitation might be a shared joke; check how this listener receives it.",
+          correct:1, concept:'REGISTER',
+          success:"Exactly! We're close friends, so informal wording fits our relationship.",
+          hint:"Think about who is receiving the message. Would your friend normally get official-sounding invitations?",
+          explanation:"Register is the style of language we choose for a setting or audience. Casual and formal versions can both be grammatical; the context determines which feels appropriate."
+        },
+        {
+          title:'The same message, a new audience',
+          prompt:"Now I need to ask a professor I haven't met for office hours. Which opening fits best?",
+          choices:["Hi Professor Chen, I'm dropping by tomorrow to discuss my essay.","Dear Professor Chen, would you be available during office hours this week?","Hi Professor Chen, could we find a time to discuss my essay?"],
+          discussion:"Both ‘Dear’ and ‘Hi’ can work in this setting. Asking about availability and giving a useful purpose respect the professor's time; local norms vary.",
+          correct:1, concept:'AUDIENCE DESIGN',
+          success:"That's polite, clear, and suitably formal without sounding stiff.",
+          hint:"Your professor isn't your best friend. Aim for respectful but natural language.",
+          explanation:"Audience design means adapting the way you communicate to your listener. Linguistic skill includes knowing when to switch styles—not simply speaking formally all the time."
+        }
+      ]
+    },
+    {
+      id:'theo', name:'Theo', role:'The Librarian', subject:'Conversation Rules', x:21, y:8,
+      icon:'📚', hair:'#69513d', skin:'#bc855f', outfit:'#77a6a6', accent:'#ffe1a0',
+      greeting:"Shhh... just kidding. Welcome! A good conversation is a little like a cooperative game.",
+      done:"You're a pro at giving people the information they actually need. The shelves thank you.",
+      badge:'THE CONVERSATION KEEPER',
+      questions:[
+        {
+          title:'Answer the actual question',
+          prompt:"A student asks, 'What time does the library close tonight?' You know it closes at 8 PM. What do you say?",
+          choices:["You've still got time to borrow that.","8 PM tonight.","8 PM tonight. Would you like help finding anything?"],
+          discussion:"A concise closing time answers the question. Adding an offer of help can also cooperate if the student wants it; quantity is appropriate information, not always the fewest words.",
+          correct:1, concept:'GRICE’S MAXIMS',
+          success:"Perfect. It's truthful, relevant, and gives exactly what's needed.",
+          hint:"Which answer helps the student plan their evening?",
+          explanation:"In pragmatics, Grice's cooperative principle describes expectations that contributions be appropriately informative, truthful, relevant, and clear. The brief answer works because it serves the question."
+        },
+        {
+          title:'What was left unsaid?',
+          prompt:"Someone asks, 'Was the lecture interesting?' Their friend answers, 'Well, the slides were colorful.' What might the friend be implying?",
+          choices:["They might not have found the lecture itself very interesting.","They may be offering genuine praise of the visuals.","Their positive description is enough to recommend the lecture as engaging."],
+          discussion:"Reservations and genuine enthusiasm for the visuals are both possible. The narrow answer can invite an inference, but a follow-up can confirm or revise it.",
+          correct:0, concept:'CONVERSATIONAL IMPLICATURE',
+          success:"You noticed the gap between the words and the implied message.",
+          hint:"Why would a friend praise the slides instead of answering whether the lecture was interesting?",
+          explanation:"Conversational implicatures are meanings a listener can infer beyond what is explicitly said. Here, the unusually narrow praise may suggest reservations about the lecture—though the implication isn't guaranteed."
+        }
+      ]
+    },
+    {
+      id:'prof', name:'Professor Lin', role:'The Linguist', subject:'Meaning & Context', x:6, y:11,
+      icon:'🎓', hair:'#53506d', skin:'#f1bd8d', outfit:'#7486ba', accent:'#faf0d0',
+      greeting:"Good afternoon! Want to discover how much we communicate without actually saying it?",
+      done:"An excellent reminder: interpreting language is not the same as reading words in isolation.",
+      badge:'THE MEANING DETECTIVE',
+      questions:[
+        {
+          title:'Some is a subtle word',
+          prompt:"I tell the class, 'Some students finished the assignment.' What might a listener infer?",
+          choices:["We should plan for unfinished work because ‘some’ suggests not all.","I may be suggesting not everyone finished, but that isn't logically guaranteed.","We should ask whether everyone finished before making the plan."],
+          correct:1, concept:'SCALAR IMPLICATURE',
+          success:"Correct. 'Some' often suggests 'not all,' but the suggestion can be cancelled.",
+          hint:"Think about what 'some' literally allows and what someone might infer because 'all' wasn't said.",
+          explanation:"'Some' literally permits the possibility of all. In conversation, choosing 'some' instead of 'all' can suggest that not all students finished. This extra inference is a scalar implicature, not a logical certainty."
+        },
+        {
+          title:'A request in disguise',
+          prompt:"We're studying beside an open window. I say, 'It's pretty chilly in here.' What might I be doing?",
+          choices:["Sharing an observation about the weather.","Indirectly asking someone to close the window.","Inviting a more general response to discomfort, such as moving seats."],
+          discussion:"The literal observation may also function as a request here. Ask about the intended action: closing the window and moving to a warmer seat can both meet the speaker's goal.",
+          correct:1, concept:'INDIRECT SPEECH ACTS',
+          success:"Exactly. The sentence can make an observation and function as a request.",
+          hint:"Consider what action I might hope you take after hearing that sentence.",
+          explanation:"Speech acts are things we do with words: asking, promising, requesting, apologizing. An indirect speech act performs one action through a sentence that has another literal form. Context helps us recognize the intent."
+        }
+      ]
+    },
+    {
+      id:'jules', name:'Jules', role:'The Market Seller', subject:'Ambiguity & Structure', x:18, y:10,
+      icon:'🍎', hair:'#382f54', skin:'#a96b4d', outfit:'#eeb15c', accent:'#a2ddb8',
+      greeting:"Welcome to the market! I have apples, postcards, and sentences that don't mean just one thing.",
+      done:"A sentence can hide multiple structures under the same words. Quite a bargain, huh?",
+      badge:'THE AMBIGUITY EXPLORER',
+      questions:[
+        {
+          title:'Whose telescope?',
+          prompt:"A customer says: 'I saw the student with the telescope.' How many reasonable readings are there?",
+          choices:["The nearby noun makes the student-with-a-telescope reading the only one.","Two: I used a telescope, or the student had one.","‘With’ describes an instrument, so only the observer-used-it reading works."],
+          correct:1, concept:'STRUCTURAL AMBIGUITY',
+          success:"Yes! The phrase 'with the telescope' can attach in two ways.",
+          hint:"Imagine holding the telescope yourself. Now imagine the student holding it.",
+          explanation:"Structural ambiguity occurs when the same sequence of words can have more than one grammatical structure. 'With the telescope' can describe how I saw the student or which student I saw."
+        },
+        {
+          title:'A mysterious old group',
+          prompt:"A poster says: 'Old men and women get a discount.' What's the potential ambiguity?",
+          choices:["It could mean old men and old women, or old men and women of any age.","Shared coordination makes ‘old’ apply to both groups in every context.","Because ‘old’ is next to ‘men,’ it cannot describe the women too."],
+          correct:0, concept:'COORDINATION AMBIGUITY',
+          success:"That's it! The adjective can apply to more than one part of the coordinated phrase.",
+          hint:"Does the word 'old' necessarily modify both 'men' and 'women'?",
+          explanation:"The grouping of words matters. 'Old [men and women]' and '[old men] and women' organize the phrase differently. Syntax helps explain why one sentence can have competing interpretations."
+        }
+      ]
+    },
+    {
+      id:'nova', name:'Dr. Nova', role:'The AI Researcher', subject:'Writing & Perception', x:21, y:11,
+      icon:'🤖', hair:'#2e4167', skin:'#cf9b7b', outfit:'#8a80d7', accent:'#b9eeeb',
+      greeting:"Welcome to the Lingo Lab. Let's explore how writing feels to different readers—and what those feelings can and cannot tell us.",
+      done:"Our exhibit is open! Readers can disagree about a style without proving who wrote it. The blind comparison desk is here whenever you want to explore.",
+      badge:'MASTER OF CONTEXT',
+      questions:[
+        {
+          title:'The birthday message',
+          prompt:"Your close friend texts, 'Are you coming to my birthday tonight?' How might different replies fit the friendship, and which would you prefer?",
+          choices:["I won't be able to attend tonight.","Ahh I wish 😭 already have plans, have the best night though!!","Sorry I can't make it. Hope it's a great birthday—coffee this weekend?"],
+          discussion:"The expressive and plain-but-warm replies are both defensible. A brief reply can also work, though this friend asks for reassurance. Naturalness, preference, and suspected authorship are separate judgments, with no universal naturalness answer key.",
+          concept:'NATURALNESS ≠ AUTHORSHIP',
+          success:"Different readers can hear the same wording differently.",
+          hint:"Think about the relationship between the speakers, not who wrote the sentence.",
+          explanation:"A response can sound natural because its register matches the situation. That doesn't prove a human wrote it: an AI can write casually, and a human can write formally. Naturalness and authorship are different questions."
+        },
+        {
+          title:'Can style reveal the author?',
+          prompt:"One message is polished and formal; another is short and full of slang. Can you reliably tell which was written by a human from that alone?",
+          choices:["The polished style supports an AI source label, even if it is tentative.","The casual style supports a human source label, even if it is tentative.","No. Style can affect impressions, but doesn't reliably establish authorship."],
+          correct:2, concept:'CRITICAL LANGUAGE AWARENESS',
+          success:"Exactly. Strong linguistic reasoning includes knowing what evidence cannot establish.",
+          hint:"People and language models can both write in a range of styles.",
+          explanation:"Register, context, and wording can influence whether something feels human-like, but none is a trustworthy standalone test of authorship. The better question is which linguistic features shape our perceptions, and why."
+        }
+      ]
+    }
+  ];
+
+  // Gameplay narrative is separate from the no-storage comparison model.
+  const stories=window.LinguaConversations;
+  const rooms = {
+    cafe:{name:'THE CORNER CAFÉ',npc:'mina',door:[5,7],color:'#d5918d',floor:'#d9b493',furniture:[[5,5,3,2],[17,5,3,2],[6,11,3,2],[17,11,3,2]]},
+    library:{name:'THE LIBRARY',npc:'theo',door:[20,7],color:'#818cbb',floor:'#c4b89e',furniture:[[4,4,5,2],[17,4,5,2],[4,9,4,2],[18,9,4,2]]},
+    campus:{name:'LIN’S CLASSROOM',npc:'prof',door:[5,17],color:'#b59d67',floor:'#c8bd9d',furniture:[[5,7,3,2],[17,7,3,2],[5,11,3,2],[17,11,3,2]]},
+    lab:{name:'THE LINGO LAB',npc:'nova',door:[20,17],color:'#9480bd',floor:'#b6cbd3',furniture:[[4,5,5,2],[17,5,5,2],[17,11,3,2]]}
+  };
+  let scene='town', routeEnter=null, travelTarget=null;
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for(const [id,room] of Object.entries(rooms)){
+    const n=characters.find(n=>n.id===room.npc);n.scene=id;n.x=12;n.y=7;
+  }
+  characters.find(n=>n.id==='jules').scene='town';
+  const sceneNPCs=()=>characters.filter(n=>n.scene===scene);
+  function roomBlocked(x,y){
+    return x<3||x>22||y<4||y>16||(scene==='cafe'&&saved.progress.mina>0&&x===10&&y===8)||rooms[scene].furniture.some(([a,b,w,h])=>x>=a&&x<a+w&&y>=b&&y<b+h);
+  }
+  function changeScene(id){
+    if(id==='lab'&&!unlocked(characters[4])){announce('The lab opens after four neighbor badges.');travelTarget=null;return;}
+    const old=scene;scene=id;route=[];routeTalk=null;routeEnter=null;pressed.clear();pointerCell=null;
+    const dest=id==='town'?rooms[old].door:[12,15];
+    player.x=player.px=dest[0];player.y=player.py=dest[1];player.move=null;
+    document.querySelector('.location-title').textContent=id==='town'?'LINGUA TOWN ✦ DAY 01':rooms[id].name;
+    document.getElementById('leaveRoomBtn').hidden=id==='town';
+    document.querySelector('.top-screen').classList.remove('scene-arrival');
+    if(!reducedMotion)requestAnimationFrame(()=>document.querySelector('.top-screen').classList.add('scene-arrival'));
+    drawIdlePanel();renderNearby();announce(id==='town'?'BACK IN THE TOWN SQUARE':rooms[id].name);
+    if(travelTarget){const target=travelTarget;travelTarget=null;walkToNPC(target);}
+  }
+  function doorHere(){return scene==='town'?Object.entries(rooms).find(([,r])=>r.door[0]===player.x&&r.door[1]===player.y)?.[0]:(player.x===12&&player.y===16?'town':null);}
+
+  const obstacles = new Set();
+  const key = (x,y) => `${x},${y}`;
+  function blockRect(x,y,w,h){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)obstacles.add(key(xx,yy));}
+  blockRect(2,2,7,5); blockRect(17,2,7,5); blockRect(2,13,7,4); blockRect(17,13,7,4);
+  blockRect(12,8,2,2);
+  const trees = [[1,1],[10,2],[14,2],[24,1],[1,6],[24,6],[1,16],[10,16],[15,16],[24,16],[1,12],[24,13]];
+  const benches = [[10,7],[15,11]];
+  const boxes = [[16,8]];
+  for (const [x,y] of [...trees,...benches,...boxes]) obstacles.add(key(x,y));
+  const npcAt = (x,y) => sceneNPCs().find(n=>n.x===x && n.y===y);
+  const walkable = (x,y) => x>=0&&x<W&&y>=0&&y<H&&!(scene==='town'?obstacles.has(key(x,y)):roomBlocked(x,y))&&!npcAt(x,y);
+  const player={x:12,y:12,px:12,py:12,facing:'down',move:null};
+  const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+  const keydirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',a:'left',s:'down',d:'right',W:'up',A:'left',S:'down',D:'right'};
+  const pressed=new Set();
+  let route=[]; let routeTalk=null; let lastStep=0; let modalOpen=true;
+  let dialogue=null; // {npc,mode:'greeting'|'question'|'feedback'|'done'|'locked'|'victory',correct?,chosen?}
+  let pointerCell=null;
+  let toastTimer=null;
+  let saved={progress:{},started:false,relationships:{},repairs:{},pending:{},turns:{},world:{},memories:[]};
+  try {
+    const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+    if(raw&&typeof raw==='object'){
+      const record=value=>value&&typeof value==='object'&&!Array.isArray(value)?value:{};
+      saved={...saved,started:!!raw.started,progress:record(raw.progress),relationships:record(raw.relationships),repairs:record(raw.repairs),pending:record(raw.pending),turns:record(raw.turns),world:record(raw.world),memories:Array.isArray(raw.memories)?raw.memories.filter(m=>typeof m==='string').slice(-5):[]};
+    }
+  }catch(e){ /* storage optional */ }
+  for(const n of characters){
+    saved.progress[n.id]=Math.max(0,Math.min(n.questions.length,Math.floor(Number(saved.progress[n.id])||0)));
+    if(saved.progress[n.id]===n.questions.length||!stories[n.id]||typeof saved.pending[n.id]!=='string')delete saved.pending[n.id];
+    if(!['Needs repair','Trust restored','In sync','Talking it through'].includes(saved.relationships[n.id]))delete saved.relationships[n.id];
+    const turn=saved.turns[n.id];
+    if(!turn||turn.stage!==saved.progress[n.id]||!Object.hasOwn(stories[n.id]?.[turn.stage]?.branches||{},turn.node))delete saved.turns[n.id];
+    saved.repairs[n.id]=Math.max(0,Math.floor(Number(saved.repairs[n.id])||0));
+  }
+  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));}catch(e){document.getElementById('saveStatus').textContent='SAVING UNAVAILABLE · THIS SESSION ONLY';}}
+  function completed(n){return saved.progress[n.id]>=n.questions.length;}
+  function unlocked(n){return n.id!=='nova'||characters.filter(c=>c.id!=='nova').every(completed);}
+  function completedCount(){return characters.filter(completed).length;}
+  function announce(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('visible'),2600);}
+  function numberEmoji(){return ['①','②','③'];}
+
+  function renderJournal(){
+    const count=completedCount();
+    document.getElementById('progressCount').textContent=`${count} / 5`;
+    document.getElementById('progressFill').style.width=`${count*20}%`;
+    const list=document.getElementById('questList');list.replaceChildren();
+    const next=characters.find(n=>!completed(n));
+    document.getElementById('objectiveText').textContent=next?`Help ${next.name} · ${next.subject}`:'All five badges earned. Revisit friends and practice sentence puzzles.';
+    document.getElementById('memoryList').replaceChildren(...saved.memories.map(m=>h('li',m)));
+
+    for(const npc of characters){
+      const button=document.createElement('button');button.type='button';
+      button.className=`quest-item ${completed(npc)?'done':''} ${unlocked(npc)?'':'locked'}`;
+      button.title=`Find ${npc.name} in the town`;
+      const avatar=document.createElement('span');avatar.className='quest-avatar';avatar.textContent=npc.icon;
+      const details=document.createElement('span');details.className='quest-details';
+      const strong=document.createElement('strong');strong.textContent=npc.name;
+      const small=document.createElement('small');small.textContent=completed(npc)?'Badge earned!':!unlocked(npc)?'Unlock after four lessons':`${saved.progress[npc.id]} / 2 · ${npc.subject}`;
+      details.append(strong,small); const mood=h('small',saved.relationships[npc.id]||'Ready to talk','relationship');details.append(mood);
+      const mark=document.createElement('span');mark.className='quest-mark';mark.textContent=completed(npc)?'✓':unlocked(npc)?'→':'🔒';
+      button.append(avatar,details,mark);
+      button.addEventListener('click',()=>{
+        if(modalOpen){closeIntro();} if(dialogue)closeDialogue();
+        walkToNPC(npc);
+      });
+      list.appendChild(button);
+    }
+  }
+
+  function setPortrait(npc){
+    const p=document.getElementById('portrait');p.style.background=npc?.accent||'#bee2e7';
+    const scale=2.05;
+    pctx.clearRect(0,0,112,112);
+    pctx.fillStyle=npc?.accent||'#c7e6e9';pctx.fillRect(0,0,112,112);
+    pctx.fillStyle='#ffffff55'; for(let i=0;i<7;i++){pctx.fillRect((i*37)%112,(i*29)%112,10,4);}
+    if(npc){drawCharacter(pctx,56,104,npc,scale,false);}
+    else drawCharacter(pctx,56,104,{hair:'#252b5c',skin:'#e8b68a',outfit:'#4e7bc4',accent:'#fff6c8'},scale,true);
+  }
+  function h(tag,text,className){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(className)el.className=className;return el;}
+  function resetPanel(){dialogueContent.replaceChildren();}
+  function paragraph(s,cl=''){dialogueContent.append(h('p',s,cl));}
+  function heading(name,title){dialogueContent.append(h('p',name,'speaker-name'));dialogueContent.append(h('h2',title));}
+  function action(label,handler,secondary=false){const b=h('button',label+(label.includes('→')?'':'  →'),'dialogue-action'+(secondary?' secondary':''));b.type='button';b.addEventListener('click',handler);dialogueContent.append(b);}
+  function talkTo(npc){
+    if(modalOpen||player.move)return;
+    route=[];routeTalk=null;
+    dialogue={npc,mode:!unlocked(npc)?'locked':saved.turns[npc.id]?'branch':saved.pending[npc.id]?'repair':completed(npc)?'done':'greeting'};pressed.clear();
+    drawDialogue();
+    // Field-guide navigation can scroll the page below the game on phones.
+    // Return the map to view as soon as an NPC conversation opens.
+    if(window.matchMedia('(max-width: 680px)').matches)topScreen.scrollIntoView?.({behavior:'auto',block:'start'});
+    renderNearby();
+  }
+  function closeDialogue(){
+    dialogue?.comparison?.dispose();dialogue=null;pressed.clear();
+    topScreen.classList.remove('in-dialogue');dialoguePanel.setAttribute('aria-hidden','true');
+    setPortrait(null);drawIdlePanel();renderNearby();canvas.focus({preventScroll:true});
+  }
+  function drawIdlePanel(){
+    resetPanel();heading('YOUR ADVENTURE','Every conversation is a puzzle.');
+    paragraph(scene==='town'?'Visit your neighbors. Step onto a glowing doorstep and press E, or select a name in your field guide.':`Explore ${rooms[scene].name.toLowerCase()}. Talk to your neighbor; the gold rug leads back outside.`);
+    paragraph('Your words affect people. A misunderstanding is a chance to listen and repair.','dialogue-mini');
+  }
+  function drawDialogue(){
+    if(!dialogue){drawIdlePanel();return;}
+    const npc=dialogue.npc;
+    topScreen.classList.add('in-dialogue');dialoguePanel.setAttribute('aria-hidden','false');
+    overlaySpeaker.textContent=dialogue.mode==='comparison'?'DR. NOVA · COMPARISON DESK':`${npc.name.toUpperCase()} · ${npc.subject.toUpperCase()}`;
+    overlayBody.scrollTop=0;
+    setPortrait(npc);resetPanel();
+    const phase=dialogue.mode;
+    if(phase==='comparison'){drawComparison();return;}
+    if(phase==='locked'){
+      heading(npc.name+' · LINGO LAB','The lab door is still locked.');
+      paragraph('Dr. Nova: "Before the final lab conversation, learn from Mina, Theo, Professor Lin, and Jules. Come back with their four badges!"');
+      action('I’LL BE BACK',closeDialogue);
+      return;
+    }
+    if(phase==='done'){
+      heading(npc.name+' · FRIEND','Good to see you again!');paragraph(npc.done);
+      paragraph(saved.repairs[npc.id]?'I remember how you listened when we misunderstood each other. Thanks for working through it with me.':'We made a good team. The town feels a little more connected now.','feedback');
+      paragraph(`Badge collected: ${npc.badge}.`,'dialogue-mini');
+      if(npc.id==='jules')action('PRACTICE TILES',()=>{dialogue.practice=true;dialogue.mode='question';drawDialogue();},true);
+      if(npc.id==='nova')action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+      action('BACK TO TOWN',closeDialogue);
+      return;
+    }
+    if(phase==='greeting'){
+      heading(npc.name+' · '+npc.role,'Hey there, explorer!');
+      paragraph(npc.greeting);
+      paragraph(`Lesson: ${npc.subject} · ${saved.progress[npc.id]} of ${npc.questions.length} conversations completed`,'dialogue-mini');
+      action('LET’S TALK',()=>{dialogue.mode='question';drawDialogue();});
+      if(npc.id==='nova')action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+      return;
+    }
+    if(phase==='question'){
+      if(npc.id==='jules'){drawPuzzle();return;}
+      const st=stories[npc.id][saved.progress[npc.id]];
+      heading(`${npc.name} · ${saved.relationships[npc.id]||'LISTENING'}`,npc.questions[saved.progress[npc.id]].title);
+      if(st.context?.lines[saved.world[st.context.key]])paragraph(st.context.lines[saved.world[st.context.key]],'dialogue-mini');
+      paragraph(st.line,'spoken-line');
+      choiceButtons(st.replies,answerQuestion);
+      action('PAUSE CONVERSATION',closeDialogue,true);
+      return;
+    }
+    if(phase==='branch'){
+      const turn=saved.turns[npc.id],node=stories[npc.id][turn.stage].branches[turn.node];
+      heading(npc.name+' · YOUR CONVERSATION',npc.questions[turn.stage].title);
+      paragraph(node.line,'spoken-line');
+      paragraph('Different choices can work here. Decide what you want to do together.','dialogue-mini');
+      choiceButtons(node.replies,answerBranch);action('PAUSE CONVERSATION',closeDialogue,true);return;
+    }
+    if(phase==='repair'){
+      const st=stories[npc.id][saved.progress[npc.id]];
+      heading(npc.name+' · MISUNDERSTANDING','The conversation needs repair.');
+      paragraph(saved.pending[npc.id],'feedback wrong');paragraph(st.repair);
+      if(dialogue.repairHint)paragraph(dialogue.repairHint,'dialogue-mini');
+      choiceButtons(st.repairs,repairConversation);
+      action('TAKE A BREATHER',closeDialogue,true);return;
+    }
+    if(phase==='feedback'){
+      const q=dialogue.question;
+      heading(npc.name+' · '+(dialogue.repaired?'UNDERSTOOD AGAIN':'CONNECTION MADE'),dialogue.repaired?'You repaired the conversation.':'The conversation moves forward.');
+      paragraph(dialogue.reaction,'spoken-line');
+      paragraph(dialogue.consequence,'feedback');
+      dialogueContent.append(h('span',q.concept,'concept-tag'));
+      const notes=h('details',undefined,'lesson-notes');notes.append(h('summary','Field note · concept and example'),h('p',q.explanation),h('p',q.prompt),h('p',q.discussion||q.choices[q.correct]));dialogueContent.append(notes);
+      const bridge=stories[npc.id]?.[saved.progress[npc.id]-1]?.next;if(bridge)paragraph(bridge,'dialogue-mini');
+      if(completed(npc))action(npc.id==='nova'?'SEE YOUR RESULTS':'COLLECT BADGE & EXPLORE',advance);
+      else action('CONTINUE CONVERSATION',advance);
+      return;
+    }
+    if(phase==='victory'){
+      heading('LINGUA TOWN · ALL FIVE BADGES','You are a language detective! ✦');
+      paragraph('You explored register, conversational cooperation, implicature, speech acts, ambiguity, and the limits of AI-authorship guesses.');
+      paragraph('The most important lesson? Meaning depends on people and context—not just words on a page.','feedback');
+      action('KEEP EXPLORING',closeDialogue);
+      action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+    }
+  }
+  function choiceButtons(choices,handler){
+    const group=h('div',undefined,'choice-grid');
+    choices.forEach((text,i)=>{const b=h('button',`${i+1}. ${text}`,'choice-button');b.type='button';b.addEventListener('click',()=>handler(i));group.append(b);});dialogueContent.append(group);
+  }
+  function finishExchange(reaction,consequence,repaired=false,effect={}){
+    const npc=dialogue.npc;dialogue.question=npc.questions[saved.progress[npc.id]];
+    dialogue.reaction=reaction;dialogue.consequence=consequence;dialogue.repaired=repaired;dialogue.mode='feedback';
+    saved.progress[npc.id]++;delete saved.pending[npc.id];delete saved.turns[npc.id];
+    Object.assign(saved.world,effect);
+    saved.relationships[npc.id]=repaired?'Trust restored': 'In sync';
+    if(repaired)saved.repairs[npc.id]=(saved.repairs[npc.id]||0)+1;
+    saved.memories.push(`${npc.name}: ${consequence}`);saved.memories=saved.memories.slice(-5);
+    persist();renderJournal();drawDialogue();
+    if(completed(npc))announce(`✦ ${npc.badge} · BADGE EARNED!`);
+  }
+  function applyRoute(route,repaired=false){
+    if(!route)return;
+    const npc=dialogue.npc,st=stories[npc.id][saved.progress[npc.id]];
+    if(route.branch){
+      saved.turns[npc.id]={stage:saved.progress[npc.id],node:route.branch,repaired};
+      delete saved.pending[npc.id];saved.relationships[npc.id]='Talking it through';
+      dialogue.mode='branch';persist();renderJournal();drawDialogue();
+    }else if(route.outcome){const o=route.outcome;finishExchange(o.reaction,o.consequence,repaired,o.effect);}
+    else if(route.hint){dialogue.repairHint=route.hint;drawDialogue();}
+  }
+  function answerQuestion(i){
+    if(!dialogue||dialogue.mode!=='question'||dialogue.npc.id==='jules')return;
+    const npc=dialogue.npc,st=stories[npc.id][saved.progress[npc.id]],route=st.routes[i];
+    if(!route)return;
+    if(route.repair){saved.pending[npc.id]=st.reaction[i];saved.relationships[npc.id]='Needs repair';dialogue.mode='repair';persist();renderJournal();drawDialogue();}
+    else applyRoute(route);
+  }
+  function answerBranch(i){
+    if(!dialogue||dialogue.mode!=='branch')return;
+    const turn=saved.turns[dialogue.npc.id],node=stories[dialogue.npc.id][turn.stage].branches[turn.node],o=node.outcomes[i];
+    if(o)finishExchange(o.reaction,o.consequence,!!turn.repaired,o.effect);
+  }
+  function repairConversation(i){
+    if(!dialogue||dialogue.mode!=='repair')return;
+    applyRoute(stories[dialogue.npc.id][saved.progress[dialogue.npc.id]].repairRoutes[i],true);
+  }
+  function openComparison(){
+    if(!dialogue||dialogue.npc.id!=='nova'||!unlocked(dialogue.npc))return;
+    dialogue.returnMode=dialogue.mode;dialogue.comparison=window.LinguaComparisons.createSession();dialogue.mode='comparison';drawDialogue();
+  }
+  function exitComparison(){
+    dialogue.comparison.dispose();delete dialogue.comparison;dialogue.mode=dialogue.returnMode;delete dialogue.returnMode;drawDialogue();
+  }
+  function chooseComparison(i){
+    if(dialogue?.mode!=='comparison')return;
+    const option=dialogue.comparison.view().choices[i];
+    if(option&&dialogue.comparison.choose(option.id))drawDialogue();
+  }
+  function drawComparison(){
+    const view=dialogue.comparison.view();
+    heading(`DR. NOVA · BLIND A/B DESK · ${view.pair}/${view.total}`,view.title);
+    paragraph('Optional teaching demo · no score · judgments are not saved or sent. Closing the desk clears them.','comparison-notice');
+    paragraph('These are constructed practice messages with no verified human/AI source labels. A and B are presentation positions, not author identities.','dialogue-mini');
+    paragraph(view.context,'spoken-line');
+    const cards=h('div',undefined,'comparison-cards');
+    for(const card of view.cards){const article=h('section',undefined,'writing-card');article.setAttribute('aria-label','Message '+card.label);article.append(h('h3','MESSAGE '+card.label),h('p',card.text));cards.append(article);}dialogueContent.append(cards);
+    if(view.dimension){
+      paragraph(view.dimension.label,'concept-tag');paragraph(view.dimension.prompt);
+      choiceButtons(view.choices.map(c=>c.label),chooseComparison);
+      paragraph('Use 1–4, or choose a button. Equal and unsure are valid responses.','dialogue-mini');
+    }else{
+      const list=h('dl',undefined,'comparison-summary');
+      for(const row of view.summary)list.append(h('dt',row.label),h('dd',row.value));dialogueContent.append(list);
+      paragraph('Nova puts three separate cards on the desk. “These can agree or differ. Finding a message natural, liking it, and suspecting AI authorship are different judgments. None of your choices is marked wrong.”','spoken-line');
+      paragraph(view.note);
+      paragraph('Nova leaves the source labels blank. “There is no verified authorship answer key for these practice samples. A stylistic impression does not establish who wrote a message.”','feedback');
+      if(view.hasNext)action('COMPARE ANOTHER CONTEXT',()=>{dialogue.comparison.next();drawDialogue();});
+    }
+    action('CLOSE DESK & CLEAR JUDGMENTS',exitComparison,true);
+  }
+  function advance(){
+    if(modalOpen){closeIntro();return;}
+    if(!dialogue){interact();return;}
+    if(dialogue.mode==='greeting'){dialogue.mode='question';drawDialogue();}
+    else if(dialogue.mode==='feedback'){
+      if(completed(dialogue.npc)){
+        if(dialogue.npc.id==='nova'){dialogue.mode='victory';drawDialogue();}else closeDialogue();
+      } else {dialogue.mode='question';delete dialogue.tiles;drawDialogue();}
+    }else if(['done','locked','victory'].includes(dialogue.mode))closeDialogue();
+  }
+  // Movable phrase tiles: drag, tap two positions, or use Alt + arrow keys.
+  function drawPuzzle(){
+    const stage=dialogue.practice?0:saved.progress.jules, first=stage===0;
+    if(!dialogue.tiles)dialogue.tiles=first?['I saw','the student','with the telescope']:['young','men','and','old','women'];
+    heading('JULES · SENTENCE WORKBENCH',first?'Whose telescope?':'Change the discount sign');
+    paragraph(first?"A customer wrote ‘I saw the student with the telescope.’ Did they use it, or did the student have it? Move the telescope phrase to the front to favor the instrument reading.":"‘Old men and women’ leaves the age grouping unclear. Use every tile to make a sign for old men and young women.");
+    paragraph('Drag a tile onto another position, tap two tiles to swap, or focus a tile and use Alt + ← / →.','dialogue-mini');
+    const tray=h('div',undefined,'word-tray');tray.setAttribute('aria-label','Sentence tiles');
+    dialogue.tiles.forEach((word,i)=>{
+      const tile=h('button',word,'word-tile'+(dialogue.selected===i?' selected':''));tile.type='button';tile.draggable=true;tile.setAttribute('aria-label',`Tile ${i+1}: ${word}`);tile.setAttribute('aria-pressed',String(dialogue.selected===i));
+      tile.addEventListener('click',()=>{if(dialogue.selected===undefined){dialogue.selected=i;drawDialogue();}else{const a=dialogue.selected;delete dialogue.selected;[dialogue.tiles[a],dialogue.tiles[i]]=[dialogue.tiles[i],dialogue.tiles[a]];drawDialogue();}focusTile(i);});
+      tile.addEventListener('dragstart',ev=>{ev.dataTransfer.setData('text/plain',String(i));ev.dataTransfer.effectAllowed='move';});
+      tile.addEventListener('dragover',ev=>ev.preventDefault());
+      tile.addEventListener('drop',ev=>{ev.preventDefault();const raw=ev.dataTransfer.getData('text/plain');if(!/^\d+$/.test(raw))return;const from=Number(raw);if(from>=dialogue.tiles.length)return;moveTile(from,i);});
+      tile.addEventListener('keydown',ev=>{if(ev.altKey&&['ArrowLeft','ArrowRight'].includes(ev.key)){ev.preventDefault();ev.stopPropagation();moveTile(i,Math.max(0,Math.min(dialogue.tiles.length-1,i+(ev.key==='ArrowLeft'?-1:1))));}});
+      tray.append(tile);
+    });dialogueContent.append(tray);
+    const sentence=dialogue.tiles.join(' ');
+    const solved=first?sentence==='with the telescope I saw the student':['old men and young women','young women and old men'].includes(sentence);
+    let reading=first?(solved?'The fronted phrase favors how the seeing was done: the observer used a telescope.':sentence==='I saw the student with the telescope'?'Two readings remain: a telescope used for seeing, or a student who had it.':'That order is harder to interpret. Keep “I saw” before “the student”.'):(solved?'The men are old; the women are young.':sentence==='young men and old women'?'The men are young; the women are old.':'Keep each age adjective before the group it describes.');
+    paragraph('READING · '+reading,'meaning-preview');
+    if(dialogue.puzzleHint)paragraph(dialogue.puzzleHint,'feedback wrong');
+    action('SHOW JULES',()=>{
+      if(solved&&dialogue.practice){announce('Clear instrument reading! Your badges stay earned.');closeDialogue();return;}
+      if(solved){const q=characters[3].questions[stage];finishExchange(q.success+(first?' Fronting the phrase strongly favors the instrument reading; context still matters.':''),first?'The customer can now describe using the telescope.':'The market sign now gives the intended age groups.');}
+      else {dialogue.puzzleHint='Jules: “That changes what I can understand. Check the intended meaning above, then move the tiles again.”';drawDialogue();}
+    });action('PAUSE PUZZLE',closeDialogue,true);
+  }
+  function focusTile(i){dialogueContent.querySelectorAll('.word-tile')[i]?.focus();}
+  function moveTile(from,to){const [tile]=dialogue.tiles.splice(from,1);dialogue.tiles.splice(to,0,tile);delete dialogue.selected;delete dialogue.puzzleHint;drawDialogue();focusTile(to);}
+  function nearestNPC(){
+    const nearby=sceneNPCs().filter(n=>Math.abs(n.x-player.x)+Math.abs(n.y-player.y)<=1);
+    return nearby.length?nearby[0]:null;
+  }
+  function renderNearby(){
+    const n=(!dialogue&&!modalOpen)?nearestNPC():null;
+    const door=!dialogue&&!modalOpen?doorHere():null;
+    nearbyTip.textContent=n?`[ E ] TALK TO ${n.name.toUpperCase()}`:door?`[ E ] ${door==='town'?'BACK TO TOWN':'ENTER '+rooms[door].name}`:'';
+    nearbyTip.classList.toggle('active',!!n||!!door);
+  }
+  function interact(){
+    if(modalOpen||player.move)return;
+    const n=nearestNPC();
+    if(n)talkTo(n);else if(doorHere())changeScene(doorHere());else announce('Walk next to a character or onto a glowing doorstep.');
+  }
+  function tryStep(d){
+    if(dialogue||modalOpen||player.move)return false;
+    player.facing=d;
+    const [dx,dy]=dirs[d];const x=player.x+dx,y=player.y+dy;
+    if(!walkable(x,y))return false;
+    player.move={sx:player.x,sy:player.y,tx:x,ty:y,start:performance.now(),duration:142};
+    player.x=x;player.y=y;return true;
+  }
+  function routeTo(x,y,allowAdjacent=false){
+    const targets=[];
+    if(allowAdjacent){for(const [dx,dy] of Object.values(dirs))if(walkable(x+dx,y+dy))targets.push(key(x+dx,y+dy));}
+    else if(walkable(x,y))targets.push(key(x,y));
+    if(!targets.length)return null;
+    const goal=new Set(targets);const start=key(player.x,player.y);
+    const queue=[[player.x,player.y]];const seen=new Set([start]);const parent=new Map();
+    let head=0,found=null;
+    while(head<queue.length){
+      const [cx,cy]=queue[head++];const ck=key(cx,cy);
+      if(goal.has(ck)){found=ck;break;}
+      for(const [d,[dx,dy]] of Object.entries(dirs)){
+        const nx=cx+dx,ny=cy+dy,nk=key(nx,ny);
+        if(!walkable(nx,ny)||seen.has(nk))continue;
+        seen.add(nk);parent.set(nk,[ck,d]);queue.push([nx,ny]);
+      }
+    }
+    if(!found)return null;
+    const steps=[];
+    while(found!==start){const info=parent.get(found);if(!info)break;steps.push(info[1]);found=info[0];}
+    return steps.reverse();
+  }
+  function walkToNPC(npc){
+    if(modalOpen||dialogue)return;
+    routeEnter=null;travelTarget=null;
+    if(npc.scene!==scene){
+      travelTarget=npc;const destination=scene==='town'?rooms[npc.scene].door:[12,16];
+      const steps=routeTo(...destination);if(steps===null){travelTarget=null;announce('Could not find a path to that door.');return;}
+      route=steps;routeEnter=scene==='town'?npc.scene:'town';routeTalk=null;
+      if(!route.length&&!player.move){const next=routeEnter;routeEnter=null;changeScene(next);}return;
+    }
+    if(Math.abs(npc.x-player.x)+Math.abs(npc.y-player.y)<=1&&!player.move){talkTo(npc);return;}
+    const steps=routeTo(npc.x,npc.y,true);
+    if(steps===null){announce('Could not find a path there.');return;}
+    route=steps;routeTalk=npc;
+    if(!route.length&&!player.move){const n=routeTalk;routeTalk=null;talkTo(n);}
+    else announce(`HEADING TO ${npc.name.toUpperCase()}...`);
+  }
+  function onMapClick(ev){
+    if(modalOpen||dialogue)return;
+    const r=canvas.getBoundingClientRect();const x=Math.floor((ev.clientX-r.left)/r.width*W);const y=Math.floor((ev.clientY-r.top)/r.height*H);
+    const door=scene==='town'?Object.entries(rooms).find(([,r])=>r.door[0]===x&&r.door[1]===y)?.[0]:(x===12&&y===16?'town':null);
+    routeEnter=null;travelTarget=null;
+    if(door){const steps=routeTo(x,y);if(steps){route=steps;routeEnter=door;routeTalk=null;}return;}
+    const npc=npcAt(x,y);
+    if(npc){walkToNPC(npc);return;}
+    const steps=routeTo(x,y,false);
+    if(steps){route=steps;routeTalk=null;}
+    else announce('Choose an open tile or tap a character.');
+    canvas.focus({preventScroll:true});
+  }
+  function closeIntro(){document.querySelector('.shell').inert=false;introModal.classList.add('hidden');modalOpen=false;saved.started=true;persist();renderNearby();canvas.focus({preventScroll:true});}
+  function showIntro(){document.querySelector('.shell').inert=true;modalOpen=true;pressed.clear();introModal.classList.remove('hidden');document.getElementById('startBtn').focus();}
+  document.getElementById('startBtn').addEventListener('click',closeIntro);
+  document.getElementById('helpBtn').addEventListener('click',showIntro);
+  document.getElementById('talkBtn').addEventListener('click',advance);
+  document.getElementById('closeDialogueBtn').addEventListener('click',closeDialogue);
+  document.getElementById('leaveRoomBtn').addEventListener('click',()=>{if(dialogue)closeDialogue();travelTarget=null;route=routeTo(12,16)||[];routeEnter='town';});
+  document.getElementById('restartBtn').addEventListener('click',()=>{
+    if(!window.confirm('Start a new game and clear all earned badges on this device?'))return;
+    for(const n of characters)saved.progress[n.id]=0;
+    saved.relationships={};saved.repairs={};saved.pending={};saved.turns={};saved.world={};saved.memories=[];travelTarget=null;routeEnter=null;
+    if(scene!=='town')changeScene('town');
+    persist();renderJournal();route=[];routeTalk=null;player.x=player.px=12;player.y=player.py=12;player.move=null;closeDialogue();announce('NEW ADVENTURE STARTED!');
+  });
+  window.addEventListener('keydown',ev=>{
+    const keyName=ev.key;
+    if(ev.target.closest?.('button, input, textarea, select, summary')&&['Enter',' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(keyName))return;
+    if(modalOpen&&keyName==='Tab'){ev.preventDefault();document.getElementById('startBtn').focus();return;}
+    if(modalOpen){if(keyName==='Escape'){closeIntro();}else if(keyName==='Enter'){ev.preventDefault();closeIntro();}return;}
+    if(dialogue?.mode==='comparison'&&['1','2','3','4'].includes(keyName)){ev.preventDefault();if(!ev.repeat)chooseComparison(Number(keyName)-1);return;}
+    if(dialogue?.mode==='branch'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)answerBranch(Number(keyName)-1);return;}
+    if(dialogue&&dialogue.mode==='repair'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)repairConversation(Number(keyName)-1);return;}
+
+    if(keyName in keydirs){ev.preventDefault();pressed.add(keydirs[keyName]);if(!ev.repeat){route=[];routeTalk=null;routeEnter=null;travelTarget=null;tryStep(keydirs[keyName]);}return;}
+    if(['e','E','Enter',' '].includes(keyName)){ev.preventDefault();if(!ev.repeat)advance();return;}
+    if(dialogue&&dialogue.mode==='question'&&['1','2','3'].includes(keyName)){ev.preventDefault();answerQuestion(Number(keyName)-1);return;}
+    if(ev.key==='Escape'&&dialogue){if(dialogue.mode==='comparison')exitComparison();else closeDialogue();}
+  });
+  window.addEventListener('keyup',ev=>{if(ev.key in keydirs)pressed.delete(keydirs[ev.key]);});
+  window.addEventListener('blur',()=>pressed.clear());
+  canvas.addEventListener('click',onMapClick);
+  canvas.addEventListener('mousemove',ev=>{const r=canvas.getBoundingClientRect();pointerCell=[Math.floor((ev.clientX-r.left)/r.width*W),Math.floor((ev.clientY-r.top)/r.height*H)];});
+  canvas.addEventListener('mouseleave',()=>pointerCell=null);
+  for(const btn of document.querySelectorAll('[data-direction]')){
+    const dir=btn.dataset.direction;
+    btn.addEventListener('pointerdown',ev=>{ev.preventDefault();route=[];routeTalk=null;routeEnter=null;travelTarget=null;pressed.add(dir);tryStep(dir);});
+    for(const ev of ['pointerup','pointercancel','pointerleave'])btn.addEventListener(ev,()=>pressed.delete(dir));
+  }
+
+  // ------- Original canvas pixel art (no copyrighted sprites/assets) -------
+  const fill=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.floor(x),Math.floor(y),w,h);};
+  function hash(x,y){let n=(x*12879+y*78263+51513)|0;n=((n^(n>>>13))*1274126177)|0;return(n^(n>>>16))>>>0;}
+  function path(x,y){return (y>=8&&y<=10)||(x>=12&&x<=13)||(x>=4&&x<=6&&y>=6&&y<=13)||(x>=20&&x<=22&&y>=6&&y<=13);}
+  function drawGround(){
+    fill(0,0,W*T,H*T,'#8fc5a0');
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const px=x*T,py=y*T,n=hash(x,y),onPath=path(x,y);
+      fill(px,py,T,T,onPath?((x+y)%3===0?'#d6c7a8':'#dfd1b5'):((x+y)%4===0?'#89bb91':'#92c59d'));
+      if(onPath){
+        fill(px+4,py+4,8,3,'#c5b697');fill(px+23,py+23,5,3,'#c8b99c');
+        if(n%5===0)fill(px+14,py+13,4,3,'#cbbd9e');
+      }else{
+        fill(px+(n%19)+2,py+((n>>>4)%21)+3,3,5,n%3===0?'#6ead82':'#7bb58d');
+        fill(px+((n>>>8)%22)+2,py+((n>>>12)%23)+3,4,2,'#a4d5a7');
+        if(n%9===0){fill(px+20,py+7,3,3,'#f6d68e');fill(px+18,py+9,3,3,'#fff0ad');}
+      }
+    }
+    // Warm stone plaza in the central crossing.
+    for(let y=7;y<=11;y++)for(let x=10;x<=15;x++){
+      if((x>=12&&x<=13)||(y>=8&&y<=10))continue;
+      fill(x*T,y*T,T,T,(x+y)%2?'#b7cbb0':'#c3d2b6');
+      fill(x*T+4,y*T+6,8,2,'#aabfa9');
+    }
+    // Shimmering upper-left pond.
+    for(let y=0;y<=3;y++)for(let x=0;x<=1;x++){
+      fill(x*T,y*T,T,T,'#76b8bc');fill(x*T+5,y*T+7,12,3,'#97d1d0');fill(x*T+17,y*T+21,10,2,'#5b9eae');
+    }
+  }
+  function drawBuilding(x,y,w,h,kind,roof,trim){
+    const px=x*T,py=y*T,pw=w*T,ph=h*T;
+    fill(px+4,py+10,pw-1,ph-6,'#608e7a');
+    fill(px+6,py+36,pw-12,ph-35,kind==='LAB'?'#e0e7f0':'#f6e8cc');
+    fill(px+2,py+4,pw-4,55,'#243650');
+    fill(px+6,py+8,pw-12,46,roof);
+    for(let yy=17;yy<53;yy+=12){fill(px+8,py+yy,pw-16,3,trim);}
+    fill(px+2,py+54,pw-4,8,'#233953');
+    fill(px+4,py+58,pw-8,5,roof);
+    // Shadowed wall and windows.
+    fill(px+19,py+83,39,33,'#384761');fill(px+23,py+86,31,25,'#b8dcea');
+    fill(px+pw-58,py+83,39,33,'#384761');fill(px+pw-54,py+86,31,25,'#b8dcea');
+    fill(px+37,py+87,4,24,'#f4edd4');fill(px+pw-42,py+87,4,24,'#f4edd4');
+    fill(px+pw/2-25,py+95,50,ph-94,'#354360');
+    fill(px+pw/2-20,py+99,40,ph-98,'#6d7e9b');
+    fill(px+pw/2+13,py+114,4,4,'#f4d28d');
+    fill(px+pw/2-37,py+67,74,20,'#32435e');
+    ctx.fillStyle='#fff1d7';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText(kind,px+pw/2,py+81);ctx.textAlign='start';
+  }
+  function drawFountain(time){
+    const x=12*T,y=8*T;
+    fill(x-10,y+8,85,66,'#71829a');fill(x-8,y+7,82,56,'#e8e5d8');fill(x-4,y+11,74,48,'#7eabbc');
+    fill(x+9,y+17,48,36,'#519db8');fill(x+20,y+9,27,39,'#9cdbe4');
+    fill(x+28,y-1,11,26,'#e7e8de');fill(x+24,y+8,19,7,'#e7e8de');
+    const wave=Math.sin(time/600)*2;
+    fill(x+17,y+31+wave,7,3,'#e3ffff');fill(x+49,y+29-wave,7,3,'#e3ffff');
+    fill(x+1,y+59,67,5,'#495d80');
+  }
+  function drawTree(x,y){const px=x*T,py=y*T;
+    fill(px+12,py+23,10,20,'#805c4b');fill(px-3,py+3,39,26,'#2f735e');
+    fill(px+1,py-6,31,31,'#447f64');fill(px+5,py-10,24,30,'#5da57b');
+    fill(px+7,py-5,12,7,'#87c297');fill(px+22,py+6,6,8,'#367764');fill(px+1,py+16,11,6,'#397c63');
+  }
+  function drawBench(x,y){let px=x*T,py=y*T;fill(px+1,py+10,31,9,'#6e5c5b');fill(px+2,py+11,28,5,'#b18c6f');fill(px+5,py+22,5,9,'#46596f');fill(px+22,py+22,5,9,'#46596f');}
+  function drawStand(x,y){let px=x*T,py=y*T;fill(px-4,py+15,42,20,'#79564c');fill(px,py+19,36,13,'#c58f63');fill(px-7,py+6,48,12,'#fff0b1');for(let i=0;i<4;i++)fill(px-6+i*12,py+6,11,9,i%2?'#f5d79e':'#d77384');fill(px+7,py+20,8,6,'#e18d74');fill(px+20,py+20,8,6,'#a1d07f');}
+  function drawSign(x,y,text){let px=x*T,py=y*T;fill(px+14,py+13,4,23,'#795d4a');fill(px-14,py,62,23,'#293959');fill(px-11,py+3,56,17,'#f7e7b4');ctx.fillStyle='#36516e';ctx.font='bold 9px monospace';ctx.textAlign='center';ctx.fillText(text,px+17,py+15);ctx.textAlign='start';}
+  function drawCharacter(g,x,y,n,scale=1,isPlayer=false,walk=0){
+    // x,y marks the sprite centre and ground line. Blocks make it legible at native DS-like resolution.
+    const block=(px,py,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x+px*scale),Math.round(y+py*scale),Math.round(w*scale),Math.round(h*scale));};
+    const hat=isPlayer?'#dc6b83':n.hair;
+    const lift=walk?Math.round(Math.sin(walk)*2):0;
+    const stride=isPlayer&&walk?Math.round(Math.sin(walk)*3):0;
+    const mood=saved.relationships[n.id];
+    const blink=!reducedMotion&&Math.floor(performance.now()/180)%23===0;
+    g.fillStyle='#26335440';g.fillRect(Math.round(x-11*scale),Math.round(y+0*scale),Math.round(22*scale),Math.round(4*scale));
+    block(-9,-7-lift+stride,7,6,'#252a4b');block(2,-7-lift-stride,7,6,'#252a4b');
+    block(-12,-25-lift,24,18,'#243153');block(-10,-24-lift,20,17,n.outfit);block(-13,-23-lift,5,14,n.outfit);block(8,-23-lift,5,14,n.outfit);
+    block(-13,-11-lift,5,5,n.skin);block(8,-11-lift,5,5,n.skin);
+    block(-10,-40-lift,20,17,'#27324a');block(-8,-39-lift,16,15,n.skin);
+    block(-11,-42-lift,22,9,hat);block(-11,-33-lift,5,5,hat);block(7,-34-lift,4,7,hat);
+    const look=isPlayer?(player.facing==='left'?-2:player.facing==='right'?2:0):0;
+    block(-4+look,-30-lift,3,blink?1:3,'#20243b');block(4+look,-30-lift,3,blink?1:3,'#20243b');
+    if(mood==='Needs repair'){block(-5,-34-lift,5,2,'#493b60');block(4,-35-lift,4,2,'#493b60');}
+    if(mood==='Trust restored'||mood==='In sync'){block(-3,-26-lift,2,2,'#c98176');block(3,-26-lift,2,2,'#c98176');}
+    if(isPlayer&&player.facing==='up'){block(-8,-36-lift,16,12,hat);}
+    block(-1,-25-lift,4,2,'#c98176');
+    if(isPlayer){block(-11,-42-lift,21,5,'#c84d6b');block(-8,-46-lift,16,8,'#d9687c');block(5,-38-lift,10,5,'#c84d6b');block(-6,-20-lift,13,5,'#f8e4af');}
+    else{block(-3,-21-lift,6,8,n.accent);}
+  }
+  function npcLabel(n){
+    const px=n.x*T+16,py=n.y*T-17,near=Math.abs(n.x-player.x)+Math.abs(n.y-player.y)<=2;
+    if(!near&&!completed(n))return;
+    const label=n.name.toUpperCase();ctx.font='bold 10px monospace';const width=ctx.measureText(label).width+16;
+    fill(px-width/2,py-12,width,17,completed(n)?'#2f806d':'#2d3b68');
+    ctx.fillStyle='#fffbea';ctx.textAlign='center';ctx.fillText(label,px,py);ctx.textAlign='start';
+  }
+  function drawMapUI(){
+    fill(12,12,174,30,'#192b49da');
+    ctx.fillStyle='#fff3d7';ctx.font='bold 13px monospace';ctx.fillText(`✦ BADGES ${completedCount()}/5`,24,32);
+    if(completedCount()===4) {fill(W*T-209,12,196,30,'#453a75');ctx.fillStyle='#f0e5c6';ctx.fillText('LINGO LAB OPEN!',W*T-195,32);}
+    if(completedCount()===5) {fill(W*T-232,12,219,30,'#3e8e84');ctx.fillStyle='#fffce8';ctx.fillText('ALL BADGES EARNED!',W*T-218,32);}
+  }
+  function drawRoom(time){
+    const room=rooms[scene];
+    fill(0,0,W*T,H*T,'#202c48');fill(2*T,2*T,22*T,15*T,'#43516a');
+    fill(3*T,2*T,20*T,3*T,room.color);
+    for(let y=4;y<=16;y++)for(let x=3;x<=22;x++){
+      fill(x*T,y*T,T,T,room.floor);fill(x*T,y*T,T,2,'#ffffff18');fill(x*T+(y%2?16:0),y*T,2,T,'#514c5520');
+    }
+    fill(3*T,4*T,20*T,6,'#6c5b6e');
+    // Window, light, and a rug make the room read as an interior.
+    fill(11*T,2*T+12,4*T,48,'#394c69');
+    const closed=scene==='campus'&&saved.progress.prof>=2&&saved.world.classroomComfort!=='sunny';
+    fill(11*T+5,2*T+17,4*T-10,38,closed?'#8db4bf':'#c5e9dc');
+    fill(13*T-2,2*T+14,5,44,'#eff0d1');
+    if(!closed){fill(11*T+7,4*T+6,4*T-14,30,'#fff4c126');}
+    fill(10*T,10*T,6*T,4*T,room.color);fill(10*T+6,10*T+6,6*T-12,4*T-12,'#ffffff28');
+    for(const [x,y,w,h] of room.furniture){
+      fill(x*T+3,y*T+8,w*T,h*T,'#343a4e50');fill(x*T,y*T,w*T,h*T-7,'#66556a');fill(x*T+4,y*T+4,w*T-8,h*T-17,scene==='lab'?'#dce5e7':'#b98c6c');
+      if(scene==='library')for(let j=0;j<w*4;j++)fill(x*T+6+j*7,y*T+7,5,30,['#d6878c','#d5c18f','#7aa8a2','#8795c2'][j%4]);
+      else if(scene==='lab'){fill(x*T+12,y*T-4,35,26,'#354660');fill(x*T+16,y*T,27,16,'#8ad5ce');fill(x*T+64,y*T+10,10,20,'#b5eddb');}
+      else {fill(x*T+14,y*T+13,14,13,'#f8ebcb');fill(x*T+17,y*T+15,8,7,'#78594d');fill(x*T+49,y*T+15,25,12,'#ece3bf');}
+    }
+    fill(11*T,16*T,3*T, T,'#efcf8d');ctx.fillStyle='#4b4560';ctx.font='bold 11px monospace';ctx.fillText('↓ EXIT',11*T+23,16*T+20);
+    ctx.fillStyle='#fff1d6';ctx.font='bold 14px monospace';ctx.textAlign='center';ctx.fillText(room.name,13*T,52);ctx.textAlign='start';
+    if(scene==='cafe'&&saved.progress.mina>0){drawBench(10,8);fill(10*T+9,8*T+5,12,10,'#f7e4ba');}
+    if(scene==='campus'&&saved.world.classroomComfort==='sunny'){fill(17*T+7,7*T+10,64,20,'#fff5b9');ctx.fillStyle='#665273';ctx.font='10px monospace';ctx.fillText('NOTES',17*T+20,7*T+24);}
+    if(scene==='library'&&['map','escort'].includes(saved.world.libraryHelp)){fill(12*T-20,9*T,80,27,'#f7e7b4');ctx.fillStyle='#536079';ctx.font='10px monospace';ctx.fillText(saved.world.libraryHelp==='map'?'RETURNS →':'NEED HELP?',12*T-12,9*T+17);}
+    if(scene==='cafe'&&saved.progress.mina>0){ctx.fillStyle='#fff2d2';ctx.font='10px monospace';ctx.fillText(saved.world.cafeStyle==='playful'?'ONE SILLY TOAST':'QUIET TABLE',10*T-20,9*T+14);}
+    if(scene==='campus'&&!closed&&!reducedMotion){const drift=Math.sin(time/400)*8;fill(13*T+drift,5*T,24,2,'#d5f3ef');fill(13*T-drift,5*T+12,17,2,'#d5f3ef');}
+    if(scene==='lab'&&completed(characters[4])){fill(8*T,14*T,10*T,24,'#365972');ctx.fillStyle='#c6f4df';ctx.font='bold 11px monospace';ctx.fillText('STYLE ≠ AUTHORSHIP',9*T+5,14*T+16);}
+  }
+  function drawWorld(time){
+    if(reducedMotion)time=0;
+    if(scene==='town'){
+    drawGround();
+    drawBuilding(2,2,7,5,'CAFÉ','#dc8d89','#f0b4a7');
+    drawBuilding(17,2,7,5,'LIBRARY','#747eb2','#98a3d1');
+    drawBuilding(2,13,7,4,'CAMPUS','#d2b169','#e4ce93');
+    drawBuilding(17,13,7,4,'LINGO LAB','#8d78b7','#b09cd7');
+    drawFountain(time);
+    for(const [x,y] of trees)drawTree(x,y);
+    for(const [x,y] of benches)drawBench(x,y);
+    for(const [x,y] of boxes)drawStand(x,y);
+    drawSign(10,5,'TOWN');
+    // Flower patches and flags.
+    for(const [x,y] of [[3,8],[8,11],[3,11],[23,9],[15,14],[9,4],[25,11]]){
+      fill(x*T+7,y*T+8,4,4,'#f9e29f');fill(x*T+13,y*T+14,4,4,'#f3a7a9');fill(x*T+22,y*T+20,4,4,'#f7eea0');
+    }
+    for(const [id,r] of Object.entries(rooms)){
+      const [x,y]=r.door;fill(x*T,y*T,T,T,'#f4d48c');fill(x*T+5,y*T+5,T-10,T-10,'#806881');
+      ctx.fillStyle='#fff4d1';ctx.font='bold 18px monospace';ctx.fillText(id==='lab'&&!unlocked(characters[4])?'×':'↑',x*T+10,y*T+23);
+    }
+    }else drawRoom(time);
+    // Route destination trail.
+    if(route.length&&(!modalOpen&&!dialogue)){
+      let x=player.x,y=player.y;
+      for(let i=0;i<route.length;i++){const [dx,dy]=dirs[route[i]];x+=dx;y+=dy;if(i%2===0){fill(x*T+13,y*T+13,7,7,'#f6f0b7');fill(x*T+15,y*T+15,3,3,'#7e84b7');}}
+    }
+    if(pointerCell&&!modalOpen&&!dialogue){const [x,y]=pointerCell;if(walkable(x,y)){ctx.strokeStyle='#ffffffa5';ctx.lineWidth=2;ctx.strokeRect(x*T+2,y*T+2,T-4,T-4);}}
+    for(const npc of sceneNPCs()){
+      const walk=reducedMotion?0:time/440+npc.x;
+      drawCharacter(ctx,npc.x*T+16,npc.y*T+27,npc,1,false,walk);
+      if(saved.relationships[npc.id]==='Needs repair'){
+        fill(npc.x*T+7,npc.y*T-25,20,18,'#f4c799');ctx.fillStyle='#6d4057';ctx.font='bold 15px monospace';ctx.fillText('?!',npc.x*T+8,npc.y*T-11);
+      }else if(!unlocked(npc)){
+        fill(npc.x*T+9,npc.y*T-22,15,16,'#e8e0b6');ctx.fillStyle='#3e4771';ctx.font='bold 13px monospace';ctx.fillText('!',npc.x*T+13,npc.y*T-9);
+      } else if(completed(npc)){
+        fill(npc.x*T+8,npc.y*T-24,16,16,'#ecf7d9');ctx.fillStyle='#47856e';ctx.font='bold 13px monospace';ctx.fillText('✓',npc.x*T+11,npc.y*T-10);
+      }else{
+        fill(npc.x*T+9,npc.y*T-24,15,16,'#fdf3c7');ctx.fillStyle='#4c618b';ctx.font='bold 14px monospace';ctx.fillText('?',npc.x*T+12,npc.y*T-10);
+      }
+      npcLabel(npc);
+    }
+    const plx=player.px*T+16,ply=player.py*T+28;
+    drawCharacter(ctx,plx,ply,{hair:'#29375b',skin:'#dba77d',outfit:'#6188bd',accent:'#f0d09a'},1,true,player.move?time/90:0);
+    // Small gold cursor above player.
+    fill(plx-4,ply-58+Math.sin(time/290)*2,8,8,'#fff0a5');fill(plx-2,ply-60+Math.sin(time/290)*2,4,4,'#ffcd82');
+    drawMapUI();
+    if(dialogue&&dialogue.npc)setPortrait(dialogue.npc);
+  }
+  function animationLoop(time){
+    if(player.move){
+      const m=player.move;const t=Math.min(1,(time-m.start)/m.duration);const smooth=t*t*(3-2*t);
+      player.px=m.sx+(m.tx-m.sx)*smooth;player.py=m.sy+(m.ty-m.sy)*smooth;
+      if(t>=1){player.px=player.x;player.py=player.y;player.move=null;renderNearby();}
+    }else if(!modalOpen&&!dialogue){
+      if(route.length&&time-lastStep>130){
+        const d=route.shift();lastStep=time;
+        if(!tryStep(d)){route=[];routeTalk=null;}
+      }else if(!route.length&&routeEnter){
+        const dest=routeEnter;routeEnter=null;changeScene(dest);
+      }else if(!route.length&&routeTalk){
+        const npc=routeTalk;routeTalk=null;if(Math.abs(npc.x-player.x)+Math.abs(npc.y-player.y)<=1)talkTo(npc);
+      }else if(!route.length&&pressed.size&&time-lastStep>155){
+        lastStep=time;tryStep([...pressed].at(-1));
+      }
+    }
+    drawWorld(time);
+    requestAnimationFrame(animationLoop);
+  }
+  // Test hooks for browser tests only: no game data sent anywhere.
+  window.__LINGUA_DEBUG__={getState:()=>({x:player.x,y:player.y,progress:{...saved.progress},scene,relationships:{...saved.relationships},repairs:{...saved.repairs},turns:JSON.parse(JSON.stringify(saved.turns)),world:{...saved.world},pending:{...saved.pending},dialogue:dialogue?.mode||null,modalOpen}),moveTo:walkToNPC,characters};
+  setPortrait(null);renderJournal();drawIdlePanel();
+  if(saved.started){modalOpen=false;introModal.classList.add('hidden');}
+  if(modalOpen){document.querySelector('.shell').inert=true;document.getElementById('startBtn').focus();}
+  renderNearby();requestAnimationFrame(animationLoop);
+})();
