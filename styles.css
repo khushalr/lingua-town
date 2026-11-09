@@ -113,3 +113,195 @@ button:focus-visible,canvas:focus-visible{outline:3px solid #e6a24f;outline-offs
 .intro-card{max-width:540px;max-height:94vh;overflow-y:auto}
 .intro-card .rumor-note{margin-top:-3px}
 @media(max-width:680px){.story-case{margin-top:3px}.rumor-note strong{font-size:9px}.intro-card{max-height:92vh}.intro-card .rumor-note{padding:10px}}
+
+/* ================================================================
+   THE NIGHT OF VOICES — MIDNIGHT EDITION
+   Original dark UI for the story RPG. Readability takes precedence
+   over decorative effects; all story and research controls remain.
+   ================================================================ */
+:root {
+  color-scheme: dark;
+  --navy: #0a1225;
+  --ink: #e7edf8;
+  --royal: #a89be8;
+  --mint: #88d6c5;
+  --rose: #d9a0b7;
+  --paper: #17243b;
+  --muted: #9bacc7;
+  --night-border: #3b4b69;
+  --night-soft: #b9c7db;
+  --night-gold: #f4d29a;
+  --night-surface: #17243b;
+  --night-outer: #0d1528;
+}
+html {background:#080e1d;}
+body {
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 84% 3%,rgba(97,89,162,.20),transparent 31rem),
+    radial-gradient(circle at 8% 42%,rgba(31,93,104,.15),transparent 29rem),
+    linear-gradient(160deg,#10182d 0%,#080e1d 65%,#0c1526 100%);
+}
+body::before {
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.20;
+  background-image:
+    radial-gradient(circle at 11% 14%,#f8e6b9 1px,transparent 1.7px),
+    radial-gradient(circle at 73% 36%,#d7deff 1px,transparent 1.7px),
+    radial-gradient(circle at 38% 81%,#9ab8cd 1px,transparent 1.7px);
+  background-size:310px 230px,420px 340px,370px 290px;
+}
+.shell {position:relative;}
+button:focus-visible,canvas:focus-visible,.word-tile:focus-visible,
+.choice-button:focus-visible {outline:3px solid #ffd78e;outline-offset:3px;}
+::selection {background:#625b8e;color:#fff8df;}
+.site-header h1 {color:#f3eedf;text-shadow:0 2px 0 #111729;}
+.site-header h1 span {color:#b9a8ed;}
+.site-header h1 .title-dot {color:#f3c789;}
+.site-header .eyebrow,.eyebrow {color:#aab8d6;}
+.star-logo {background:#282a50;border:1px solid #786e9f;color:#f8dc9d;box-shadow:4px 4px 0 #0c1021,0 0 21px #8174b028;}
+.key-help,.header-actions {color:#a5b7cd;}
+.pill-btn {background:#202d48;border:1px solid #576783;color:#e5e8f9;box-shadow:3px 3px 0 #0a1220;}
+.pill-btn:hover {background:#2b3b5c;border-color:#a19ad7;}
+.device {background:#091225;border-color:#101c34;box-shadow:0 16px 0 -7px #27324b,0 24px 50px #02060b80,0 0 0 1px #4a476c;}
+.device-bar {background:linear-gradient(180deg,#1b2540,#10192f);color:#aabdd3;border-bottom:1px solid #3b4763;}
+.location-title {color:#f5ead5;}
+.location-title span {color:#e5bd83;}
+.device-led span {background:#a0dfba;box-shadow:0 0 14px #7adfb4;}
+.device-indicator span {background:#435274;}
+.device-indicator span:first-child {background:#e7c387;}
+.top-screen {background:#193648;border-color:#4c536d;box-shadow:inset 0 0 30px #091529a6;}
+.top-screen::before {content:"";position:absolute;inset:0;border:2px solid #a6a0c026;box-shadow:inset 0 0 35px #050e238c;pointer-events:none;z-index:1;}
+.screen-corner {border-color:#f4d69c8c;}
+.nearby-tip {background:#0e1a30f2;border-color:#d6c69d;color:#fff0d6;box-shadow:0 5px 18px #03091699;}
+.explore-bar {background:#172540;border-top:1px solid #3b4760;color:#efd3a0;}
+.explore-bar button {color:#9fe2d0;}
+.hinge {color:#8290b4;border-color:#080f20;background:repeating-linear-gradient(90deg,#26314e 0,#26314e 15px,#121e33 15px,#121e33 18px);}
+.device-footer {color:#9cacca;background:#101a30;}
+.button-key {background:#2b3d5b;color:#f1d6a0;}
+.text-btn {color:#d4c3e7;}
+.text-btn:hover {color:#ffe1a4;}
+.touch-controls .dpad button {background:#293951;border:1px solid #65748c;color:#f2d7ad;box-shadow:0 3px 0 #080f1c;}
+.touch-controls .dpad button:active {background:#50668a;}
+.talk-button {background:#9472a7;border-color:#c2a0c6;box-shadow:0 5px 0 #402d55;color:#fff4dc;}
+.talk-button:active {box-shadow:0 2px 0 #402d55;}
+.footnote {color:#879ab6;}
+.site-footer {color:#788ca9;}
+.site-footer span:first-child {color:#d3b794;}
+
+/* A dark, readable, in-world conversation box. */
+.top-screen.in-dialogue::after {background:#050c1d4f;}
+.top-screen .dialogue-overlay {
+  background:rgba(17,28,49,.975);
+  border:3px solid #8490b0;
+  box-shadow:0 11px 0 #050b19b3,0 20px 38px #01050fa1,inset 0 0 0 2px #263953;
+}
+.dialogue-overlay .overlay-heading {background:linear-gradient(90deg,#253453,#352c52);color:#f8e5bc;border-bottom:1px solid #60718c;}
+.dialogue-overlay #closeDialogueBtn {border:1px solid #8991aa;background:#384665;color:#fff0d5;}
+.dialogue-overlay #closeDialogueBtn:hover {background:#536482;}
+.dialogue-overlay .overlay-body {scrollbar-color:#7888a4 #17253d;}
+.portrait {border-color:#a7a5c1;box-shadow:3px 3px 0 #0b1528;filter:saturate(.85) brightness(.9);}
+.speaker-name {color:#e0ba89;}
+.dialogue-content h2 {color:#fcf0d7;}
+.dialogue-content p {color:#d5e1ef;}
+.dialogue-content .dialogue-mini {color:#a1b3c9;}
+.dialogue-content kbd {background:#283956;border-color:#556681;color:#e9d4b2;}
+.spoken-line {color:#f1e3d1!important;border-color:#b797b8;background:#ae89b00d;}
+.choice-button {background:#23344f;border-color:#506483;color:#e8eff8;box-shadow:inset 0 -2px 0 #151e33;transition:transform .15s,background .15s,border-color .15s;}
+.choice-button span {color:#e4bd88;}
+.choice-button:hover {background:#354869;border-color:#b0a7d2;transform:translateX(3px);}
+.choice-button.selected {background:#3b4267;border-color:#bba6dd;}
+.choice-button:disabled {opacity:.70;}
+.dialogue-action {background:#625f99;border:2px solid #a69ece;box-shadow:3px 3px 0 #10192e;color:#fff7e9;}
+.dialogue-action:hover {background:#7773ad;}
+.dialogue-action.secondary {background:#263a54;color:#e4eaf4;border-color:#637d9b;}
+.feedback {background:#193b3b!important;color:#c2f4de!important;border-color:#7bc9aa;}
+.feedback.wrong {background:#443443!important;color:#f9dbbd!important;border-color:#d6a074;}
+.concept-tag {background:#3a3154;color:#ebd7ff;border-color:#76659b;}
+.lesson-notes {color:#b8c4d9;}
+.lesson-notes p {color:#b9c8dc!important;}
+.word-tray {background:#18273c;border-color:#667a92;}
+.word-tile {background:#e4d0ac;color:#253146;border-color:#ac947a;box-shadow:0 3px 0 #6a5c65;}
+.word-tile.selected {background:#f6dc9a;border-color:#d6a66e;}
+.meaning-preview {background:#1a4145!important;color:#caeae5!important;}
+.comparison-notice {background:#233952;border-color:#5f7391;color:#d3e2ef!important;}
+.writing-card {background:#1e2e47;border-color:#687693;}
+.writing-card h3 {color:#f4d19d;}
+.writing-card p {color:#e5ecf7!important;}
+.comparison-summary {background:#23364c;color:#dbe6ef;}
+.comparison-summary dt {color:#edcfaa;}
+.comparison-summary dd {color:#d4e3ec;}
+.story-clue-reveal {background:#493f3c!important;color:#fff0c9!important;border-color:#cfaa70;}
+.story-hint {background:#2f2e4d!important;color:#eadbf3!important;border-color:#a58acb;}
+
+/* The field guide looks like a nighttime investigator's notebook. */
+.journal {background:#131f34;border-color:#445572;box-shadow:7px 7px 0 #070e1c,0 18px 40px #02071255;}
+.journal-top {background:linear-gradient(120deg,#2a2b4e,#263a54);border-color:#56607b;}
+.journal-icon {background:#e4c38b;border-color:#a6957e;color:#2b3452;}
+.journal-top h2 {color:#f2e4c5;}
+.journal-top .eyebrow {color:#b6c4d9;}
+.journal h3 {color:#e7d7bb;}
+.journal h3 span {color:#a5b7cf;}
+.progress-top {color:#adc1d6;}
+.progress-top strong {color:#f0d9a5;}
+.progress-track {background:#25344f;border-color:#62738c;}
+.progress-fill {background:linear-gradient(90deg,#6dbaa5,#c0a0e1);}
+.current-objective {background:#212d48;border-left-color:#c6a3d8;}
+.current-objective>span {color:#e2bf93;}
+.current-objective p {color:#e0e7ef;}
+.quest-item {color:#dfe7f4;}
+.quest-item:hover {background:#293b55;border-color:#506380;}
+.quest-avatar {background:#2a3a55;border-color:#66758f;}
+.quest-details strong {color:#e2eaf7;}
+.quest-details small {color:#a5b8d0;}
+.quest-item.done .quest-details small {color:#a6decd;}
+.quest-mark {color:#c1b2bd;}
+.quest-item.done .quest-mark {color:#8bd9b7;}
+.quest-item.locked .quest-mark {color:#e4bb88;}
+.relationship {color:#c1aedf!important;}
+.journal-rule {border-color:#394964;}
+.field-title {color:#e2cba5;}
+.journal-copy,.memory-list {color:#b5c7dc;}
+.memory-list:empty::after {color:#9aacc6;}
+.journal-note {background:#253451;border-color:#536686;}
+.journal-note span {color:#f3cd8c;}
+.journal-note p {color:#c3d5e8;}
+.journal-note strong {color:#f6d6a1;}
+.save-status {color:#93ddbd;}
+.story-case {background:linear-gradient(135deg,#2d2e50,#1d3a50);color:#f3e7d3;border-color:#81759e;box-shadow:4px 4px 0 #0b1325;}
+.story-case .story-act {color:#f5cb90;}
+.story-case h3 {color:#fff0d6;}
+.story-case>p:last-child {color:#d2dfeb;}
+.story-clues li {background:#1f2d43;border-color:#53637b;color:#a9bbd0;}
+.story-clues li.found {background:#1d3f3d;border-color:#8dd2b3;color:#d2f1e1;}
+
+/* Story invitation + modal are part of the dark palette, not a white interruption. */
+.modal-backdrop {background:#04091fd9;backdrop-filter:blur(7px);}
+.intro-card {background:#16243b;border:5px solid #6b668f;outline:5px solid #0b1329;box-shadow:15px 15px 0 #020716,0 0 50px #7762a323;}
+.intro-card .eyebrow {color:#ccb5d8;}
+.intro-card h2 {color:#fff0d3;}
+.intro-card h2 em {color:#cbb3f1;}
+.intro-card>p:not(.eyebrow):not(.intro-caption) {color:#d0e0ef;}
+.intro-spark {color:#f0cc99;}
+.intro-steps span {background:#2a3955;color:#d6e3f1;border:1px solid #465777;}
+.intro-steps strong {color:#f3cb89;}
+.primary-btn {background:#7666a4;border-color:#b7a4d4;box-shadow:5px 5px 0 #101b30;color:#fff5e7;}
+.primary-btn:hover {background:#8b78b7;}
+.intro-caption {color:#a4b5ce;}
+.rumor-note {background:#dec9a5;border:2px dashed #ab8068;box-shadow:3px 5px 0 #0c1629;}
+.rumor-note span {color:#655369;}
+.rumor-note strong {color:#373b51;}
+.rumor-note em {color:#9a4754;}
+.toast {background:#1c2b47;border-color:#e4c28f;color:#f7eddb;}
+
+@media(max-width:680px){
+  .shell {padding:12px 9px;}
+  .site-header {margin-bottom:12px;}
+  .journal {box-shadow:4px 5px 0 #060c1c;}
+  .intro-card {border-width:3px;outline-width:3px;}
+  .top-screen .dialogue-overlay {border-color:#8490b0;box-shadow:0 10px 28px #010713d9;}
+  .dialogue-overlay .overlay-body {scrollbar-color:#7c8ba5 #1a2943;}
+  .dialogue-overlay .portrait {filter:saturate(.78) brightness(.86);}
+}
+@media(prefers-reduced-motion:reduce){
+  .choice-button,.dialogue-action {transition:none;}
+}
