@@ -1,120 +1,571 @@
-/* Fictional teaching conversations. Every exchange investigates the same festival rumour.
-   Outcomes describe how listeners respond, not whether a writing style is universally correct. */
+/* The Stolen Voice: fictional teaching conversations.
+   Each branch advances the same case; style choices do not score authorship. */
 window.LinguaConversations = {
-  mina: [
+  "mina": [
     {
-      line:"This is my ORIGINAL invitation: 'Night of Voices is ON tonight in the town square. Everyone's welcome!' But someone forwarded a cropped, official-sounding version. My friend Leila thinks she's been uninvited. What should I say to her?",
-      replies:["You are hereby notified that your attendance remains permitted.","Leila, you're absolutely invited! Want to come with me? We can sit somewhere quiet.","Leila! Story mission is ON ✨ Come with me and we'll find the best seats!"],
-      routes:[{repair:true},{branch:'quiet'},{branch:'playful'}],
-      reaction:["Leila replies, 'Permitted? I thought we were friends. Are you sending me a rule or asking me to come?' The wording confirms eligibility but misses the relationship."],
-      repair:"Leila needs reassurance that this is a personal invitation, not a cold official notice. Repair the social meaning.",
-      repairs:["Sorry—that sounded official. I meant you're invited, and I'd love you to come with me.","The notice is technically correct. No further explanation is needed.","I was doing a mock-official voice! Really, come with me if you'd like."],
-      repairRoutes:[{branch:'quiet'},{hint:"Leila: 'I understand the words, but are you actually inviting me?' Accuracy alone hasn't resolved the social distance."},{branch:'playful'}],
-      branches:{
-        quiet:{line:"Leila smiles: 'That helps. The rumour made me nervous. I'd love a quiet corner at Story Night.' What should Mina say next?",replies:["We'll sit together near the café, and I can fill you in on what we know.","No pressure to talk through the rumour now; I'll save you a quiet seat."],outcomes:[
-          {reaction:"Leila: 'Thanks for listening rather than sending another announcement.' The invitation was successful because it fit this friendship.",consequence:"Mina saves a quiet festival seat for Leila.",effect:{cafeStyle:'quiet'}},
-          {reaction:"Leila: 'A calm place sounds perfect.' She stops worrying that the rumour excluded her.",consequence:"Mina keeps a quiet festival corner ready for worried neighbours.",effect:{cafeStyle:'quiet'}}]},
-        playful:{line:"Leila laughs: 'Story mission accepted! Just don't make me perform on stage.' How do you respond?",replies:["Deal—one silly toast before the show, then we can just listen.","No performance required. We can sit quietly if you're tired."],outcomes:[
-          {reaction:"Leila: 'That's more like you!' The shared joke clarified an invitation that had felt distant.",consequence:"Mina starts a playful one-toast tradition before the festival.",effect:{cafeStyle:'playful'}},
-          {reaction:"Leila: 'Thanks for checking.' Mina adjusts her tone as the conversation changes.",consequence:"Mina reserves a quiet table for Leila, despite the playful start.",effect:{cafeStyle:'quiet'}}]}
+      "line": "Leila saw someone leave the square carrying a red book. Now everyone wants her to name the thief. She's my friend, and she's stopped answering. Help me get her side of it?",
+      "replies": [
+        "Leila, please provide a complete witness statement for the investigation.",
+        "Leila, that sounds like a lot. Want to tell me what you saw, just us?",
+        "Detective Leila, I could use my partner. Café booth, usual order?"
+      ],
+      "routes": [
+        {
+          "repair": true
+        },
+        {
+          "branch": "quiet"
+        },
+        {
+          "branch": "playful"
+        }
+      ],
+      "reaction": [
+        "Leila: ‘Am I in trouble? I saw a book, not a crime.’ Mina sighs. ‘That sounded like an interrogation.’"
+      ],
+      "repair": "A precise request can still create unwanted distance. Give Leila room to speak as a friend.",
+      "repairs": [
+        "Sorry, that sounded official. You're not in trouble. Tell me only what you remember.",
+        "An official tone will make your memory more accurate.",
+        "Bad detective voice. Start over? We can talk over our usual drinks."
+      ],
+      "repairRoutes": [
+        {
+          "branch": "quiet"
+        },
+        {
+          "hint": "Mina: ‘Formality doesn't improve memory. She needs to know we aren't accusing her.’"
+        },
+        {
+          "branch": "playful"
+        }
+      ],
+      "branches": {
+        "quiet": {
+          "line": "Leila sits down. ‘A red cover, a gold star, blue cloth around it. I couldn't see the person's face.’ What do you ask?",
+          "replies": [
+            "Did you notice which way they went?",
+            "Would you rather draw the route than describe it?"
+          ],
+          "outcomes": [
+            {
+              "reaction": "‘Toward the library. That's all I know.’ Mina writes down the details without adding ‘thief’. For this friend, a private conversation helped.",
+              "consequence": "Leila describes a star-marked red book going toward the library.",
+              "effect": {
+                "cafeStyle": "quiet"
+              }
+            },
+            {
+              "reaction": "Leila draws a line from the square to the library. ‘Thanks for not making me name someone.’ The format changes; her evidence stays the same.",
+              "consequence": "Leila sketches the route to the library in a quiet café booth.",
+              "effect": {
+                "cafeStyle": "quiet"
+              }
+            }
+          ]
+        },
+        "playful": {
+          "line": "Leila almost smiles. ‘Fine, partner. Red book. Gold star. Blue cloth. Someone carried it toward the library. But no jokes in the town report, okay?’",
+          "replies": [
+            "Deal. I'll write exactly that, without guessing who it was.",
+            "Of course. Want somewhere quieter while I write it down?"
+          ],
+          "outcomes": [
+            {
+              "reaction": "‘That's my Mina.’ The shared joke opened the conversation; Leila's next request sets a different tone for the report.",
+              "consequence": "Mina and Leila keep their detective joke private and report the route accurately.",
+              "effect": {
+                "cafeStyle": "playful"
+              }
+            },
+            {
+              "reaction": "‘Yes, please.’ Mina adjusts when Leila asks. No single tone works for every moment, even between friends.",
+              "consequence": "Leila gives her account from a quiet café table.",
+              "effect": {
+                "cafeStyle": "quiet"
+              }
+            }
+          ]
+        }
       },
-      next:"Mina lays the original invitation beside the forwarded crop. 'Same event, very different feeling. We need a message the ORGANIZERS can confirm, too.'"
+      "next": "Mina folds Leila's sketch. ‘Red cover, gold star, blue cloth. Let's check that description with the organizers before we call it the missing book.’"
     },
     {
-      line:"Before we reassure everyone, I need to contact the Story Night committee. Their cropped notice never showed a start time. What should my message say?",
-      context:{key:'cafeStyle',lines:{quiet:"Mina lowers her voice. 'Leila needed a personal invitation; the committee needs a clear request for evidence.'",playful:"Mina grins. 'Our joke worked for Leila. The organizers still need an accurate, specific question.'"}},
-      replies:["Hi committee, I'm announcing that Story Night begins at seven. See you then!","Dear Story Night committee, could you confirm the official start time and location before we post a correction?","Hi organizers, can you confirm the programme and time? People are mistaking the cropped notice for a cancellation."],
-      routes:[{repair:true},{outcome:{reaction:"The committee replies, 'It's definitely in the town square. Dr. Nova has the signed programme with the start time.' Mina says, 'We asked instead of guessing.'",consequence:"Mina marks the original invitation as authentic and sends you to Theo for the next source."}},{branch:'friendly'}],
-      reaction:["The committee replies, 'Please don't announce seven as the start time until you've seen the programme.' Mina realizes a friendly message can still spread a false fact."],
-      repair:"The official schedule isn't verified yet. Repair the assumption, not merely the tone.",
-      repairs:["Sorry, I shouldn't have guessed. Could you confirm the official start time and location?","Seven sounds reasonable. I'll keep the announcement as written.","Could we check the signed programme before sharing a time? I'll correct my message."],
-      repairRoutes:[{outcome:{reaction:"'Good call,' the committee replies. 'Dr. Nova has the schedule.' Mina separates what the invitation proves from what remains to be checked.",consequence:"Mina confirms the festival is on and points you toward the missing schedule."}},{hint:"The committee: 'A plausible time is still a guess. Please ask for the programme before posting.'"},{branch:'friendly'}],
-      branches:{friendly:{line:"The committee answers: 'The festival is on, but we've lost track of where the eight o'clock rumour came from.' Which fact should we investigate next?",replies:["Ask Theo whether the eight o'clock sign belongs to the library.","Ask Theo to find the original notice that was cropped."],outcomes:[
-        {reaction:"'Theo keeps the library notices,' Mina says. 'That should tell us what actually closes at eight.'",consequence:"Mina sends you to Theo with the cropped notice."},
-        {reaction:"'Good idea,' says Mina. 'A full notice can restore the subject the forwarded scrap lost.'",consequence:"Mina gives you the cropped notice to compare with Theo's original."}]}}
+      "line": "The committee has the storybook's inventory card. We need to compare it with Leila's account. What should I send?",
+      "replies": [
+        "We've found your thief. Someone took a red book toward the library.",
+        "Could you confirm the missing book's cover and wrapping? A witness saw a red book with a gold star in blue cloth.",
+        "Hi! We're following a lead toward the library. Does a red, star-marked book in blue cloth match your inventory?"
+      ],
+      "routes": [
+        {
+          "repair": true
+        },
+        {
+          "outcome": {
+            "reaction": "The committee replies: ‘That matches. It holds the town's handwritten stories. Theo was helping near the stand before it vanished.’",
+            "consequence": "The inventory matches Leila's description; Theo is the next lead.",
+            "effect": {}
+          }
+        },
+        {
+          "branch": "friendly"
+        }
+      ],
+      "reaction": [
+        "The committee asks, ‘Did anyone see a theft, or just someone carrying a book?’ Mina deletes the accusation."
+      ],
+      "repair": "Adapt the message for people checking an inventory. Keep an observation separate from an accusation.",
+      "repairs": [
+        "Correction: we saw a matching book being carried. Could you check its description?",
+        "A missing book makes anyone carrying one a thief.",
+        "Can you compare this description with your inventory before we make a claim?"
+      ],
+      "repairRoutes": [
+        {
+          "outcome": {
+            "reaction": "‘Red cover, gold star, blue cloth: yes.’ The committee sends you to Theo, who was working near the stand.",
+            "consequence": "The committee confirms the book description and points to Theo.",
+            "effect": {}
+          }
+        },
+        {
+          "hint": "Mina: ‘Carrying a book doesn't tell us whether the person had permission.’"
+        },
+        {
+          "branch": "friendly"
+        }
+      ],
+      "branches": {
+        "friendly": {
+          "line": "The committee confirms the match. ‘Theo spoke to the people at the stand. Do you want the inventory card or the witness sketch for him?’",
+          "replies": [
+            "Take the inventory card and explain what Leila saw.",
+            "Take the sketch and quote the matching inventory description."
+          ],
+          "outcomes": [
+            {
+              "reaction": "Mina clips the card to the sketch. ‘Either way, Theo gets both the route and the object we're looking for.’",
+              "consequence": "You carry the matched description and route to Theo.",
+              "effect": {}
+            },
+            {
+              "reaction": "‘Good. The facts stay the same even when the format changes.’ Mina points across the square toward the library.",
+              "consequence": "You bring Leila's route and the confirmed book description to Theo.",
+              "effect": {}
+            }
+          ]
+        }
+      }
     }
   ],
-  theo: [
+  "theo": [
     {
-      line:"Here's the FULL notice: 'LIBRARY SERVICE DESK CLOSES AT 8 PM.' Someone circulated only 'Closes at eight' beside the festival flyer. A visitor asks: 'Does Story Night close at eight?' How do we answer without leaving out the subject?",
-      replies:["There's probably still time. Don't worry about it.","No—the library service desk closes at eight. Story Night is in the square; its time is on the festival programme.","The eight o'clock sign is for this library. Want me to show you where the festival is?"],
-      routes:[{repair:true},{outcome:{reaction:"The visitor: 'Oh! I confused two events.' Theo points to the missing words 'LIBRARY SERVICE DESK': a relevant subject changed the entire rumour.",consequence:"Theo pins up the complete library closing notice.",effect:{libraryHelp:'concise'}}},{branch:'help'}],
-      reaction:["The visitor: 'But WHAT closes at eight?' Theo says, 'Reassurance isn't enough when the subject of the sentence is missing.'"],
-      repair:"Give the visitor the subject and the verified distinction between the library and Story Night.",
-      repairs:["Sorry—I meant the library service desk closes at eight, not the festival.","Just get there soon. Eight is a useful estimate.","This notice is about the library. Would a route to the square help?"],
-      repairRoutes:[{outcome:{reaction:"'Now I know,' the visitor says. Theo replaces the cropped scrap with the full notice.",consequence:"The library's eight o'clock deadline is no longer confused with Story Night.",effect:{libraryHelp:'concise'}}},{hint:"Theo: 'They still don't know WHAT closes. Supply the missing subject rather than guessing a deadline.'"},{branch:'help'}],
-      branches:{help:{line:"The visitor says, 'Yes! The rumour even made me think the square was shut. How can I find the festival?'",replies:["Mark the town-square route on the library map.","Offer to walk the visitor from the library to the square."],outcomes:[
-        {reaction:"'Perfect. I can follow the map myself,' they say. Theo provides the amount of information this visitor needs.",consequence:"Theo posts a clear map to the festival square.",effect:{libraryHelp:'map'}},
-        {reaction:"'Please do,' they say. Theo: 'Now the information has turned into help at exactly the right moment.'",consequence:"Theo escorts visitors from the library toward the festival.",effect:{libraryHelp:'escort'}}]}},
-      next:"Theo uncovers another forwarded reply: 'The lanterns look lovely.' It was someone's answer to a question about whether the festival was still on."
-    },
-    {
-      line:"A worried neighbour asked, 'Is Story Night definitely happening?' Their friend answered, 'Well, the lanterns look lovely.' Can Theo treat that as proof the festival is on—or off?",
-      replies:["The reply avoids a direct answer. It may imply uncertainty, but let's ask whether the friend saw an official update.","The lanterns are up, so the friend must be confirming the festival is on.","Maybe they just liked the decorations. Let's ask what they actually know about the schedule."],
-      routes:[{outcome:{reaction:"Theo asks. The friend admits, 'I saw lanterns, not the programme.' The hint of uncertainty was worth checking, not treating as a fact.",consequence:"Theo labels the decoration comment as an observation, not a cancellation notice."}},{repair:true},{branch:'visuals'}],
-      reaction:["The neighbour asks, 'But could the event still be cancelled with the lanterns up?' Theo realizes the evidence doesn't answer the original question."],
-      repair:"A conversational implicature may be informative, but it is not a verified event status.",
-      repairs:["You're right. The lanterns alone don't confirm the festival; let's ask what the friend actually saw.","The lanterns suggest a festival, so we'll mark it confirmed.","Ask where the friend got the information and whether they saw the official programme."],
-      repairRoutes:[{outcome:{reaction:"'I just liked the decorations,' the friend explains. Theo records the words without inventing a confirmation.",consequence:"The library notice now distinguishes observed decorations from verified festival information."}},{hint:"Theo: 'We still need a source. An indirect answer isn't proof of a schedule.'"},{branch:'visuals'}],
-      branches:{visuals:{line:"The friend says, 'I was describing the lanterns. I never saw an announcement.' Theo asks what the evidence board should say.",replies:["'Lanterns were seen; event schedule not yet verified.'","'Someone liked the lanterns; check the official programme before giving a start time.'"],outcomes:[
-        {reaction:"'That's precise,' says Theo. 'No more than the source supports.'",consequence:"Theo adds a cautious eyewitness note to the case file."},
-        {reaction:"'Good distinction,' says Theo. 'Observations and intentions are different things.'",consequence:"Theo records the observation and a reminder to seek the programme."}]}}
-    }
-  ],
-  prof: [
-    {
-      line:"My message was 'Some students finished the Story Night posters.' A forwarded version made others think the remaining posters weren't done and the festival had been called off. What can 'some' actually establish?",
-      replies:["Then someone must still be working. We should postpone the festival.","It can suggest 'not all,' but it doesn't logically prove that. Could we check whether all the posters were finished?","Did all the students finish, or were some still working? We shouldn't assume cancellation."],
-      routes:[{repair:true},{outcome:{reaction:"'In fact, all the posters are finished,' Lin says. 'Some' was true even though 'all' was also true. The rumour added a conclusion I never stated.",consequence:"Lin supplies the complete update: every festival poster was finished."}},{branch:'check'}],
-      reaction:["Lin stops you: 'That is a possible conversational inference, not a proof. All posters were finished, and no festival decision was made.'"],
-      repair:"Acknowledge that the implication was understandable, then revise it with the new evidence.",
-      repairs:["Then we should correct the post: all posters were finished, and no cancellation followed.","'Some' still means others definitely failed, so let's keep the postponement.","Let's check the full class update and share only what it actually confirms."],
-      repairRoutes:[{outcome:{reaction:"Lin nods. 'You corrected a defeasible inference rather than treating it as fact.'",consequence:"The poster-completion rumour is corrected."}},{hint:"Lin: 'The next sentence cancels the suggested meaning. We cannot keep treating it as evidence.'"},{branch:'check'}],
-      branches:{check:{line:"Lin opens the class log: 'All the posters are finished. Some students also volunteered to hang them.' What should the corrected town update say?",replies:["All festival posters are finished; hanging volunteers are preparing the square.","The posters are complete. The class update did not cancel Story Night."],outcomes:[
-        {reaction:"'Exactly,' says Lin. 'A narrower statement can be true without denying the broader one.'",consequence:"The full class progress note is added to the case file."},
-        {reaction:"'Right,' says Lin. 'Someone supplied the cancellation that my words never said.'",consequence:"The class confirms completion and denies any cancellation announcement."}]}},
-      next:"A draft of the ORIGINAL poster is on the windowsill. Lin glances at it: 'It's getting breezy in here…'"
-    },
-    {
-      line:"The only unedited poster draft is beside an open window. A gust nearly blows it outside. Lin says, 'It's getting breezy in here…' What action might that indirect request invite?",
-      replies:["Yes, the weather has changed. Let's keep reading the rumours.","Would you like me to close the window so the original poster stays safe?","Should we move the draft to the sheltered sunny table instead?"],
-      routes:[{repair:true},{outcome:{reaction:"'Yes, please,' says Lin as you close it. 'I was warning you about the draft without explicitly saying close the window.' The original wording is safe.",consequence:"The original festival poster is protected behind a closed window.",effect:{classroomComfort:'window'}}},{branch:'sunny'}],
-      reaction:["Another gust lifts the paper. Lin says, 'That observation is true, but I was hoping you'd help protect our evidence.'"],
-      repair:"Interpret what the speaker wants accomplished, not just the literal weather report.",
-      repairs:["I'll close the window to keep the poster from blowing away. Is that okay?","It'll probably calm down later. We can ignore it for now.","Would you prefer I carry the original draft to the sheltered sunny table?"],
-      repairRoutes:[{outcome:{reaction:"'Thank you,' says Lin. The original poster remains legible. Context turned a comment about the breeze into a request for action.",consequence:"You secure the unedited festival draft by closing the window.",effect:{classroomComfort:'window'}}},{hint:"The poster could be lost now. A forecast doesn't answer Lin's immediate concern."},{branch:'sunny'}],
-      branches:{sunny:{line:"Lin agrees: 'The sheltered table will work, and I like the air. Can you help carry the draft without smudging the ink?'",replies:["Carry the poster flat to the sunny table and weigh down the edges.","Move it carefully, then ask if Lin also wants the window partially closed."],outcomes:[
-        {reaction:"Lin smooths the page. 'Exactly. You understood the goal even though you chose a different action.'",consequence:"The original festival poster is safe on the sunny table; the window stays open.",effect:{classroomComfort:'sunny'}},
-        {reaction:"'The table is enough,' says Lin. 'Thank you for checking before deciding.'",consequence:"The preserved original stays on the sunny table while fresh air comes in.",effect:{classroomComfort:'sunny'}}]}}
-    }
-  ],
-  nova: [
-    {
-      line:"We need to stop the rumour. I have three draft messages for the town, but I won't claim a festival start time until we check the signed programme. Which one would you send to anxious neighbours right now?",
-      replies:["Story Night is happening.","Story Night is ON tonight ✨ Everyone is welcome at the town square! We're checking the exact start time now.","Story Night is going ahead tonight in the town square. Everyone is welcome; we'll confirm the start time shortly."],
-      routes:[{branch:'brief'},{outcome:{reaction:"The neighbours reply, 'Thanks! We were worried.' Nova: 'That friendly version fits this audience, and it doesn't invent a time.'",consequence:"The town's message board displays a warm, accurate status update."}},{branch:'plain'}],
-      reaction:[], repair:"The brief note is true but people still need location and a verified time. Expand it without guessing.",
-      repairs:["Story Night is on at the town square; the exact time is being checked.","If it's happening, the details don't matter.","It's on tonight; we'll confirm the start time from the programme."],
-      repairRoutes:[{outcome:{reaction:"Nova: 'You supplied the missing context without adding unverified details.'",consequence:"The initial status note is updated with the town-square location."}},{hint:"People are missing practical details. A true but incomplete sentence may not answer their questions."},{branch:'plain'}],
-      branches:{
-        brief:{line:"A villager asks, 'WHERE is it? Is eight the ending?' Your brief note was correct but left room for the same rumour. What next?",replies:["It's in the town square; eight refers to the library. I'll verify the programme's start time.","It's in the town square tonight. We won't publish a start time until we read the original schedule."],outcomes:[
-          {reaction:"'Now I know where to go,' the villager says. Nova praises the added context rather than a particular tone.",consequence:"The notice now separates location, library hours, and the unverified start time."},
-          {reaction:"'Thanks for not guessing,' the villager says. Nova: 'A concise update can still be helpful when it includes what is known.'",consequence:"The first festival clarification is posted without invented details."}]},
-        plain:{line:"A villager says, 'I like a straightforward note; my friend wants something warmer.' Should we treat one style as the only natural one?",replies:["No; keep the clear facts and adapt tone to the intended readers.","We can offer both a plain public notice and a warm invitation, with the same verified facts."],outcomes:[
-          {reaction:"Nova: 'Exactly. We can assess readability and tone without pretending to know who wrote each version.'",consequence:"The lab saves a plain festival clarification for the official board."},
-          {reaction:"Nova: 'Both can work for different readers, provided they do not contradict the evidence.'",consequence:"The lab prepares two audience-appropriate festival messages."}]}
+      "line": "People heard me say, ‘I wouldn't leave that book there.’ Now they think I wanted the town's stories removed. I was pointing at water dripping onto the stand. What was I doing with those words?",
+      "replies": [
+        "You literally said what you would do; there can't be a request in that.",
+        "In that situation, it sounds like a warning to move the book somewhere dry. Is that what you meant?",
+        "You were ordering the festival to stop. The wording makes that clear."
+      ],
+      "routes": [
+        {
+          "repair": true
+        },
+        {
+          "branch": "help"
+        },
+        {
+          "repair": true
+        }
+      ],
+      "reaction": [
+        "Theo: ‘I didn't use an imperative, but I was trying to get someone to protect the book.’",
+        null,
+        "Theo points to the wet canopy. ‘I wanted the stories dry, not silenced.’"
+      ],
+      "repair": "The literal sentence describes a hypothetical action. Context can make it an indirect warning or request; check the intended goal.",
+      "repairs": [
+        "Were you asking someone to move it out of the leak?",
+        "Then any warning must mean the festival is cancelled.",
+        "Could you show me what you were pointing at when you said it?"
+      ],
+      "repairRoutes": [
+        {
+          "branch": "help"
+        },
+        {
+          "hint": "Theo: ‘Nothing I said settles whether the festival goes ahead. Look at the leak.’"
+        },
+        {
+          "branch": "help"
+        }
+      ],
+      "branches": {
+        "help": {
+          "line": "‘Yes. Lin heard me and organized a rescue. I watched the book leave in blue cloth, but I didn't see where it ended up.’ How should we preserve that distinction?",
+          "replies": [
+            "Mark the leak and the route on a map; leave the destination unconfirmed.",
+            "Ask Theo to show the volunteers the leak while you follow the book's trail."
+          ],
+          "outcomes": [
+            {
+              "reaction": "Theo marks the stand. ‘A warning explains why someone moved it. We still need to find it.’",
+              "consequence": "Theo maps the leak; the book's final destination is still unknown.",
+              "effect": {
+                "libraryHelp": "map"
+              }
+            },
+            {
+              "reaction": "Theo gathers the volunteers. ‘I'll show them the damage. Lin can tell you who arranged the move.’",
+              "consequence": "Theo shows the leak to volunteers while you follow the rescue trail.",
+              "effect": {
+                "libraryHelp": "escort"
+              }
+            }
+          ]
+        }
       },
-      next:"Nova places two festival announcements side by side. 'How they sound is a preference question. Who wrote them is a different kind of claim.'"
+      "next": "Theo produces a witness's reply. Asked ‘Did you see who took it?’, they answered: ‘I saw a lantern heading toward the market.’"
     },
     {
-      line:"Someone says the corrected festival announcement sounds 'too polished', so it must be AI-written and fake. Can the town use that style judgment to decide whether Story Night is cancelled?",
-      replies:["The polished writing is suspicious, so I'll label the notice as an AI fake.","The casual version feels more human, so I'll treat its event details as verified.","We can describe those impressions, but only the original invitation and signed programme can verify the event."],
-      routes:[{repair:true},{repair:true},{outcome:{reaction:"Nova: 'Exactly. A reader's stylistic impression is not source evidence.' The original invitation and signed programme remain our checks.",consequence:"The lab labels style impressions separately from verified festival facts."}}],
-      reaction:["A festival volunteer asks, 'But I wrote the formal notice myself. How does polished wording make it fake?' Nova folds the speculative label away.","Nova shows a casual draft made by a language model. 'Casual wording doesn't authenticate the festival schedule either.'"],
-      repair:"Separate what a reader thinks a style resembles from what the authenticated documents establish.",
-      repairs:["We can say this reader perceived the announcement as AI-like, while its authorship remains unverified.","Let's keep 'probably fake' and add a disclaimer that it's only a feeling.","Remove the source claim. Check the signed schedule and discuss tone separately."],
-      repairRoutes:[{outcome:{reaction:"'That states the impression without inventing a source,' Nova agrees. 'Now let's check the programme.'",consequence:"The festival exhibit records perceptions without treating them as provenance."}},{hint:"'Probably fake' is still an unsupported statement about the notice's source. A caveat cannot verify it."},{outcome:{reaction:"Nova: 'Good. The reliable schedule, not the prose style, determines when the festival starts.'",consequence:"The lab removes the misleading AI-authorship label from the festival notice."}}],
-      next:"Nova opens a drawer: 'The FIFTH piece is the signed festival programme. The square opens at seven; the stories begin at seven thirty. Now we can assemble every clue and correct the rumour.'"
+      "line": "‘I saw a lantern heading toward the market.’ That's all the witness said when asked who carried the book. What can we put in the case file?",
+      "replies": [
+        "The reply suggests they couldn't identify the carrier. Let's ask whether they saw a face or the book.",
+        "The lantern must belong to the thief; we have identified them.",
+        "They may be offering a direction instead of an identity. Ask what they actually saw."
+      ],
+      "routes": [
+        {
+          "outcome": {
+            "reaction": "The witness clarifies: ‘No face. A blue bundle and a moving lantern.’ Theo adds Lin's rescue slip. ‘Lin arranged the move; start there.’",
+            "consequence": "A lantern and blue bundle went toward the market; the carrier is unidentified.",
+            "effect": {}
+          }
+        },
+        {
+          "repair": true
+        },
+        {
+          "branch": "check"
+        }
+      ],
+      "reaction": [
+        null,
+        "Theo: ‘A lantern is a useful lead, not a person's identity. That answer doesn't establish theft either.’"
+      ],
+      "repair": "A relevant but incomplete answer can suggest a limit to the speaker's knowledge. Test that inference rather than promoting it to fact.",
+      "repairs": [
+        "Let's ask whether they could see the carrier's face.",
+        "We'll write ‘lantern thief’ and investigate later.",
+        "Record the direction, then check whether the witness saw the blue bundle."
+      ],
+      "repairRoutes": [
+        {
+          "branch": "check"
+        },
+        {
+          "hint": "Theo: ‘That label invents both an identity and a crime.’"
+        },
+        {
+          "branch": "check"
+        }
+      ],
+      "branches": {
+        "check": {
+          "line": "The witness says, ‘I saw a lantern and blue cloth. I couldn't see a face.’ Lin's signed rescue slip is tucked behind the account. What do we record?",
+          "replies": [
+            "A blue bundle travelled toward the market; carrier unidentified. Follow up with Lin.",
+            "The witness gives a route, not a name. Ask Lin who arranged the rescue."
+          ],
+          "outcomes": [
+            {
+              "reaction": "Theo nods. ‘The follow-up confirmed the limit we inferred.’",
+              "consequence": "The trail leads through Lin's rescue slip toward the market.",
+              "effect": {}
+            },
+            {
+              "reaction": "‘Exactly. More information, without making the witness claim more than they saw.’",
+              "consequence": "You take the witness account to Lin for the next link in the trail.",
+              "effect": {}
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "prof": [
+    {
+      "line": "My first update said, ‘Some pages were rescued.’ People took that to mean the rest of the town's stories were gone. Before I open the page count, what does that sentence alone tell you?",
+      "replies": [
+        "At least one page was rescued; it can suggest not all, but doesn't rule out all.",
+        "Only some survived. The remaining stories are definitely lost.",
+        "It doesn't give a final total. Were all the pages rescued?"
+      ],
+      "routes": [
+        {
+          "outcome": {
+            "reaction": "Lin opens the tally: ‘All forty pages, in fact. I sent the first update before the count was finished.’ The later sentence cancels the usual ‘not all’ inference without contradicting ‘some’.",
+            "consequence": "The complete tally confirms all forty pages were rescued.",
+            "effect": {}
+          }
+        },
+        {
+          "repair": true
+        },
+        {
+          "branch": "count"
+        }
+      ],
+      "reaction": [
+        null,
+        "Lin: ‘All forty survived. “Some” didn't promise that others were lost; that was an understandable inference, not an entailment.’"
+      ],
+      "repair": "Separate a suggested upper limit from what the words require to be true.",
+      "repairs": [
+        "Then ‘some—in fact, all’ is consistent. Let's correct the missing-pages claim.",
+        "If all survived, your earlier statement must have been false.",
+        "Let's check the tally rather than infer a final total from ‘some’."
+      ],
+      "repairRoutes": [
+        {
+          "outcome": {
+            "reaction": "‘Exactly.’ Lin gives you the final count and the courier's delivery slip.",
+            "consequence": "All forty pages survived; the delivery slip leads onward.",
+            "effect": {}
+          }
+        },
+        {
+          "hint": "Lin: ‘If all forty survived, at least one did. The earlier statement was less informative, not false.’"
+        },
+        {
+          "branch": "count"
+        }
+      ],
+      "branches": {
+        "count": {
+          "line": "‘All forty. The courier took them to Jules's covered stall.’ The first update was sent before counting ended. How do we correct it?",
+          "replies": [
+            "All forty pages were rescued. The earlier ‘some’ update wasn't a final count.",
+            "No pages are missing from the tally. Follow the delivery slip to Jules."
+          ],
+          "outcomes": [
+            {
+              "reaction": "‘Good. Your correction gives the stronger information we now have.’",
+              "consequence": "Lin verifies all forty pages and the transfer to Jules.",
+              "effect": {}
+            },
+            {
+              "reaction": "‘Exactly. We know the count, but still need the book's current location.’",
+              "consequence": "The final tally rules out missing pages; Jules is the next lead.",
+              "effect": {}
+            }
+          ]
+        }
+      },
+      "next": "Lin reaches for the delivery slip on the windowsill. A gust lifts its corner. ‘That paper won't stay there for long…’"
+    },
+    {
+      "line": "The delivery slip is our only link to the courier. The window is open. Lin says, ‘That paper won't stay there for long…’ How do you respond?",
+      "replies": [
+        "It probably won't. Anyway, tell me more about the courier.",
+        "Shall I close the window before the slip blows away?",
+        "Want me to move it to the sheltered table and weigh it down?"
+      ],
+      "routes": [
+        {
+          "repair": true
+        },
+        {
+          "outcome": {
+            "reaction": "‘Please.’ You close the window. Lin hands you the slip: ‘I followed the courier with the lantern.’ Jules wrote it.",
+            "consequence": "You secure Jules's delivery slip by closing the window.",
+            "effect": {
+              "classroomComfort": "window"
+            }
+          }
+        },
+        {
+          "branch": "sunny"
+        }
+      ],
+      "reaction": [
+        "The slip slides toward the edge. Lin: ‘I was hoping you'd help me keep it here.’"
+      ],
+      "repair": "A prediction can also function as a request. Identify the goal; more than one action can achieve it.",
+      "repairs": [
+        "I'll close the window. Is that okay?",
+        "The prediction was accurate, so nothing else is needed.",
+        "Let's carry the slip to the sheltered table."
+      ],
+      "repairRoutes": [
+        {
+          "outcome": {
+            "reaction": "Lin nods. The slip is safe: ‘I followed the courier with the lantern.’ Take it to Jules.",
+            "consequence": "The delivery slip is safe beside a closed window.",
+            "effect": {
+              "classroomComfort": "window"
+            }
+          }
+        },
+        {
+          "hint": "Lin: ‘Agreeing with me doesn't protect our only delivery record.’"
+        },
+        {
+          "branch": "sunny"
+        }
+      ],
+      "branches": {
+        "sunny": {
+          "line": "‘Yes, let's keep the air.’ Lin reads the rescued slip: ‘I followed the courier with the lantern.’ Whose lantern? Jules will know. How do you secure the paper?",
+          "replies": [
+            "Lay it flat under a paperweight, then copy the exact words.",
+            "Photocopy it and return the original to a folder on the table."
+          ],
+          "outcomes": [
+            {
+              "reaction": "Lin checks your copy. ‘Same words, still two possible readings. Ask Jules before following the wrong person.’",
+              "consequence": "You preserve the slip on the sheltered table and take its wording to Jules.",
+              "effect": {
+                "classroomComfort": "sunny"
+              }
+            },
+            {
+              "reaction": "‘Thank you.’ The original stays protected; you take a copy to its writer.",
+              "consequence": "The delivery slip is safe on the sheltered table.",
+              "effect": {
+                "classroomComfort": "sunny"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "nova": [
+    {
+      "line": "You traced the bundle to Crate B. It's here, with a red book inside. A message says, ‘The stories are safe with me.’ A polished version and a casual version are circulating. Which should we trust enough to call the search off?",
+      "replies": [
+        "The casual one. It sounds like someone from town.",
+        "The polished one. It sounds more official.",
+        "Neither style proves it. Check the book's gold star, count its pages, and compare the delivery record."
+      ],
+      "routes": [
+        {
+          "repair": true
+        },
+        {
+          "repair": true
+        },
+        {
+          "branch": "verify"
+        }
+      ],
+      "reaction": [
+        "Nova: ‘A friendly sentence can be copied or generated. Familiar wording doesn't identify this book.’",
+        "Nova: ‘An official tone can be imitated too. We need the object and its record.’"
+      ],
+      "repair": "Naturalness, preference, and perceived authorship are judgments about wording. None authenticates the book or its contents.",
+      "repairs": [
+        "Check the inventory and count the forty pages before announcing a recovery.",
+        "Average the two styles and call the result trustworthy.",
+        "Compare the courier's signed slip and the book's identifying marks."
+      ],
+      "repairRoutes": [
+        {
+          "branch": "verify"
+        },
+        {
+          "hint": "Nova: ‘Combining styles doesn't create evidence.’"
+        },
+        {
+          "branch": "verify"
+        }
+      ],
+      "branches": {
+        "verify": {
+          "line": "The gold star matches the inventory; all forty numbered pages are here. Nova's receipt matches Jules's transfer. ‘The book is found. But that note on the empty stand—why did it say “Tonight, your voice is mine”?’",
+          "replies": [
+            "Compare the note with the rehearsal scripts from the same crate.",
+            "Ask for the complete page around that sentence, including speaker labels."
+          ],
+          "outcomes": [
+            {
+              "reaction": "Nova opens a rehearsal script. There is the sentence—under a character's name. ‘Let's read the lines around it.’",
+              "consequence": "You recover the complete storybook and locate the note's source in a script.",
+              "effect": {}
+            },
+            {
+              "reaction": "Nova finds the full page. ‘Here is the context the loose cue card left out.’",
+              "consequence": "The authenticated book is recovered; the full script can explain the note.",
+              "effect": {}
+            }
+          ]
+        }
+      },
+      "next": "The script reads: VOICE THIEF: ‘Tonight, your voice is mine.’ CHORUS: ‘Then we'll tell our stories together.’ A prop list identifies the loose note as the Voice Thief's cue card."
+    },
+    {
+      "line": "Nova checks the prop list: the cue card was left at the stand during rehearsal, before the rain. The book was moved later. Does the same sentence do the same thing on stage and in an unsigned note?",
+      "replies": [
+        "Yes. ‘Your’ must always refer to whoever is reading, so it is still a real threat.",
+        "No. In the script, ‘I’ and ‘your’ belong to fictional roles. On the stand, readers supplied a real speaker and target.",
+        "The card is in a script, so nobody could reasonably have felt threatened."
+      ],
+      "routes": [
+        {
+          "repair": true
+        },
+        {
+          "branch": "context"
+        },
+        {
+          "repair": true
+        }
+      ],
+      "reaction": [
+        "Nova points to the cast list. ‘On stage, “I” is the Voice Thief and “your” addresses the chorus—not the actor and the audience as real people.’",
+        null,
+        "Nova: ‘They saw an empty stand and an unsigned sentence. Their reading made sense with incomplete context; now we can revise it.’"
+      ],
+      "repair": "Track who is speaking to whom, and whether the words are a performed quotation or a real-world act.",
+      "repairs": [
+        "The script and prop record explain the line. The loose card hid that context.",
+        "Its scary style proves someone intended to threaten us.",
+        "The fear was understandable, but the full records support a rehearsal line and a separate rescue."
+      ],
+      "repairRoutes": [
+        {
+          "branch": "context"
+        },
+        {
+          "hint": "Nova: ‘Style alone doesn't establish who was speaking, to whom, or with what intention.’"
+        },
+        {
+          "branch": "context"
+        }
+      ],
+      "branches": {
+        "context": {
+          "line": "‘The records fit,’ Nova says. ‘A warning prompted a rescue. A cue card looked like a threat. A vague update and ambiguous directions hid the trail.’ How do we explain it to Leila?",
+          "replies": [
+            "You weren't wrong to be worried. We found the book and the context missing from the note.",
+            "You helped find the book. The note was a rehearsal line; here's the complete page."
+          ],
+          "outcomes": [
+            {
+              "reaction": "Leila exhales. ‘So I didn't send everyone after a thief?’ Nova: ‘You told us what you saw. That helped.’",
+              "consequence": "The cue card and rescue records explain the apparent theft without blaming a witness.",
+              "effect": {}
+            },
+            {
+              "reaction": "‘Oh. That changes everything.’ Nova lays the cue card beside the script, and the delivery slips beside the recovered book.",
+              "consequence": "The note is matched to its theatrical source; the rescue trail is complete.",
+              "effect": {}
+            }
+          ]
+        }
+      },
+      "next": "Nova puts the red book in your hands. ‘Before we return it to the square, show me how the five clues fit. Then you choose how to tell the town.’"
     }
   ]
 };

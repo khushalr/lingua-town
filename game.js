@@ -15,65 +15,172 @@
   const dialoguePanel = document.getElementById('dialoguePanel');
   const overlayBody = document.getElementById('overlayBody');
   const overlaySpeaker = document.getElementById('overlaySpeaker');
-  const STORAGE_KEY = 'lingua-town-v1-progress';
+  const STORAGE_KEY = 'lingua-town-stolen-voice-v2-progress';
 
   const characters = [
-    {
-      id:'mina', name:'Mina', role:'The Café Regular', subject:'Register & Audience', x:7, y:8,
-      icon:'☕', hair:'#26244d', skin:'#db9a70', outfit:'#df8099', accent:'#ffd0a7',
-      greeting:"You heard the Story Night rumour? I helped send invitations, but one friend thought I was pushing them away. Before we fix the town's message, can we fix ours?",
-      done:"The café is ready for Story Night. An invitation feels welcoming when it fits the person receiving it. Come by after the stories!",
-      badge:'THE SOCIAL CHAMELEON',
-      questions:[
-        {"title": "The invitation Leila misunderstood", "prompt": "Mina shows the original Story Night invitation. Leila read the cropped, official-sounding version and feels excluded. How can you reassure her?", "choices": ["You are hereby notified that your attendance remains permitted.", "Leila, you’re absolutely invited! Want to come with me?", "Leila! Story mission is ON ✨ Come with me!"], "discussion": "A friend may prefer a quiet or playful reassurance. The misunderstanding arose because the forwarded version lost both warmth and context.", "correct": 1, "concept": "REGISTER", "success": "The friend understands she is invited.", "hint": "The same event can sound welcoming or distant depending on audience and tone.", "explanation": "Register is language style suited to a situation. Here, a clipped formal notice changed how Leila understood her relationship to the event, although the event had not been cancelled."},
-        {"title": "Ask the organizers—without guessing", "prompt": "The original invitation proves the festival is happening, but the forwarded clip omits the start time. How should Mina ask the committee for confirmation?", "choices": ["Hi committee, I’m announcing that Story Night begins at seven.", "Dear committee, could you confirm the official start time and location?", "Hi organizers, can we check the programme before sharing a time?"], "discussion": "Both formal and conversational requests can fit the committee. The important difference is asking instead of making up a time.", "correct": 1, "concept": "AUDIENCE DESIGN", "success": "Mina requests a verified schedule instead of inventing facts.", "hint": "Change the audience, and ask for the information you still lack.", "explanation": "Audience design adapts wording to the recipient. It does not license unverified claims: when correcting a rumour, clarity and source checking matter as much as tone."}
-      ]
-    },
-    {
-      id:'theo', name:'Theo', role:'The Librarian', subject:'Conversation Rules', x:21, y:8,
-      icon:'📚', hair:'#69513d', skin:'#bc855f', outfit:'#77a6a6', accent:'#ffe1a0',
-      greeting:"I think I know where that scary 'Closes at 8' message came from. That's the LIBRARY, not the storytelling festival! Help me make the difference clear.",
-      done:"The library desk closes at eight; the festival is in the square. That missing detail made all the difference. Thanks for helping me clear it up!",
-      badge:'THE CONVERSATION KEEPER',
-      questions:[
-        {"title": "What actually closes at eight?", "prompt": "The forwarded message says “Closes at eight.” Theo finds the full notice: “LIBRARY SERVICE DESK CLOSES AT 8 PM.” Explain the missing subject to a worried festival guest.", "choices": ["There’s probably still time.", "The library service desk closes at eight; Story Night is separate.", "The sign refers to the library. Want directions to the square?"], "discussion": "Either a concise correction or a helpful follow-up may work, depending on the guest. Omitting the subject created the crisis.", "correct": 1, "concept": "GRICE’S MAXIMS", "success": "The visitor learns that eight is the library’s closing time.", "hint": "To answer the guest, identify exactly what the time refers to.", "explanation": "The cooperative principle includes relevance and appropriate informativeness. Removing “library service desk” from a sign deprived readers of the information needed to interpret “closes at eight.”"},
-        {"title": "The lanterns are lovely...", "prompt": "Asked “Is Story Night on?”, a witness said “Well, the lanterns look lovely.” Is that a confirmation, cancellation, or an indirect clue?", "choices": ["The reply may imply uncertainty; ask what the witness actually knows.", "The lanterns prove the festival is on.", "The witness may just like decorations; check whether they saw the programme."], "discussion": "The response may carry an implicature because it avoids a direct answer, but it does not establish the event status.", "correct": 0, "concept": "CONVERSATIONAL IMPLICATURE", "success": "Theo asks for source evidence rather than treating an implication as proof.", "hint": "Why did the witness praise lanterns instead of answering the status question?", "explanation": "An implicature is inferred beyond literal content and can be revised. A comment about festival lanterns does not entail that the event was or was not cancelled."}
-      ]
-    },
-    {
-      id:'prof', name:'Professor Lin', role:'The Linguist', subject:'Meaning & Context', x:6, y:11,
-      icon:'🎓', hair:'#53506d', skin:'#f1bd8d', outfit:'#7486ba', accent:'#faf0d0',
-      greeting:"Did you see the other half of the rumour—'Some students finished'? It was my classroom announcement! Let's explore what those words do and don't imply.",
-      done:"I can confirm the students finished their work. 'Some' never proved that others hadn't. Thanks for asking what the words actually allowed.",
-      badge:'THE MEANING DETECTIVE',
-      questions:[
-        {"title": "What does “some” actually prove?", "prompt": "A cropped class update says “Some students finished the Story Night posters.” People take this to mean unfinished posters forced a cancellation. What can the sentence establish?", "choices": ["Other students must be unfinished; postpone Story Night.", "“Some” can suggest “not all,” but it does not prove that; check.", "Ask whether everyone finished before drawing a conclusion."], "discussion": "An inference of “not all” is possible but defeasible. Lin can truthfully say “some” even when all students finished.", "correct": 1, "concept": "SCALAR IMPLICATURE", "success": "Lin confirms all the festival posters were completed.", "hint": "Ask what follows logically and what is only suggested by the word “some.”", "explanation": "The scalar implicature “some, not all” is defeasible. Lin confirms that all the posters were finished, so the cancellation was never supported by the class update."},
-        {"title": "Save the original poster", "prompt": "The unedited Story Night draft sits by an open window. Lin says “It’s getting breezy in here…” as a gust lifts the paper. What might Lin be indirectly asking?", "choices": ["Agree that the weather changed and do nothing.", "Offer to close the window so the original draft stays safe.", "Offer to move the draft to a sheltered table."], "discussion": "A comment can serve as an indirect request. Different helpful actions may satisfy the speaker’s actual goal.", "correct": 1, "concept": "INDIRECT SPEECH ACTS", "success": "You protect the festival’s original evidence.", "hint": "The draft matters to the mystery. What action does Lin hope you will take?", "explanation": "An indirect speech act uses a declarative sentence to accomplish another action, such as asking for help. The goal here is to preserve evidence, whether by closing the window or moving the paper."}
-      ]
-    },
-    {
-      id:'jules', name:'Jules', role:'The Market Seller', subject:'Ambiguity & Structure', x:18, y:10,
-      icon:'🍎', hair:'#382f54', skin:'#a96b4d', outfit:'#eeb15c', accent:'#a2ddb8',
-      greeting:"My signs for Story Night caused a second misunderstanding. Same words, different groupings! Could you help me make the market welcome everyone?",
-      done:"The market signs are clear again, and nobody gets left out by a poorly grouped phrase. Now the town's ready to welcome its guests.",
-      badge:'THE AMBIGUITY EXPLORER',
-      questions:[
-        {"title": "Who had the festival map?", "prompt": "A volunteer wrote “I guided the guests with the map.” Were the guests holding a map, or did the guide use one? Rearrange the phrase to show the intended reading.", "choices": ["The guests must have been holding a map.", "Either the guide used a map or the guests had one.", "The sentence must be ungrammatical."], "discussion": "Moving the prepositional phrase toward the front strongly favours the reading where the guide used the map.", "correct": 1, "concept": "STRUCTURAL AMBIGUITY", "success": "You clarify that the guide had the map and visitors still needed directions.", "hint": "Think of where “with the map” attaches.", "explanation": "“With the map” can modify the action of guiding or describe the guests. The ambiguity led Jules to assume visitors already had maps, leaving them lost and more likely to believe the festival was cancelled."},
-        {"title": "Who can perform at Story Night?", "prompt": "Jules put up “Young storytellers and musicians welcome.” Visitors read the age requirement differently. Use word tiles to make the intended all-ages invitation unambiguous.", "choices": ["Only young storytellers and musicians are welcome.", "The word “young” can attach differently across the two groups.", "The wording explicitly welcomes performers of any age."], "discussion": "“Young” could scope over both coordinated groups or only the storytellers. An all-ages statement removes both the ambiguity and the mistaken exclusion.", "correct": 1, "concept": "COORDINATION AMBIGUITY", "success": "The market sign explicitly welcomes storytellers and musicians of all ages.", "hint": "Make age eligibility explicit for both types of performer.", "explanation": "A modifier like “young” can take different scope over a coordination. “Storytellers and musicians of all ages welcome tonight” removes the scope uncertainty and matches the festival’s actual inclusive policy."}
-      ]
-    },
-    {
-      id:'nova', name:'Dr. Nova', role:'The AI Researcher', subject:'Writing & Perception', x:21, y:11,
-      icon:'🤖', hair:'#2e4167', skin:'#cf9b7b', outfit:'#8a80d7', accent:'#b9eeeb',
-      greeting:"You found the clues. Now we know the festival wasn't cancelled! But people are still confused. Help me decide how to tell the whole town—then we can investigate writing impressions.",
-      done:"We recovered the missing context and reopened the Night of Voices. Remember: a style can shape an impression without revealing its writer.",
-      badge:'MASTER OF CONTEXT',
-      questions:[
-        {"title": "Send a truthful first correction", "prompt": "The town needs a message while Dr. Nova checks the signed programme. What wording can reassure people without inventing a festival start time?", "choices": ["Story Night is happening.", "Story Night is ON tonight at the square! Time confirmation coming soon.", "Story Night is on at the town square. We’ll confirm the start time shortly."], "discussion": "All three are defensible in some contexts. A short message may prompt a request for more detail; none proves the writer is human or AI.", "concept": "NATURALNESS ≠ AUTHORSHIP", "success": "You post a clear, evidence-based update for worried neighbours.", "hint": "Use only facts confirmed by the previous witnesses.", "explanation": "Naturalness, preference, and authorship are different questions. A warm and a plain correction can both be appropriate if they accurately convey what the investigation established."},
-        {"title": "Does a polished notice mean it is fake?", "prompt": "A neighbour says the festival correction is “too polished to be human-written,” so it must be an AI fake. Can that justify calling off Story Night?", "choices": ["Yes; polished style means the notice is fake.", "Yes; casual style would prove the notice is genuine.", "No; verify the original invitation and signed programme, not the writing style."], "correct": 2, "concept": "CRITICAL LANGUAGE AWARENESS", "success": "Nova separates stylistic impressions from reliable evidence of the festival schedule.", "hint": "Could humans and language models both produce polished or casual announcements?", "explanation": "People can perceive wording as AI-like without being able to establish its source. The reliable festival facts come from verified original documents, not a stylistic hunch."}
-      ]
-    }
-  ];
+  {
+    "id": "mina",
+    "name": "Mina",
+    "role": "The Café Regular",
+    "subject": "Register & Audience",
+    "icon": "☕",
+    "hair": "#26244d",
+    "skin": "#db9a70",
+    "outfit": "#df8099",
+    "accent": "#ffd0a7",
+    "badge": "THE SOCIAL CHAMELEON",
+    "x": 7,
+    "y": 8,
+    "greeting": "Leila saw the missing book leave the square. Everyone is asking her to name a thief. I need her account, not another accusation.",
+    "done": "Leila gave us a route and a description. Listening got us further than treating her like a suspect.",
+    "questions": [
+      {
+        "title": "Interview a friend, not a suspect",
+        "concept": "REGISTER",
+        "prompt": "A nervous friend saw someone carrying the missing book. Choose how to invite her account.",
+        "explanation": "Register is variation in language associated with context and use. Formal questioning can create distance in a friendship; shared humour or quiet reassurance may work if the listener welcomes it. A listener’s response lets you adjust.",
+        "discussion": "Quiet and playful approaches both work when they respect Leila’s response."
+      },
+      {
+        "title": "Get the object right",
+        "concept": "AUDIENCE DESIGN",
+        "prompt": "Ask the organizers to compare a witness description with their inventory.",
+        "explanation": "Audience design means adapting language to the recipient and their needs. The committee needs identifying details and an explicit question. Neither a formal nor a friendly register makes an unsupported accusation true.",
+        "discussion": "Both a formal request and a friendly question can supply the same useful details."
+      }
+    ]
+  },
+  {
+    "id": "theo",
+    "name": "Theo",
+    "role": "The Librarian",
+    "subject": "Conversation Rules",
+    "icon": "📚",
+    "hair": "#69513d",
+    "skin": "#bc855f",
+    "outfit": "#77a6a6",
+    "accent": "#ffe1a0",
+    "badge": "THE CONVERSATION KEEPER",
+    "x": 21,
+    "y": 8,
+    "greeting": "I said, “I wouldn’t leave that book there.” Someone heard a threat. Come look at the leak I was pointing to.",
+    "done": "The leak explains my warning. Lin’s rescue slip and the lantern sighting gave us the next part of the route.",
+    "questions": [
+      {
+        "title": "A warning, or an order to disappear?",
+        "concept": "COOPERATION & INDIRECT MEANING",
+        "prompt": "Theo said “I wouldn’t leave that book there” while pointing at a leak. Interpret it and check his intention.",
+        "explanation": "The cooperative principle invites listeners to seek relevant meaning in context. A declarative sentence about a hypothetical action can function as an indirect warning or request. The leak supports that interpretation; Theo confirms it.",
+        "discussion": "The literal words alone do not say the book was stolen or the festival cancelled."
+      },
+      {
+        "title": "A lantern is not a name",
+        "concept": "CONVERSATIONAL IMPLICATURE",
+        "prompt": "Asked who carried the book, a witness reports a lantern moving toward the market.",
+        "explanation": "An answer that supplies a direction instead of an identity may imply that the speaker cannot identify the person. This inference is defeasible: a follow-up could reveal another reason for the indirect answer. Here the witness confirms they saw no face.",
+        "discussion": "Record the observed bundle and route separately from an inferred identity."
+      }
+    ]
+  },
+  {
+    "id": "prof",
+    "name": "Professor Lin",
+    "role": "The Linguist",
+    "subject": "Meaning & Context",
+    "icon": "🎓",
+    "hair": "#53506d",
+    "skin": "#f1bd8d",
+    "outfit": "#7486ba",
+    "accent": "#faf0d0",
+    "badge": "THE MEANING DETECTIVE",
+    "x": 6,
+    "y": 11,
+    "greeting": "You found my first rescue update? Let’s compare what it said with what people thought it meant. Then we can follow the delivery slip.",
+    "done": "All forty pages were rescued. “Some” was an early update, not proof that the remaining pages were lost.",
+    "questions": [
+      {
+        "title": "How many stories survived?",
+        "concept": "SCALAR IMPLICATURE",
+        "prompt": "Lin wrote “Some pages were rescued.” Does that require some pages to be lost?",
+        "explanation": "In the standard logical reading, “some” means at least one and is compatible with all. It often conversationally suggests “not all”. That scalar implicature can be cancelled: “Some—in fact, all forty—were rescued.” The final tally, not the weaker statement alone, establishes the total.",
+        "discussion": "The early statement was true but less informative than the completed tally."
+      },
+      {
+        "title": "Keep the trail from blowing away",
+        "concept": "INDIRECT SPEECH ACTS",
+        "prompt": "The delivery slip lifts in a gust. Lin says “That paper won’t stay there for long…”",
+        "explanation": "An indirect speech act accomplishes something beyond the literal sentence type. Lin’s prediction functions as a request to secure the slip. Closing the window or moving the paper can both satisfy the goal; checking with Lin avoids assuming a single required action.",
+        "discussion": "Different actions can successfully respond to the same indirect request."
+      }
+    ]
+  },
+  {
+    "id": "jules",
+    "name": "Jules",
+    "role": "The Market Seller",
+    "subject": "Ambiguity & Structure",
+    "icon": "🍎",
+    "hair": "#382f54",
+    "skin": "#a96b4d",
+    "outfit": "#eeb15c",
+    "accent": "#a2ddb8",
+    "badge": "THE AMBIGUITY EXPLORER",
+    "x": 18,
+    "y": 10,
+    "greeting": "I followed the courier with the lantern. Wait—you think I had the lantern? That would send you after the wrong person. Let’s untangle my records.",
+    "done": "The courier carried the lantern. Crate B held old scripts and new masks; I sent that crate, with the blue bundle, to Nova.",
+    "questions": [
+      {
+        "title": "Who carried the lantern?",
+        "concept": "STRUCTURAL AMBIGUITY",
+        "prompt": "“I followed the courier with the lantern” permits more than one attachment. Jules confirms the courier carried it. Rewrite that reading explicitly.",
+        "explanation": "The prepositional phrase “with the lantern” can attach to the verb phrase (I used a lantern to follow) or to the noun phrase (the courier had it). “I followed the courier who carried the lantern” selects the second interpretation. Jules’s testimony, not word order alone, establishes which event happened.",
+        "discussion": "A clearer sentence reports the confirmed reading; it does not discover the facts by itself.",
+        "success": "The relative clause makes the courier the lantern carrier."
+      },
+      {
+        "title": "Which crate holds the book?",
+        "concept": "COORDINATION & MODIFIER SCOPE",
+        "prompt": "The label says “old scripts and masks”. Crate A contains old scripts and old masks; Crate B contains old scripts and new masks. Jules confirms the masks were new.",
+        "explanation": "In “old scripts and masks”, “old” can modify scripts alone or the coordinated scripts-and-masks group. Both crates fit a possible reading of the label. The independent detail that the masks are new identifies Crate B; explicitly labelling each group prevents another wrong delivery.",
+        "discussion": "Use both the language analysis and the packing record, then give Nova an unambiguous label.",
+        "success": "Old scripts and new masks identify Crate B. Jules sent it to Nova with the blue-wrapped book inside."
+      }
+    ]
+  },
+  {
+    "id": "nova",
+    "name": "Dr. Nova",
+    "role": "The AI Researcher",
+    "subject": "Writing & Perception",
+    "icon": "🤖",
+    "hair": "#2e4167",
+    "skin": "#cf9b7b",
+    "outfit": "#8a80d7",
+    "accent": "#b9eeeb",
+    "badge": "MASTER OF CONTEXT",
+    "x": 21,
+    "y": 11,
+    "greeting": "Crate B arrived from Jules. Before we announce anything, help me check what’s inside—and where that alarming note came from.",
+    "done": "The book is back and the note has its missing context. You can revisit the case or compare how different messages sound.",
+    "questions": [
+      {
+        "title": "Find the book, then trust the message",
+        "concept": "NATURALNESS ≠ AUTHORSHIP",
+        "prompt": "Two messages claim the stories are safe. Authenticate the recovered book using inventory and delivery records.",
+        "explanation": "Naturalness in context, personal preference, and perceived AI authorship are distinct judgments. Neither casual nor formal style establishes who wrote a message or whether its claim is true. Physical identifiers, the page tally, and matching transfer records support this recovery.",
+        "discussion": "The optional comparison desk lets you make the three judgments separately, without marking a stylistic preference wrong."
+      },
+      {
+        "title": "Who is “your” in the note?",
+        "concept": "DEIXIS & CONTEXT",
+        "prompt": "The full script assigns “Tonight, your voice is mine” to the Voice Thief addressing a fictional chorus. Compare that with the unsigned cue card.",
+        "explanation": "Deictic expressions such as “I” and “your” are interpreted relative to a speaking context. A performance supplies fictional speaker and addressee roles. When the cue card lost its speaker label and scene, readers supplied a different context and interpreted a threat. The prop record and script support the theatrical reading.",
+        "discussion": "Feeling threatened was understandable; the new context lets listeners revise that interpretation."
+      }
+    ]
+  }
+];
 
   // Gameplay narrative is separate from the no-storage comparison model.
   const stories=window.LinguaConversations;
@@ -159,26 +266,116 @@
   function completedCount(){return characters.filter(completed).length;}
   function announce(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('visible'),2600);}
   function numberEmoji(){return ['①','②','③'];}
-  // Five complementary clues reconstruct the same town-wide rumour.
+  // Each clue adds a necessary link to the same missing-book investigation.
   const storyClues = [
-    {id:'mina',title:'PIECE 1 · Original invitation',short:'The festival is ON',text:'Mina kept the original invitation: Night of Voices is happening TONIGHT in the TOWN SQUARE. The cropped official-looking version made Leila think she was not invited.'},
-    {id:'theo',title:'PIECE 2 · Wrong closing time',short:'Eight belongs to the library desk',text:'Theo finds the complete sign: LIBRARY SERVICE DESK CLOSES AT 8 PM. That time does not describe Story Night in the town square.'},
-    {id:'prof',title:'PIECE 3 · Misleading “some”',short:'No cancellation follows from “some”',text:'Lin wrote “Some students finished the posters.” “Some” often suggests “not all”, but it does not logically prove posters are unfinished or an event is cancelled.'},
-    {id:'jules',title:'PIECE 4 · Misread directions and sign',short:'Maps are needed; all ages welcome',text:'A volunteer used a map to guide guests; they were not all carrying their own. Jules also confirms that Story Night welcomes storytellers and musicians OF ALL AGES. The two ambiguous phrases led to wrong directions and mistaken exclusion.'},
-    {id:'nova',title:'PIECE 5 · Verified schedule',short:'Stories begin at 7:30 PM',text:'Dr. Nova checks the original festival programme: TOWN SQUARE OPENS AT 7:00 PM; STORIES BEGIN AT 7:30 PM. This source predates the confusing forwarded message.'}
-  ];
+  {
+    "id": "mina",
+    "title": "PIECE 1 · A witness, not a suspect",
+    "short": "Red book → library",
+    "text": "Leila saw a red book with a gold star, wrapped in blue cloth, carried toward the library. The committee confirms the description matches. She did not identify the carrier or witness a theft."
+  },
+  {
+    "id": "theo",
+    "title": "PIECE 2 · The warning under the leak",
+    "short": "A rescue, then a lantern",
+    "text": "Theo’s “I wouldn’t leave that book there” warned about a leak. Lin arranged a rescue. A witness saw blue cloth and a lantern moving toward the market, but no face."
+  },
+  {
+    "id": "prof",
+    "title": "PIECE 3 · Forty pages accounted for",
+    "short": "“Some”—in fact, all forty",
+    "text": "Lin’s final tally records all forty pages rescued. “Some” suggested a possible “not all”; it did not entail lost pages. Jules’s delivery slip reads “I followed the courier with the lantern.”"
+  },
+  {
+    "id": "jules",
+    "title": "PIECE 4 · Follow Crate B",
+    "short": "Courier’s lantern · new masks",
+    "text": "Jules confirms the courier carried the lantern. The blue bundle went in Crate B with old scripts and NEW masks. The ambiguous label “old scripts and masks” also fit Crate A. Jules sent Crate B to Nova."
+  },
+  {
+    "id": "nova",
+    "title": "PIECE 5 · The voice behind the note",
+    "short": "A cue card, not a confession",
+    "text": "Crate B contains the matching book and all forty pages. The full rehearsal script assigns “Tonight, your voice is mine” to the fictional Voice Thief. The prop record places that cue card at the stand before the rain and rescue."
+  }
+];
   const caseQuestions = [
-    {id:'mina',question:'PIECE 1 · What did the original invitation actually say?',options:['Story Night is still on tonight in the town square.','Only Mina’s friends may attend the festival.','The festival moved into the café.'],correct:0,reason:'The forwarded message lost its context and sounded distant, but the original invitation explicitly confirms the event.'},
-    {id:'theo',question:'PIECE 2 · What does “closes at eight” describe?',options:['The entire town closes at 8 PM.','The library service desk closes at 8 PM, not Story Night.','The festival must finish before the library desk does.'],correct:1,reason:'The cropped notice omitted its subject. Eight is the library service-desk closing time, not a festival deadline.'},
-    {id:'prof',question:'PIECE 3 · What can you conclude from “some students finished the posters”?',options:['The other students definitely failed to finish.','The statement alone cannot prove that the other students did not finish.','All posters must have been cancelled.'],correct:1,reason:'The “not all” inference is a defeasible implicature. It is not logically entailed by “some”.'},
-    {id:'jules',question:'PIECE 4 · What did Jules’s original words hide?',options:['The guests all carried maps, and young people alone could perform.','The town square was already closed to older visitors.','The guide used a map, and storytellers and musicians of all ages are welcome.'],correct:2,reason:'“With the map” had more than one attachment, and “young storytellers and musicians” had a scope ambiguity. Neither meant the event had been cancelled or older performers were excluded.'},
-    {id:'nova',question:'PIECE 5 · What time does the verified festival programme give?',options:['The stories end when the library closes at eight.','Town square opens at 7 PM; storytelling starts at 7:30 PM.','The festival is postponed until tomorrow.'],correct:1,reason:'The unedited programme gives a reliable source for the actual festival schedule.'}
-  ];
+  {
+    "id": "mina",
+    "question": "What could Leila actually establish?",
+    "options": [
+      "The matching book went toward the library; the carrier and their intentions were unknown.",
+      "The carrier stole the book because they left the square.",
+      "A red cover alone proved it was the town’s book."
+    ],
+    "correct": 0,
+    "reason": "The inventory corroborates the description. Neither carrying the book nor leaving the square establishes theft."
+  },
+  {
+    "id": "theo",
+    "question": "Why did the book leave the stand?",
+    "options": [
+      "Theo ordered the storytellers to leave town.",
+      "Theo’s warning about a leak prompted a rescue arranged by Lin.",
+      "A lantern sighting proves someone took it without permission."
+    ],
+    "correct": 1,
+    "reason": "Theo confirms his intended warning; the rescue slip supports the move. The lantern gives a route, not a motive."
+  },
+  {
+    "id": "prof",
+    "question": "Did “some pages were rescued” prove stories were lost?",
+    "options": [
+      "Yes. “Some” logically excludes “all”.",
+      "No. It permits all; the final tally confirms all forty survived.",
+      "No. “Some” by itself guarantees every page survived."
+    ],
+    "correct": 1,
+    "reason": "“Not all” is a cancellable scalar implicature. Only the complete tally gives the final total."
+  },
+  {
+    "id": "jules",
+    "question": "Which route does the clarified evidence support?",
+    "options": [
+      "Follow Jules’s lantern to Crate A, with old masks.",
+      "Search both crates forever; language cannot be clarified.",
+      "Follow the lantern-carrying courier to Crate B: old scripts, new masks, then Nova."
+    ],
+    "correct": 2,
+    "reason": "The two ambiguous phrases permit alternatives; Jules’s testimony and packing record select the readings that identify Crate B."
+  },
+  {
+    "id": "nova",
+    "question": "What best explains the note beside the empty stand?",
+    "options": [
+      "Its threatening style proves a real thief wrote it.",
+      "The script and prop record identify a rehearsal cue card left before the separate rescue.",
+      "The casual recovery message proves nobody did anything wrong."
+    ],
+    "correct": 1,
+    "reason": "The script supplies the fictional speaker and addressee; the prop and delivery records establish the sequence. Style alone cannot do either."
+  }
+];
   const finalAnnouncements = [
-    {title:'Clear and detailed',message:'Story Night is ON! The town square opens at 7 PM and stories begin at 7:30. The library desk closes at 8, but the festival is separate. Everyone is welcome.',ending:'The missing pieces finally fit. Theo pins the correct hours beside the library door. Neighbours who worried about the eight o’clock deadline head towards the square. Your detailed note helps readers find the practical information they needed.',tone:'clarity'},
-    {title:'Warm and inviting',message:'Story Night is still happening 💛 Come to the town square from 7! Stories start at 7:30. We’d love to see you there.',ending:'Mina reads the announcement aloud and grins. The message feels like an invitation, not an order. A few people still ask about the library closing time, and Theo cheerfully explains. Warmth brought people together; a follow-up supplies the extra detail.',tone:'warmth'},
-    {title:'Formal town notice',message:'NOTICE: The Night of Voices will take place in the town square. Entry opens at 7:00 PM, and storytelling begins at 7:30 PM. All are welcome.',ending:'Professor Lin posts your notice on the community board. Its formal register fits an official announcement and leaves the schedule unambiguous. Mina adds a handwritten welcome beside it, adapting the message for people passing the café.',tone:'official'}
-  ];
+  {
+    "title": "Explain the evidence",
+    "message": "The storybook is back—all forty pages. It was moved out of a leak. The note was a rehearsal cue card, not a message from a thief. Meet us in the square for Story Night.",
+    "ending": "Theo lays the rescue slips beside the cue card. People can follow the route you reconstructed. Leila points out the gold star on the cover. This time, nobody adds a name she never gave.",
+    "tone": "clarity"
+  },
+  {
+    "title": "Invite everyone back",
+    "message": "We found our stories 💛 Every page is safe. The scary note belonged to the play, and the book had been moved out of the rain. Come back to the square—we have a night to begin.",
+    "ending": "Mina waves Leila over to a seat. Your invitation gives the crowd somewhere to go and something to look forward to. When someone asks how you know, Nova shows them the book and the full script.",
+    "tone": "warmth"
+  },
+  {
+    "title": "Post an official update",
+    "message": "STORY NIGHT UPDATE: The complete storybook has been recovered following its relocation due to a leak. The apparent threat was a theatrical cue card. The event will proceed in the town square.",
+    "ending": "Lin posts your update beside the recovered book. The committee appreciates a clear public record; Mina adds a personal invitation at the café. Different audiences, the same verified account.",
+    "tone": "official"
+  }
+];
   function openCaseboard(){
     if(!dialogue||!storyClues.every(c=>completed(characters.find(n=>n.id===c.id))))return;
     dialogue.mode='caseboard';dialogue.caseStep=0;dialogue.caseHint='';drawDialogue();
@@ -186,7 +383,7 @@
   function solveCase(i){
     if(dialogue?.mode!=='caseboard')return;
     const item=caseQuestions[dialogue.caseStep];if(!item)return;
-    if(i!==item.correct){dialogue.caseHint='Look at the recovered '+storyClues[dialogue.caseStep].title.toLowerCase()+'. Which meaning does that evidence support?';drawDialogue();return;}
+    if(i!==item.correct){dialogue.caseHint=item.reason+' Check the matching clue, then try again.';drawDialogue();return;}
     dialogue.caseHint='';dialogue.caseStep++;
     if(dialogue.caseStep>=caseQuestions.length){
       saved.world.caseSolved=true;persist();renderJournal();dialogue.mode='victory';
@@ -196,7 +393,7 @@
   }
   function storyChapter(){
     const clues=storyClues.filter(c=>saved.progress[c.id]>=2).length;
-    return saved.world.storyEnding?'EPILOGUE · A TOWN TOGETHER':clues===5?'CHAPTER III · THE FINAL MESSAGE':clues>=2?'CHAPTER II · THE MISSING CONTEXT':'CHAPTER I · THE RUMOUR';
+    return saved.world.storyEnding?'EPILOGUE · A TOWN TOGETHER':clues===5?'CHAPTER III · THE VOICE BEHIND THE NOTE':clues>=2?'CHAPTER II · FOLLOW THE LANTERN':'CHAPTER I · THE EMPTY STAND';
   }
 
   function renderJournal(){
@@ -208,13 +405,13 @@
     const clues=storyClues.filter(c=>completed(characters.find(n=>n.id===c.id)));
     const chapter=storyChapter();
     document.getElementById('storyAct').textContent=chapter;
-    document.getElementById('storyTitle').textContent=saved.world.storyEnding?'The festival is back!':clues.length===5?'One announcement left':'A rumour in pieces';
-    document.getElementById('storySummary').textContent=saved.world.storyEnding?'The town found its voice. Revisit your friends or try another announcement.':clues.length===5?'All five fragments are recovered. Reconstruct the truth with Dr. Nova.':`A rumour divided the town. You hold ${clues.length} of 5 pieces of the original message.`;
+    document.getElementById('storyTitle').textContent=saved.world.storyEnding?'The stories are home.':clues.length===5?'The book is found. Explain the note.':'The Stolen Voice';
+    document.getElementById('storySummary').textContent=saved.world.storyEnding?'All forty stories are back. Revisit your friends or try another announcement.':clues.length===5?'The book and full script are recovered. Reconstruct what happened with Nova.':`A missing book. A threatening note. You hold ${clues.length} of 5 clues to what happened.`;
     document.getElementById('objectiveText').textContent=saved.world.storyEnding?'The festival is saved. Return to Nova to try another ending.':saved.world.caseSolved?'The puzzle is solved! Choose your town announcement with Nova.':clues.length===5?'Visit Dr. Nova. Fit all five pieces together on the caseboard.':`NEXT LEAD: ${nextLead().name} · ${5-clues.length} more puzzle ${5-clues.length===1?'piece':'pieces'} to find.`;
     const clueList=document.getElementById('clueList');
     clueList.replaceChildren(...storyClues.map(c=>h('li',`${clues.includes(c)?'✦':'◇'} ${c.title}${clues.includes(c)?' — '+c.text:' — not yet found'}`,clues.includes(c)?'found':'missing')));
     document.getElementById('memoryList').replaceChildren(...saved.memories.map(m=>h('li',m)));
-    document.querySelector('.location-title').textContent=`THE NIGHT OF VOICES ✦ ${chapter}`;
+    document.querySelector('.location-title').textContent=`THE STOLEN VOICE ✦ ${chapter}`;
 
     for(const npc of characters){
       const button=document.createElement('button');button.type='button';
@@ -307,8 +504,8 @@
       heading(npc.name+' · '+npc.role,'Hey there, explorer!');
       paragraph(npc.greeting);
       paragraph(`STORY · ${storyChapter()} · ${npc.subject}`,'dialogue-mini');
-      if(npc.id!=='nova' && saved.progress[npc.id]===0)paragraph('The rumour is missing context. Your choices here will help reveal another piece of the truth.','story-hint');
-      if(npc.id==='nova')paragraph('The pieces say different things: “some” was not a cancellation, and eight was the library closing time. Now the town needs one clear message.','story-hint');
+      if(npc.id!=='nova' && saved.progress[npc.id]===0)paragraph('Recover the book. Find out who the note was speaking to. Each witness knows a different part.','story-hint');
+      if(npc.id==='nova')paragraph('The trail ends at Crate B. Check the book first; the note still needs an explanation.','story-hint');
       paragraph(`Conversation ${saved.progress[npc.id]+1} of ${npc.questions.length}`,'dialogue-mini');
       action('LET’S TALK',()=>{dialogue.mode='question';drawDialogue();});
       if(npc.id==='nova')action('BLIND A/B DESK · OPTIONAL',openComparison,true);
@@ -358,7 +555,7 @@
           paragraph(`${npc.name}: “You have my piece. ${next.name} knows what happened next—take this clue to them!”`,'spoken-line');
           action(`FOLLOW THE LEAD → ${next.name.toUpperCase()}`,()=>{closeDialogue();walkToNPC(next);});
         }
-        if(storyClues.every(c=>saved.progress[c.id]>=2))paragraph('All five clues are collected. Reconstruct the rumour at Dr. Nova’s caseboard.','story-hint');
+        if(storyClues.every(c=>saved.progress[c.id]>=2))paragraph('All five clues are collected. Reconstruct the disappearance at Nova’s caseboard.','story-hint');
       }
       if(completed(npc))action(npc.id==='nova'?'THE FINAL SCENE':'KEEP THE CLUE & EXPLORE',advance);
       else action('CONTINUE CONVERSATION',advance);
@@ -367,10 +564,10 @@
     if(phase==='caseboard'){
       if(dialogue.caseStep>=caseQuestions.length){dialogue.mode='victory';drawDialogue();return;}
       const q=caseQuestions[dialogue.caseStep];
-      heading('DR. NOVA · RECONSTRUCTION DESK',`Assemble the message · ${dialogue.caseStep+1}/${caseQuestions.length}`);
-      paragraph('Five witnesses, five scraps of context. To clear the rumour, identify what each piece actually tells us.','story-hint');
+      heading('DR. NOVA · RECONSTRUCTION DESK',`Reconstruct the disappearance · ${dialogue.caseStep+1}/${caseQuestions.length}`);
+      paragraph('Trace the book from the stand to the lab, then explain the note. Use the clues in your Field Guide if you need them.','story-hint');
       const found=storyClues[dialogue.caseStep];
-      paragraph(`✦ ${found.title}: ${found.text}`,'story-clue-reveal');
+      paragraph(`✦ ${found.title}`,'story-clue-reveal');
       paragraph(q.question,'spoken-line');
       if(dialogue.caseHint)paragraph(dialogue.caseHint,'feedback wrong');
       choiceButtons(q.options,solveCase);
@@ -380,9 +577,9 @@
     }
     if(phase==='victory'){
       if(!saved.world.caseSolved){openCaseboard();return;}
-      heading('CHAPTER III · THE FINAL MESSAGE','The Night of Voices is not cancelled.');
-      paragraph("Dr. Nova spreads all five clues over the desk. ‘The scraps came from different sources. Mina's invitation confirms the festival, the eight o'clock sign belongs to the library, ‘some’ never proved posters were unfinished, and Jules's guests needed clearer signs. My signed programme confirms the time.’",'spoken-line');
-      paragraph('Outside, the square is almost empty. People are waiting for a reliable announcement. How should the town invite them back?','story-hint');
+      heading('CHAPTER III · THE VOICE BEHIND THE NOTE','No stolen voices. Forty rescued stories.');
+      paragraph("Nova sets the red book beside the cue card. ‘Rehearsal left a villain’s line on the stand. Then rain hit. Theo warned Lin; Lin sent the rescued book through Jules to my dry lab. The card and the empty stand looked like one event. Our records show two.’",'spoken-line');
+      paragraph('You carry the book back to the square. Leila is waiting beside the empty stand. What will you tell everyone?','story-hint');
       choiceButtons(finalAnnouncements.map(c=>`${c.title}: ${c.message}`),chooseEnding);
       paragraph('All three messages are viable. Style changes how different audiences may receive the news; there is no single “most human” answer.','dialogue-mini');
       action('BLIND A/B DESK · OPTIONAL',openComparison,true);
@@ -397,12 +594,12 @@
       const touches=[];
       if(saved.world.cafeStyle==='quiet')touches.push('Mina saves a quiet café table for guests who want a moment away from the crowd.');
       if(saved.world.cafeStyle==='playful')touches.push('Mina raises her cup for a pre-festival toast with Leila.');
-      if(saved.world.classroomComfort==='sunny')touches.push('Professor Lin displays the rescued original festival poster at the sunny table.');
-      if(saved.world.classroomComfort==='window')touches.push('Professor Lin pins the rescued original notice beside the secured window.');
+      if(saved.world.classroomComfort==='sunny')touches.push('Professor Lin files the rescued delivery slip on the sheltered table.');
+      if(saved.world.classroomComfort==='window')touches.push('Professor Lin pins the delivery slip beside the secured window.');
       if(saved.world.libraryHelp==='map')touches.push('Theo posts an easy-to-follow map so nobody misses Story Night.');
       if(saved.world.libraryHelp==='escort')touches.push('Theo walks late guests from the library to the square.');
       if(touches.length)paragraph(touches.join(' '));
-      paragraph('The mystery was never about finding a guilty author. It was about listening, checking what words implied, and restoring the context people needed. Your conversations changed how this night unfolded.','feedback');
+      paragraph('The actor playing the Voice Thief steps up: ‘Tonight, your voice is mine.’ This time the chorus answers: ‘Then we’ll tell our stories together.’ Leila laughs. Same words. Now everyone knows the scene.','feedback');
       action('TRY ANOTHER ANNOUNCEMENT',()=>{dialogue.mode='victory';drawDialogue();});
       action('EXPLORE AFTER THE FESTIVAL',closeDialogue,true);
       action('BLIND A/B DESK · OPTIONAL',openComparison,true);
@@ -502,12 +699,12 @@
       } else {dialogue.mode='question';delete dialogue.tiles;drawDialogue();}
     }else if(['done','locked','victory','epilogue','caseboard'].includes(dialogue.mode))closeDialogue();
   }
-  // Evidence puzzles: each rearrangement resolves a real source of the rumour.
+  // Resolve two ambiguous records to identify the courier and the destination crate.
   function drawPuzzle(){
     const stage=dialogue.practice?0:saved.progress.jules, first=stage===0;
-    if(!dialogue.tiles)dialogue.tiles=first?['I guided','the guests','with the map']:['welcome','and musicians','of all ages','storytellers','tonight'];
-    heading('JULES · EVIDENCE WORKBENCH',first?'Who used the festival map?':'Who is welcome at Story Night?');
-    paragraph(first?"Jules heard: ‘I guided the guests with the map.’ He thought the GUESTS already had maps, so he stopped offering directions. But the volunteer used the map to GUIDE them. Front the phrase to favour the intended reading.":"Jules’s sign read: ‘Young storytellers and musicians welcome.’ Did ‘young’ describe both groups or just storytellers? His guest list confirms everyone is welcome. Rearrange these new sign tiles to say that clearly.");
+    if(!dialogue.tiles)dialogue.tiles=first?['carried the lantern','I followed','who','the courier']:['new masks','share the crate','and','old scripts'];
+    heading('JULES · EVIDENCE WORKBENCH',first?'Who carried the lantern?':'Which crate should Nova open?');
+    paragraph(first?"Jules wrote: ‘I followed the courier with the lantern.’ It could mean Jules used the lantern, or the courier carried it. Jules confirms: ‘The courier had it. I followed their light.’ Build a sentence with ‘who’ that makes the carrier explicit.":"The delivery label says ‘old scripts and masks’. Crate A has old scripts + old masks. Crate B has old scripts + new masks. Jules checks his packing record: ‘The masks were NEW. I put the blue bundle in that crate and sent it to Nova.’ Rewrite the label to identify it.");
     paragraph('Drag a tile, tap two tiles to swap, or focus a tile and press Alt + ← / →.','dialogue-mini');
     const tray=h('div',undefined,'word-tray');tray.setAttribute('aria-label','Evidence phrase tiles');
     dialogue.tiles.forEach((word,i)=>{
@@ -520,14 +717,14 @@
       tray.append(tile);
     });dialogueContent.append(tray);
     const sentence=dialogue.tiles.join(' ');
-    const solved=first?sentence==='with the map I guided the guests':sentence==='storytellers and musicians of all ages welcome tonight';
-    const reading=first?(solved?'The guide used a map to direct guests. Visitors were not all carrying their own maps.':sentence==='I guided the guests with the map'?'Ambiguous: the guide might use the map, or the guests might be the ones holding it.':'Check that “with the map” modifies the guiding action.'):(solved?'Storytellers AND musicians of every age are invited. The ambiguous “young” is gone.':'The goal is to name both groups, then explicitly say “of all ages” and “welcome tonight”.');
+    const solved=first?sentence==='I followed the courier who carried the lantern':['old scripts and new masks share the crate','new masks and old scripts share the crate'].includes(sentence);
+    const reading=first?(solved?'The courier carried the lantern. Follow that person’s route to Jules’s stall.':'Use “who” directly after the person it describes; finish with what that person carried.'):(solved?'Crate B: old scripts + NEW masks. Nova has this crate and the blue bundle.':'Both crates fit a possible reading of “old scripts and masks”. Specify the age of each group, then say they share the crate.');
     paragraph('INTERPRETATION · '+reading,'meaning-preview');
     if(dialogue.puzzleHint)paragraph(dialogue.puzzleHint,'feedback wrong');
     action('SHOW JULES',()=>{
-      if(solved&&dialogue.practice){announce('Festival evidence clarified! Your clues remain collected.');closeDialogue();return;}
-      if(solved){const q=characters[3].questions[stage];finishExchange(q.success,first?'The map belonged to the guide, so visitors still need a route to the square.':'The corrected sign welcomes storytellers and musicians of all ages.');}
-      else {dialogue.puzzleHint='Jules: “We need a clear, truthful festival clue—not just a different word order. Try again!”';drawDialogue();}
+      if(solved&&dialogue.practice){announce('Delivery evidence clarified! Your clues remain collected.');closeDialogue();return;}
+      if(solved){const q=characters[3].questions[stage];finishExchange(q.success,first?'Jules followed the lantern-carrying courier to the covered stall.':'Jules sent Crate B—old scripts, new masks, blue bundle—to Nova. Follow that delivery.');}
+      else {dialogue.puzzleHint='Jules: “Match the confirmed details, and keep the sentence grammatical. You can swap any two tiles.”';drawDialogue();}
     });action('PAUSE PUZZLE',closeDialogue,true);
   }
   function focusTile(i){dialogueContent.querySelectorAll('.word-tile')[i]?.focus();}
@@ -829,8 +1026,8 @@
     fill(sx+29,sy+36,7,18,'#7a5f57');
     fill(sx,sy,66,39,'#1e2c43');fill(sx+4,sy+4,58,31,isSaved?'#f7d7a6':'#d3beb2');
     ctx.fillStyle=isSaved?'#325c54':'#815963';ctx.font='bold 9px monospace';ctx.textAlign='center';
-    ctx.fillText(isSaved?'STORY ON!':'STORY ???',sx+33,sy+17);
-    ctx.fillText(isSaved?'7:30 PM':'8 PM?',sx+33,sy+29);ctx.textAlign='start';
+    ctx.fillText(isSaved?'BOOK HOME':'MISSING',sx+33,sy+17);
+    ctx.fillText(isSaved?'40 / 40':'RED BOOK',sx+33,sy+29);ctx.textAlign='start';
     if(isSaved){
       for(const [x,y,col] of [[9,12,'#c56c8a'],[10,13,'#6a8cac'],[16,9,'#d2a078'],[14,13,'#72b69d']]){
         fill(x*T+7,y*T+8,12,12,col);fill(x*T+9,y*T+2,8,8,'#d7a985');
@@ -877,7 +1074,7 @@
       fill(W*T-208,12,196,34,'#3f365de6');ctx.fillStyle='#f4d3ac';ctx.fillText('LINGO LAB OPEN!',W*T-194,33);
     }
     if(completedCount()===5){
-      fill(W*T-233,12,220,34,'#255952e6');ctx.fillStyle='#d5f6e8';ctx.fillText('FESTIVAL READY!',W*T-219,33);
+      fill(W*T-233,12,220,34,'#255952e6');ctx.fillStyle='#d5f6e8';ctx.fillText('CASE EVIDENCE READY!',W*T-219,33);
     }
     // Clock signals the story's setting without imposing a real-time deadline.
     fill(12,H*T-35,155,25,'#0e1b31db');ctx.fillStyle='#cad5eb';

@@ -4,22 +4,30 @@
 (() => {
   'use strict';
   const examples = [
-    {
-      id:'festival-friend', title:'Reassuring a worried festival friend',
-      context:"Leila heard a rumour that Night of Voices was cancelled. You know it is happening tonight in the square, but the signed start time has not yet been checked. Compare two truthful replies to a close friend.",
-      texts:["Leila, it's still on tonight! ✨ Come to the square with me—we'll check the exact time together.","Story Night hasn't been cancelled. It's in the town square tonight; the official start time is being confirmed."],
-      note:"Both messages share verified facts while leaving the time open. A warmer register may suit one friendship, while another person may prefer a more direct explanation. Neither style identifies the author."
-    },
-    {
-      id:'festival-notice', title:'Correcting a public festival rumour',
-      context:"The town must clarify a cropped message. The original invitation confirms Story Night happens in the town square tonight. The library service desk closes at 8 PM, but the exact event start time is awaiting verification. Compare two versions of a community correction.",
-      texts:["Good news, neighbours! Story Night is ON 🌙 The eight o’clock sign was only for the library—not the festival! We’ll share the confirmed start time soon.", "OFFICIAL UPDATE: Night of Voices proceeds tonight in the town square. The library service desk closes at 8 PM; the festival schedule will be confirmed shortly."],
-      note:"Both notices communicate the same verified distinctions in different registers. Your preference or suspicion about AI authorship does not establish how either was written."
-    }
-  ];
+  {
+    "id": "stolen-voice-friend",
+    "title": "Update a worried witness",
+    "context": "You have reached Nova's lab but have not yet verified the book. Leila is worried that her account caused a false accusation. Both replies report the same current facts to a close friend.",
+    "texts": [
+      "Leila, your description helped us follow the book to Nova’s lab. We’re checking it now. Seeing someone carry it didn’t make you a witness to a theft.",
+      "Your account helped trace the book to Nova’s lab, Leila. It is being checked there. Your observation established that it was carried, not that it was stolen."
+    ],
+    "note": "Both versions distinguish observation from accusation. Preference, naturalness in this friendship, and perceived authorship need not line up. These practice samples have no verified source labels."
+  },
+  {
+    "id": "stolen-voice-public",
+    "title": "Keep the town informed",
+    "context": "A delivery record led to Crate B at Nova's lab. The search team is checking the contents. The note's origin has not yet been verified. Compare two public updates with those same facts.",
+    "texts": [
+      "We’ve followed the delivery trail to Crate B at Nova’s lab. We’re checking what’s inside. We don’t yet know where the note came from; we’ll update you when we do.",
+      "SEARCH UPDATE: Delivery records point to Crate B at Nova’s lab. Its contents are being checked. The origin of the note remains unverified. Further information will follow."
+    ],
+    "note": "The notices communicate the same information in different registers. An official tone is not evidence of accuracy or authorship; a conversational tone is not evidence either."
+  }
+];
   const dimensions = [
-    {id:'naturalness',label:'Naturalness in context',prompt:'Which message sounds more natural for this situation?',equal:'About equally natural'},
     {id:'preference',label:'Personal preference',prompt:'Which version do you personally prefer?',equal:'No preference'},
+    {id:'naturalness',label:'Naturalness in context',prompt:'Which message sounds more natural for this situation?',equal:'About equally natural'},
     {id:'authorship',label:'Perceived AI authorship',prompt:'Which message would you be more likely to guess was AI-generated?',equal:'About equally likely'}
   ];
   const allowed=new Set(['A','B','equal','unsure']);
