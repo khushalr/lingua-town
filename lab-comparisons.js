@@ -5,16 +5,16 @@
   'use strict';
   const examples = [
     {
-      id:'birthday', title:'A birthday invitation',
-      context:"A close friend asks whether you're coming to their birthday tonight. You already have plans. This friend uses both plain messages and emoji.",
-      texts:["Ahh I wish I could! I've already got plans, but have the best night 💛", "Sorry I can't make tonight. Hope you have a great birthday—coffee this weekend?"],
-      note:"One version makes affection visible through punctuation and an emoji; the other offers a future meeting. Either may feel natural or preferable for a particular friendship."
+      id:'festival-friend', title:'Reassuring a worried festival friend',
+      context:"Leila heard a rumour that Night of Voices was cancelled. You know it is happening tonight in the square, but the signed start time has not yet been checked. Compare two truthful replies to a close friend.",
+      texts:["Leila, it's still on tonight! ✨ Come to the square with me—we'll check the exact time together.","Story Night hasn't been cancelled. It's in the town square tonight; the official start time is being confirmed."],
+      note:"Both messages share verified facts while leaving the time open. A warmer register may suit one friendship, while another person may prefer a more direct explanation. Neither style identifies the author."
     },
     {
-      id:'office-hours', title:'Writing to a new professor',
-      context:"You haven't met Professor Chen. Their syllabus invites students to arrange office hours by email. You want feedback on an essay outline.",
-      texts:["Dear Professor Chen, would you have time this week to discuss my essay outline? Thank you for your help.", "Hi Professor Chen, could we find a time this week to talk through my essay outline? I'd appreciate your feedback."],
-      note:"Both messages ask rather than assume availability. ‘Dear’ and ‘Hi’ can suggest different degrees of distance; local norms and the relationship affect how readers hear them."
+      id:'festival-notice', title:'Correcting a public festival rumour',
+      context:"The town must clarify a cropped message. The original invitation confirms Story Night happens in the town square tonight. The library service desk closes at 8 PM, but the exact event start time is awaiting verification. Compare two versions of a community correction.",
+      texts:["Good news, neighbours! Story Night is ON 🌙 The eight o’clock sign was only for the library—not the festival! We’ll share the confirmed start time soon.", "OFFICIAL UPDATE: Night of Voices proceeds tonight in the town square. The library service desk closes at 8 PM; the festival schedule will be confirmed shortly."],
+      note:"Both notices communicate the same verified distinctions in different registers. Your preference or suspicion about AI authorship does not establish how either was written."
     }
   ];
   const dimensions = [

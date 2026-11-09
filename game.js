@@ -25,55 +25,19 @@
       done:"The café is ready for Story Night. An invitation feels welcoming when it fits the person receiving it. Come by after the stories!",
       badge:'THE SOCIAL CHAMELEON',
       questions:[
-        {
-          title:'A friend, not a formal report',
-          prompt:"I'm inviting my best friend to grab bubble tea after class. What should I text?",
-          choices:["Would you be available for refreshments this afternoon?","Bubble tea after class? I'm buying 🧋","Tea mission? I'll buy if you help me choose a flavor."],
-          discussion:"A quiet invitation or a playful one can both work. Even a formal-sounding invitation might be a shared joke; check how this listener receives it.",
-          correct:1, concept:'REGISTER',
-          success:"Exactly! We're close friends, so informal wording fits our relationship.",
-          hint:"Think about who is receiving the message. Would your friend normally get official-sounding invitations?",
-          explanation:"Register is the style of language we choose for a setting or audience. Casual and formal versions can both be grammatical; the context determines which feels appropriate."
-        },
-        {
-          title:'The same message, a new audience',
-          prompt:"Now I need to ask a professor I haven't met for office hours. Which opening fits best?",
-          choices:["Hi Professor Chen, I'm dropping by tomorrow to discuss my essay.","Dear Professor Chen, would you be available during office hours this week?","Hi Professor Chen, could we find a time to discuss my essay?"],
-          discussion:"Both ‘Dear’ and ‘Hi’ can work in this setting. Asking about availability and giving a useful purpose respect the professor's time; local norms vary.",
-          correct:1, concept:'AUDIENCE DESIGN',
-          success:"That's polite, clear, and suitably formal without sounding stiff.",
-          hint:"Your professor isn't your best friend. Aim for respectful but natural language.",
-          explanation:"Audience design means adapting the way you communicate to your listener. Linguistic skill includes knowing when to switch styles—not simply speaking formally all the time."
-        }
+        {"title": "The invitation Leila misunderstood", "prompt": "Mina shows the original Story Night invitation. Leila read the cropped, official-sounding version and feels excluded. How can you reassure her?", "choices": ["You are hereby notified that your attendance remains permitted.", "Leila, you’re absolutely invited! Want to come with me?", "Leila! Story mission is ON ✨ Come with me!"], "discussion": "A friend may prefer a quiet or playful reassurance. The misunderstanding arose because the forwarded version lost both warmth and context.", "correct": 1, "concept": "REGISTER", "success": "The friend understands she is invited.", "hint": "The same event can sound welcoming or distant depending on audience and tone.", "explanation": "Register is language style suited to a situation. Here, a clipped formal notice changed how Leila understood her relationship to the event, although the event had not been cancelled."},
+        {"title": "Ask the organizers—without guessing", "prompt": "The original invitation proves the festival is happening, but the forwarded clip omits the start time. How should Mina ask the committee for confirmation?", "choices": ["Hi committee, I’m announcing that Story Night begins at seven.", "Dear committee, could you confirm the official start time and location?", "Hi organizers, can we check the programme before sharing a time?"], "discussion": "Both formal and conversational requests can fit the committee. The important difference is asking instead of making up a time.", "correct": 1, "concept": "AUDIENCE DESIGN", "success": "Mina requests a verified schedule instead of inventing facts.", "hint": "Change the audience, and ask for the information you still lack.", "explanation": "Audience design adapts wording to the recipient. It does not license unverified claims: when correcting a rumour, clarity and source checking matter as much as tone."}
       ]
     },
     {
       id:'theo', name:'Theo', role:'The Librarian', subject:'Conversation Rules', x:21, y:8,
       icon:'📚', hair:'#69513d', skin:'#bc855f', outfit:'#77a6a6', accent:'#ffe1a0',
       greeting:"I think I know where that scary 'Closes at 8' message came from. That's the LIBRARY, not the storytelling festival! Help me make the difference clear.",
-      done:"The library closes at eight; the festival is in the square. That missing detail made all the difference. Thanks for helping me clear it up!",
+      done:"The library desk closes at eight; the festival is in the square. That missing detail made all the difference. Thanks for helping me clear it up!",
       badge:'THE CONVERSATION KEEPER',
       questions:[
-        {
-          title:'Answer the actual question',
-          prompt:"A student asks, 'What time does the library close tonight?' You know it closes at 8 PM. What do you say?",
-          choices:["You've still got time to borrow that.","8 PM tonight.","8 PM tonight. Would you like help finding anything?"],
-          discussion:"A concise closing time answers the question. Adding an offer of help can also cooperate if the student wants it; quantity is appropriate information, not always the fewest words.",
-          correct:1, concept:'GRICE’S MAXIMS',
-          success:"Perfect. It's truthful, relevant, and gives exactly what's needed.",
-          hint:"Which answer helps the student plan their evening?",
-          explanation:"In pragmatics, Grice's cooperative principle describes expectations that contributions be appropriately informative, truthful, relevant, and clear. The brief answer works because it serves the question."
-        },
-        {
-          title:'What was left unsaid?',
-          prompt:"Someone asks, 'Was the lecture interesting?' Their friend answers, 'Well, the slides were colorful.' What might the friend be implying?",
-          choices:["They might not have found the lecture itself very interesting.","They may be offering genuine praise of the visuals.","Their positive description is enough to recommend the lecture as engaging."],
-          discussion:"Reservations and genuine enthusiasm for the visuals are both possible. The narrow answer can invite an inference, but a follow-up can confirm or revise it.",
-          correct:0, concept:'CONVERSATIONAL IMPLICATURE',
-          success:"You noticed the gap between the words and the implied message.",
-          hint:"Why would a friend praise the slides instead of answering whether the lecture was interesting?",
-          explanation:"Conversational implicatures are meanings a listener can infer beyond what is explicitly said. Here, the unusually narrow praise may suggest reservations about the lecture—though the implication isn't guaranteed."
-        }
+        {"title": "What actually closes at eight?", "prompt": "The forwarded message says “Closes at eight.” Theo finds the full notice: “LIBRARY SERVICE DESK CLOSES AT 8 PM.” Explain the missing subject to a worried festival guest.", "choices": ["There’s probably still time.", "The library service desk closes at eight; Story Night is separate.", "The sign refers to the library. Want directions to the square?"], "discussion": "Either a concise correction or a helpful follow-up may work, depending on the guest. Omitting the subject created the crisis.", "correct": 1, "concept": "GRICE’S MAXIMS", "success": "The visitor learns that eight is the library’s closing time.", "hint": "To answer the guest, identify exactly what the time refers to.", "explanation": "The cooperative principle includes relevance and appropriate informativeness. Removing “library service desk” from a sign deprived readers of the information needed to interpret “closes at eight.”"},
+        {"title": "The lanterns are lovely...", "prompt": "Asked “Is Story Night on?”, a witness said “Well, the lanterns look lovely.” Is that a confirmation, cancellation, or an indirect clue?", "choices": ["The reply may imply uncertainty; ask what the witness actually knows.", "The lanterns prove the festival is on.", "The witness may just like decorations; check whether they saw the programme."], "discussion": "The response may carry an implicature because it avoids a direct answer, but it does not establish the event status.", "correct": 0, "concept": "CONVERSATIONAL IMPLICATURE", "success": "Theo asks for source evidence rather than treating an implication as proof.", "hint": "Why did the witness praise lanterns instead of answering the status question?", "explanation": "An implicature is inferred beyond literal content and can be revised. A comment about festival lanterns does not entail that the event was or was not cancelled."}
       ]
     },
     {
@@ -83,25 +47,8 @@
       done:"I can confirm the students finished their work. 'Some' never proved that others hadn't. Thanks for asking what the words actually allowed.",
       badge:'THE MEANING DETECTIVE',
       questions:[
-        {
-          title:'Some is a subtle word',
-          prompt:"I say, 'Some students finished the Story Night posters.' What might a listener infer?",
-          choices:["We should plan for unfinished work because ‘some’ suggests not all.","I may be suggesting not everyone finished, but that isn't logically guaranteed.","We should ask whether everyone finished before making the plan."],
-          correct:1, concept:'SCALAR IMPLICATURE',
-          success:"Correct. 'Some' often suggests 'not all,' but the suggestion can be cancelled.",
-          hint:"Think about what 'some' literally allows and what someone might infer because 'all' wasn't said.",
-          explanation:"'Some' literally permits the possibility of all. In conversation, choosing 'some' instead of 'all' can suggest that not all students finished their posters. This extra inference is a scalar implicature, not a logical certainty."
-        },
-        {
-          title:'A request in disguise',
-          prompt:"We're studying beside an open window. I say, 'It's pretty chilly in here.' What might I be doing?",
-          choices:["Sharing an observation about the weather.","Indirectly asking someone to close the window.","Inviting a more general response to discomfort, such as moving seats."],
-          discussion:"The literal observation may also function as a request here. Ask about the intended action: closing the window and moving to a warmer seat can both meet the speaker's goal.",
-          correct:1, concept:'INDIRECT SPEECH ACTS',
-          success:"Exactly. The sentence can make an observation and function as a request.",
-          hint:"Consider what action I might hope you take after hearing that sentence.",
-          explanation:"Speech acts are things we do with words: asking, promising, requesting, apologizing. An indirect speech act performs one action through a sentence that has another literal form. Context helps us recognize the intent."
-        }
+        {"title": "What does “some” actually prove?", "prompt": "A cropped class update says “Some students finished the Story Night posters.” People take this to mean unfinished posters forced a cancellation. What can the sentence establish?", "choices": ["Other students must be unfinished; postpone Story Night.", "“Some” can suggest “not all,” but it does not prove that; check.", "Ask whether everyone finished before drawing a conclusion."], "discussion": "An inference of “not all” is possible but defeasible. Lin can truthfully say “some” even when all students finished.", "correct": 1, "concept": "SCALAR IMPLICATURE", "success": "Lin confirms all the festival posters were completed.", "hint": "Ask what follows logically and what is only suggested by the word “some.”", "explanation": "The scalar implicature “some, not all” is defeasible. Lin confirms that all the posters were finished, so the cancellation was never supported by the class update."},
+        {"title": "Save the original poster", "prompt": "The unedited Story Night draft sits by an open window. Lin says “It’s getting breezy in here…” as a gust lifts the paper. What might Lin be indirectly asking?", "choices": ["Agree that the weather changed and do nothing.", "Offer to close the window so the original draft stays safe.", "Offer to move the draft to a sheltered table."], "discussion": "A comment can serve as an indirect request. Different helpful actions may satisfy the speaker’s actual goal.", "correct": 1, "concept": "INDIRECT SPEECH ACTS", "success": "You protect the festival’s original evidence.", "hint": "The draft matters to the mystery. What action does Lin hope you will take?", "explanation": "An indirect speech act uses a declarative sentence to accomplish another action, such as asking for help. The goal here is to preserve evidence, whether by closing the window or moving the paper."}
       ]
     },
     {
@@ -111,24 +58,8 @@
       done:"The market signs are clear again, and nobody gets left out by a poorly grouped phrase. Now the town's ready to welcome its guests.",
       badge:'THE AMBIGUITY EXPLORER',
       questions:[
-        {
-          title:'Whose telescope?',
-          prompt:"A customer says: 'I saw the student with the telescope.' How many reasonable readings are there?",
-          choices:["The nearby noun makes the student-with-a-telescope reading the only one.","Two: I used a telescope, or the student had one.","‘With’ describes an instrument, so only the observer-used-it reading works."],
-          correct:1, concept:'STRUCTURAL AMBIGUITY',
-          success:"Yes! The phrase 'with the telescope' can attach in two ways.",
-          hint:"Imagine holding the telescope yourself. Now imagine the student holding it.",
-          explanation:"Structural ambiguity occurs when the same sequence of words can have more than one grammatical structure. 'With the telescope' can describe how I saw the student or which student I saw."
-        },
-        {
-          title:'A mysterious old group',
-          prompt:"A poster says: 'Old men and women get a discount.' What's the potential ambiguity?",
-          choices:["It could mean old men and old women, or old men and women of any age.","Shared coordination makes ‘old’ apply to both groups in every context.","Because ‘old’ is next to ‘men,’ it cannot describe the women too."],
-          correct:0, concept:'COORDINATION AMBIGUITY',
-          success:"That's it! The adjective can apply to more than one part of the coordinated phrase.",
-          hint:"Does the word 'old' necessarily modify both 'men' and 'women'?",
-          explanation:"The grouping of words matters. 'Old [men and women]' and '[old men] and women' organize the phrase differently. Syntax helps explain why one sentence can have competing interpretations."
-        }
+        {"title": "Who had the festival map?", "prompt": "A volunteer wrote “I guided the guests with the map.” Were the guests holding a map, or did the guide use one? Rearrange the phrase to show the intended reading.", "choices": ["The guests must have been holding a map.", "Either the guide used a map or the guests had one.", "The sentence must be ungrammatical."], "discussion": "Moving the prepositional phrase toward the front strongly favours the reading where the guide used the map.", "correct": 1, "concept": "STRUCTURAL AMBIGUITY", "success": "You clarify that the guide had the map and visitors still needed directions.", "hint": "Think of where “with the map” attaches.", "explanation": "“With the map” can modify the action of guiding or describe the guests. The ambiguity led Jules to assume visitors already had maps, leaving them lost and more likely to believe the festival was cancelled."},
+        {"title": "Who can perform at Story Night?", "prompt": "Jules put up “Young storytellers and musicians welcome.” Visitors read the age requirement differently. Use word tiles to make the intended all-ages invitation unambiguous.", "choices": ["Only young storytellers and musicians are welcome.", "The word “young” can attach differently across the two groups.", "The wording explicitly welcomes performers of any age."], "discussion": "“Young” could scope over both coordinated groups or only the storytellers. An all-ages statement removes both the ambiguity and the mistaken exclusion.", "correct": 1, "concept": "COORDINATION AMBIGUITY", "success": "The market sign explicitly welcomes storytellers and musicians of all ages.", "hint": "Make age eligibility explicit for both types of performer.", "explanation": "A modifier like “young” can take different scope over a coordination. “Storytellers and musicians of all ages welcome tonight” removes the scope uncertainty and matches the festival’s actual inclusive policy."}
       ]
     },
     {
@@ -138,25 +69,8 @@
       done:"We recovered the missing context and reopened the Night of Voices. Remember: a style can shape an impression without revealing its writer.",
       badge:'MASTER OF CONTEXT',
       questions:[
-        {
-          title:'The birthday message',
-          prompt:"Your close friend texts, 'Are you coming to my birthday tonight?' How might different replies fit the friendship, and which would you prefer?",
-          choices:["I won't be able to attend tonight.","Ahh I wish 😭 already have plans, have the best night though!!","Sorry I can't make it. Hope it's a great birthday—coffee this weekend?"],
-          discussion:"The expressive and plain-but-warm replies are both defensible. A brief reply can also work, though this friend asks for reassurance. Naturalness, preference, and suspected authorship are separate judgments, with no universal naturalness answer key.",
-          concept:'NATURALNESS ≠ AUTHORSHIP',
-          success:"Different readers can hear the same wording differently.",
-          hint:"Think about the relationship between the speakers, not who wrote the sentence.",
-          explanation:"A response can sound natural because its register matches the situation. That doesn't prove a human wrote it: an AI can write casually, and a human can write formally. Naturalness and authorship are different questions."
-        },
-        {
-          title:'Can style reveal the author?',
-          prompt:"One message is polished and formal; another is short and full of slang. Can you reliably tell which was written by a human from that alone?",
-          choices:["The polished style supports an AI source label, even if it is tentative.","The casual style supports a human source label, even if it is tentative.","No. Style can affect impressions, but doesn't reliably establish authorship."],
-          correct:2, concept:'CRITICAL LANGUAGE AWARENESS',
-          success:"Exactly. Strong linguistic reasoning includes knowing what evidence cannot establish.",
-          hint:"People and language models can both write in a range of styles.",
-          explanation:"Register, context, and wording can influence whether something feels human-like, but none is a trustworthy standalone test of authorship. The better question is which linguistic features shape our perceptions, and why."
-        }
+        {"title": "Send a truthful first correction", "prompt": "The town needs a message while Dr. Nova checks the signed programme. What wording can reassure people without inventing a festival start time?", "choices": ["Story Night is happening.", "Story Night is ON tonight at the square! Time confirmation coming soon.", "Story Night is on at the town square. We’ll confirm the start time shortly."], "discussion": "All three are defensible in some contexts. A short message may prompt a request for more detail; none proves the writer is human or AI.", "concept": "NATURALNESS ≠ AUTHORSHIP", "success": "You post a clear, evidence-based update for worried neighbours.", "hint": "Use only facts confirmed by the previous witnesses.", "explanation": "Naturalness, preference, and authorship are different questions. A warm and a plain correction can both be appropriate if they accurately convey what the investigation established."},
+        {"title": "Does a polished notice mean it is fake?", "prompt": "A neighbour says the festival correction is “too polished to be human-written,” so it must be an AI fake. Can that justify calling off Story Night?", "choices": ["Yes; polished style means the notice is fake.", "Yes; casual style would prove the notice is genuine.", "No; verify the original invitation and signed programme, not the writing style."], "correct": 2, "concept": "CRITICAL LANGUAGE AWARENESS", "success": "Nova separates stylistic impressions from reliable evidence of the festival schedule.", "hint": "Could humans and language models both produce polished or casual announcements?", "explanation": "People can perceive wording as AI-like without being able to establish its source. The reliable festival facts come from verified original documents, not a stylistic hunch."}
       ]
     }
   ];
@@ -245,23 +159,23 @@
   function completedCount(){return characters.filter(completed).length;}
   function announce(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('visible'),2600);}
   function numberEmoji(){return ['①','②','③'];}
-  // Four complementary pieces of one real misunderstanding. All are needed to clear the rumour.
+  // Five complementary clues reconstruct the same town-wide rumour.
   const storyClues = [
-    {id:'mina',title:'PIECE 1 · Original invitation',short:'The festival is ON',text:'Mina kept the original invitation: Night of Voices is happening TONIGHT in the TOWN SQUARE. A chilly forwarded tone was mistaken for a cancellation.'},
-    {id:'theo',title:'PIECE 2 · Wrong closing time',short:'Eight belongs to the library',text:'Theo identifies the cropped sign: THE LIBRARY CLOSES AT 8 PM. That is not the time the town-square festival finishes.'},
+    {id:'mina',title:'PIECE 1 · Original invitation',short:'The festival is ON',text:'Mina kept the original invitation: Night of Voices is happening TONIGHT in the TOWN SQUARE. The cropped official-looking version made Leila think she was not invited.'},
+    {id:'theo',title:'PIECE 2 · Wrong closing time',short:'Eight belongs to the library desk',text:'Theo finds the complete sign: LIBRARY SERVICE DESK CLOSES AT 8 PM. That time does not describe Story Night in the town square.'},
     {id:'prof',title:'PIECE 3 · Misleading “some”',short:'No cancellation follows from “some”',text:'Lin wrote “Some students finished the posters.” “Some” often suggests “not all”, but it does not logically prove posters are unfinished or an event is cancelled.'},
-    {id:'jules',title:'PIECE 4 · Who is invited?',short:'Everyone is welcome',text:'Jules shows the original guest list: PEOPLE OF ALL AGES ARE WELCOME. The ambiguous grouping on his market sign made some neighbours think they were excluded.'},
+    {id:'jules',title:'PIECE 4 · Misread directions and sign',short:'Maps are needed; all ages welcome',text:'A volunteer used a map to guide guests; they were not all carrying their own. Jules also confirms that Story Night welcomes storytellers and musicians OF ALL AGES. The two ambiguous phrases led to wrong directions and mistaken exclusion.'},
     {id:'nova',title:'PIECE 5 · Verified schedule',short:'Stories begin at 7:30 PM',text:'Dr. Nova checks the original festival programme: TOWN SQUARE OPENS AT 7:00 PM; STORIES BEGIN AT 7:30 PM. This source predates the confusing forwarded message.'}
   ];
   const caseQuestions = [
     {id:'mina',question:'PIECE 1 · What did the original invitation actually say?',options:['Story Night is still on tonight in the town square.','Only Mina’s friends may attend the festival.','The festival moved into the café.'],correct:0,reason:'The forwarded message lost its context and sounded distant, but the original invitation explicitly confirms the event.'},
-    {id:'theo',question:'PIECE 2 · What does “closes at eight” describe?',options:['The entire town closes at 8 PM.','The library closes at 8 PM, not Story Night.','The festival must finish before the library does.'],correct:1,reason:'The missing subject changed the meaning. Eight is the library closing time, not a festival deadline.'},
+    {id:'theo',question:'PIECE 2 · What does “closes at eight” describe?',options:['The entire town closes at 8 PM.','The library service desk closes at 8 PM, not Story Night.','The festival must finish before the library desk does.'],correct:1,reason:'The cropped notice omitted its subject. Eight is the library service-desk closing time, not a festival deadline.'},
     {id:'prof',question:'PIECE 3 · What can you conclude from “some students finished the posters”?',options:['The other students definitely failed to finish.','The statement alone cannot prove that the other students did not finish.','All posters must have been cancelled.'],correct:1,reason:'The “not all” inference is a defeasible implicature. It is not logically entailed by “some”.'},
-    {id:'jules',question:'PIECE 4 · How should we clarify who may come?',options:['Only the oldest guests should be admitted.','Invite young people but not grandparents.','Say explicitly that people of all ages are welcome.'],correct:2,reason:'The market sign had a grouping ambiguity. A direct all-ages invitation removes the competing interpretation.'},
+    {id:'jules',question:'PIECE 4 · What did Jules’s original words hide?',options:['The guests all carried maps, and young people alone could perform.','The town square was already closed to older visitors.','The guide used a map, and storytellers and musicians of all ages are welcome.'],correct:2,reason:'“With the map” had more than one attachment, and “young storytellers and musicians” had a scope ambiguity. Neither meant the event had been cancelled or older performers were excluded.'},
     {id:'nova',question:'PIECE 5 · What time does the verified festival programme give?',options:['The stories end when the library closes at eight.','Town square opens at 7 PM; storytelling starts at 7:30 PM.','The festival is postponed until tomorrow.'],correct:1,reason:'The unedited programme gives a reliable source for the actual festival schedule.'}
   ];
   const finalAnnouncements = [
-    {title:'Clear and detailed',message:'Story Night is ON! The town square opens at 7 PM and stories begin at 7:30. The library closes at 8, but the festival is separate. Everyone is welcome.',ending:'The missing pieces finally fit. Theo pins the correct hours beside the library door. Neighbours who worried about the eight o’clock deadline head towards the square. Your detailed note helps readers find the practical information they needed.',tone:'clarity'},
+    {title:'Clear and detailed',message:'Story Night is ON! The town square opens at 7 PM and stories begin at 7:30. The library desk closes at 8, but the festival is separate. Everyone is welcome.',ending:'The missing pieces finally fit. Theo pins the correct hours beside the library door. Neighbours who worried about the eight o’clock deadline head towards the square. Your detailed note helps readers find the practical information they needed.',tone:'clarity'},
     {title:'Warm and inviting',message:'Story Night is still happening 💛 Come to the town square from 7! Stories start at 7:30. We’d love to see you there.',ending:'Mina reads the announcement aloud and grins. The message feels like an invitation, not an order. A few people still ask about the library closing time, and Theo cheerfully explains. Warmth brought people together; a follow-up supplies the extra detail.',tone:'warmth'},
     {title:'Formal town notice',message:'NOTICE: The Night of Voices will take place in the town square. Entry opens at 7:00 PM, and storytelling begins at 7:30 PM. All are welcome.',ending:'Professor Lin posts your notice on the community board. Its formal register fits an official announcement and leaves the schedule unambiguous. Mina adds a handwritten welcome beside it, adapting the message for people passing the café.',tone:'official'}
   ];
@@ -276,7 +190,7 @@
     dialogue.caseHint='';dialogue.caseStep++;
     if(dialogue.caseStep>=caseQuestions.length){
       saved.world.caseSolved=true;persist();renderJournal();dialogue.mode='victory';
-      announce('✦ THE FOUR PIECES FIT TOGETHER!');
+      announce('✦ ALL FIVE PIECES FIT TOGETHER!');
     }
     drawDialogue();
   }
@@ -383,7 +297,7 @@
       paragraph(`Badge collected: ${npc.badge}.`,'dialogue-mini');
       if(npc.id==='jules')action('PRACTICE TILES',()=>{dialogue.practice=true;dialogue.mode='question';drawDialogue();},true);
       if(npc.id==='nova'){
-        action(saved.world.caseSolved?(saved.world.storyEnding?'READ OR CHANGE YOUR ENDING':'CHOOSE THE TOWN ANNOUNCEMENT'):'ASSEMBLE THE FOUR CLUES',()=>{if(saved.world.caseSolved){dialogue.mode='victory';drawDialogue();}else openCaseboard();});
+        action(saved.world.caseSolved?(saved.world.storyEnding?'READ OR CHANGE YOUR ENDING':'CHOOSE THE TOWN ANNOUNCEMENT'):'ASSEMBLE THE FIVE CLUES',()=>{if(saved.world.caseSolved){dialogue.mode='victory';drawDialogue();}else openCaseboard();});
         action('BLIND A/B DESK · OPTIONAL',openComparison,true);
       }
       action('BACK TO TOWN',closeDialogue);
@@ -467,7 +381,7 @@
     if(phase==='victory'){
       if(!saved.world.caseSolved){openCaseboard();return;}
       heading('CHAPTER III · THE FINAL MESSAGE','The Night of Voices is not cancelled.');
-      paragraph('Dr. Nova spreads the four clues over a desk. “The forwarded scraps came from different conversations. Eight is the library closing time, not the festival’s. ‘Some students finished’ did not mean the others failed. No one actually cancelled tonight.”','spoken-line');
+      paragraph("Dr. Nova spreads all five clues over the desk. ‘The scraps came from different sources. Mina's invitation confirms the festival, the eight o'clock sign belongs to the library, ‘some’ never proved posters were unfinished, and Jules's guests needed clearer signs. My signed programme confirms the time.’",'spoken-line');
       paragraph('Outside, the square is almost empty. People are waiting for a reliable announcement. How should the town invite them back?','story-hint');
       choiceButtons(finalAnnouncements.map(c=>`${c.title}: ${c.message}`),chooseEnding);
       paragraph('All three messages are viable. Style changes how different audiences may receive the news; there is no single “most human” answer.','dialogue-mini');
@@ -482,10 +396,10 @@
       paragraph(ending.ending,'story-hint');
       const touches=[];
       if(saved.world.cafeStyle==='quiet')touches.push('Mina saves a quiet café table for guests who want a moment away from the crowd.');
-      if(saved.world.cafeStyle==='playful')touches.push('Mina raises her cup for the one-silly-toast tradition you started.');
-      if(saved.world.classroomComfort==='sunny')touches.push('Professor Lin brings the lecture notes out to the sunny corner.');
-      if(saved.world.classroomComfort==='window')touches.push('Professor Lin opens the now-comfortable classroom to visiting storytellers.');
-      if(saved.world.libraryHelp==='map')touches.push('Theo posts an easy-to-follow map so nobody misses the square.');
+      if(saved.world.cafeStyle==='playful')touches.push('Mina raises her cup for a pre-festival toast with Leila.');
+      if(saved.world.classroomComfort==='sunny')touches.push('Professor Lin displays the rescued original festival poster at the sunny table.');
+      if(saved.world.classroomComfort==='window')touches.push('Professor Lin pins the rescued original notice beside the secured window.');
+      if(saved.world.libraryHelp==='map')touches.push('Theo posts an easy-to-follow map so nobody misses Story Night.');
       if(saved.world.libraryHelp==='escort')touches.push('Theo walks late guests from the library to the square.');
       if(touches.length)paragraph(touches.join(' '));
       paragraph('The mystery was never about finding a guilty author. It was about listening, checking what words implied, and restoring the context people needed. Your conversations changed how this night unfolded.','feedback');
@@ -588,14 +502,14 @@
       } else {dialogue.mode='question';delete dialogue.tiles;drawDialogue();}
     }else if(['done','locked','victory','epilogue','caseboard'].includes(dialogue.mode))closeDialogue();
   }
-  // Movable phrase tiles: drag, tap two positions, or use Alt + arrow keys.
+  // Evidence puzzles: each rearrangement resolves a real source of the rumour.
   function drawPuzzle(){
     const stage=dialogue.practice?0:saved.progress.jules, first=stage===0;
-    if(!dialogue.tiles)dialogue.tiles=first?['I saw','the student','with the telescope']:['young','men','and','old','women'];
-    heading('JULES · SENTENCE WORKBENCH',first?'Whose telescope?':'Change the discount sign');
-    paragraph(first?"A customer wrote ‘I saw the student with the telescope.’ Did they use it, or did the student have it? Move the telescope phrase to the front to favor the instrument reading.":"‘Old men and women’ leaves the age grouping unclear. Use every tile to make a sign for old men and young women.");
-    paragraph('Drag a tile onto another position, tap two tiles to swap, or focus a tile and use Alt + ← / →.','dialogue-mini');
-    const tray=h('div',undefined,'word-tray');tray.setAttribute('aria-label','Sentence tiles');
+    if(!dialogue.tiles)dialogue.tiles=first?['I guided','the guests','with the map']:['welcome','and musicians','of all ages','storytellers','tonight'];
+    heading('JULES · EVIDENCE WORKBENCH',first?'Who used the festival map?':'Who is welcome at Story Night?');
+    paragraph(first?"Jules heard: ‘I guided the guests with the map.’ He thought the GUESTS already had maps, so he stopped offering directions. But the volunteer used the map to GUIDE them. Front the phrase to favour the intended reading.":"Jules’s sign read: ‘Young storytellers and musicians welcome.’ Did ‘young’ describe both groups or just storytellers? His guest list confirms everyone is welcome. Rearrange these new sign tiles to say that clearly.");
+    paragraph('Drag a tile, tap two tiles to swap, or focus a tile and press Alt + ← / →.','dialogue-mini');
+    const tray=h('div',undefined,'word-tray');tray.setAttribute('aria-label','Evidence phrase tiles');
     dialogue.tiles.forEach((word,i)=>{
       const tile=h('button',word,'word-tile'+(dialogue.selected===i?' selected':''));tile.type='button';tile.draggable=true;tile.setAttribute('aria-label',`Tile ${i+1}: ${word}`);tile.setAttribute('aria-pressed',String(dialogue.selected===i));
       tile.addEventListener('click',()=>{if(dialogue.selected===undefined){dialogue.selected=i;drawDialogue();}else{const a=dialogue.selected;delete dialogue.selected;[dialogue.tiles[a],dialogue.tiles[i]]=[dialogue.tiles[i],dialogue.tiles[a]];drawDialogue();}focusTile(i);});
@@ -606,14 +520,14 @@
       tray.append(tile);
     });dialogueContent.append(tray);
     const sentence=dialogue.tiles.join(' ');
-    const solved=first?sentence==='with the telescope I saw the student':['old men and young women','young women and old men'].includes(sentence);
-    let reading=first?(solved?'The fronted phrase favors how the seeing was done: the observer used a telescope.':sentence==='I saw the student with the telescope'?'Two readings remain: a telescope used for seeing, or a student who had it.':'That order is harder to interpret. Keep “I saw” before “the student”.'):(solved?'The men are old; the women are young.':sentence==='young men and old women'?'The men are young; the women are old.':'Keep each age adjective before the group it describes.');
-    paragraph('READING · '+reading,'meaning-preview');
+    const solved=first?sentence==='with the map I guided the guests':sentence==='storytellers and musicians of all ages welcome tonight';
+    const reading=first?(solved?'The guide used a map to direct guests. Visitors were not all carrying their own maps.':sentence==='I guided the guests with the map'?'Ambiguous: the guide might use the map, or the guests might be the ones holding it.':'Check that “with the map” modifies the guiding action.'):(solved?'Storytellers AND musicians of every age are invited. The ambiguous “young” is gone.':'The goal is to name both groups, then explicitly say “of all ages” and “welcome tonight”.');
+    paragraph('INTERPRETATION · '+reading,'meaning-preview');
     if(dialogue.puzzleHint)paragraph(dialogue.puzzleHint,'feedback wrong');
     action('SHOW JULES',()=>{
-      if(solved&&dialogue.practice){announce('Clear instrument reading! Your badges stay earned.');closeDialogue();return;}
-      if(solved){const q=characters[3].questions[stage];finishExchange(q.success+(first?' Fronting the phrase strongly favors the instrument reading; context still matters.':''),first?'The customer can now describe using the telescope.':'The market sign now gives the intended age groups.');}
-      else {dialogue.puzzleHint='Jules: “That changes what I can understand. Check the intended meaning above, then move the tiles again.”';drawDialogue();}
+      if(solved&&dialogue.practice){announce('Festival evidence clarified! Your clues remain collected.');closeDialogue();return;}
+      if(solved){const q=characters[3].questions[stage];finishExchange(q.success,first?'The map belonged to the guide, so visitors still need a route to the square.':'The corrected sign welcomes storytellers and musicians of all ages.');}
+      else {dialogue.puzzleHint='Jules: “We need a clear, truthful festival clue—not just a different word order. Try again!”';drawDialogue();}
     });action('PAUSE PUZZLE',closeDialogue,true);
   }
   function focusTile(i){dialogueContent.querySelectorAll('.word-tile')[i]?.focus();}
@@ -1044,7 +958,7 @@
     }
     fill(11*T,16*T,3*T,T,'#d7af7f');ctx.fillStyle='#29344b';ctx.font='bold 11px monospace';ctx.fillText('↓ EXIT',11*T+23,16*T+20);
     ctx.fillStyle='#fff0d0';ctx.font='bold 14px monospace';ctx.textAlign='center';ctx.fillText(room.name,13*T,52);ctx.textAlign='start';
-    if(scene==='campus'&&saved.world.classroomComfort==='sunny'){fill(17*T+7,7*T+10,64,20,'#e3c99f');ctx.fillStyle='#514963';ctx.font='10px monospace';ctx.fillText('NOTES',17*T+20,7*T+24);}
+    if(scene==='campus'&&saved.world.classroomComfort==='sunny'){fill(17*T+7,7*T+10,64,20,'#e3c99f');ctx.fillStyle='#514963';ctx.font='10px monospace';ctx.fillText('POSTER',17*T+20,7*T+24);}
     if(scene==='library'&&['map','escort'].includes(saved.world.libraryHelp)){fill(12*T-20,9*T,80,27,'#b8ceb6');ctx.fillStyle='#32515b';ctx.font='10px monospace';ctx.fillText(saved.world.libraryHelp==='map'?'RETURNS →':'NEED HELP?',12*T-12,9*T+17);}
     if(scene==='cafe'&&saved.progress.mina>0){ctx.fillStyle='#f4dbb9';ctx.font='10px monospace';ctx.fillText(saved.world.cafeStyle==='playful'?'ONE SILLY TOAST':'QUIET TABLE',10*T-20,9*T+14);}
     if(scene==='campus'&&!closed&&!reducedMotion){const drift=Math.sin(time/500)*7;fill(13*T+drift,5*T,23,2,'#7cb1b3');}
