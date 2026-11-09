@@ -305,3 +305,10 @@ button:focus-visible,canvas:focus-visible,.word-tile:focus-visible,
 @media(prefers-reduced-motion:reduce){
   .choice-button,.dialogue-action {transition:none;}
 }
+
+/* The next lead and collected paper fragments are visible, never hidden in a badge count. */
+.quest-item.current-lead {background:#273a57!important;border:1px solid #e2b86d!important;box-shadow:inset 3px 0 0 #e2b86d;}
+.quest-item.current-lead .quest-mark {color:#ffd68e;font-size:24px;}
+.story-clue-reveal {background:linear-gradient(140deg,#454057,#313d56)!important;color:#ffe7b5!important;border:2px dashed #d7ac77!important;border-radius:7px;padding:11px!important;box-shadow:3px 4px 0 #10192d;}
+.story-clues li.found {border-left:3px solid #ddbc83;padding-left:8px;}
+.story-clues li.missing {opacity:.65;}

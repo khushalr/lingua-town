@@ -209,7 +209,9 @@
   const keydirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',a:'left',s:'down',d:'right',W:'up',A:'left',S:'down',D:'right'};
   const pressed=new Set();
   let route=[]; let routeTalk=null; let lastStep=0; let modalOpen=true;
-  let dialogue=null; // {npc,mode:'greeting'|'question'|'feedback'|'done'|'locked'|'victory',correct?,chosen?}
+  let dialogue=null; // NPC encounter and story state.
+  let encounterStarted=0;
+
   let pointerCell=null;
   let toastTimer=null;
   let saved={progress:{},started:false,relationships:{},repairs:{},pending:{},turns:{},world:{},memories:[]};
@@ -220,6 +222,7 @@
       saved={...saved,started:!!raw.started,progress:record(raw.progress),relationships:record(raw.relationships),repairs:record(raw.repairs),pending:record(raw.pending),turns:record(raw.turns),world:record(raw.world),memories:Array.isArray(raw.memories)?raw.memories.filter(m=>typeof m==='string').slice(-5):[]};
     }
   }catch(e){ /* storage optional */ }
+  if(saved.world.storyEnding&&!saved.world.caseSolved)saved.world.caseSolved=true;
   for(const n of characters){
     saved.progress[n.id]=Math.max(0,Math.min(n.questions.length,Math.floor(Number(saved.progress[n.id])||0)));
     if(saved.progress[n.id]===n.questions.length||!stories[n.id]||typeof saved.pending[n.id]!=='string')delete saved.pending[n.id];
@@ -230,25 +233,56 @@
   }
   function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));}catch(e){document.getElementById('saveStatus').textContent='SAVING UNAVAILABLE · THIS SESSION ONLY';}}
   function completed(n){return saved.progress[n.id]>=n.questions.length;}
-  function unlocked(n){return n.id!=='nova'||characters.filter(c=>c.id!=='nova').every(completed);}
+  // Follow one lead at a time. Existing saves still retain previously visited villagers.
+  function nextLead(){return characters.find(n=>!completed(n))||characters[4];}
+  function unlocked(n){
+    if(completed(n)||saved.progress[n.id]>0)return true;
+    const index=characters.indexOf(n);
+    return index===0||completed(characters[index-1]);
+  }
+  function nextAfter(n){return characters[characters.indexOf(n)+1]||null;}
+
   function completedCount(){return characters.filter(completed).length;}
   function announce(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('visible'),2600);}
   function numberEmoji(){return ['①','②','③'];}
-  // Short-story arc: completion reveals context, never a correct "human" writing style.
+  // Four complementary pieces of one real misunderstanding. All are needed to clear the rumour.
   const storyClues = [
-    {id:'mina',title:'The invitation',text:'Tone depends on who is listening. A formal invitation can feel distant to a friend.'},
-    {id:'theo',title:'The closing time',text:'8 PM is when the LIBRARY closes—not when the festival ends.'},
-    {id:'prof',title:'The word “some”',text:'“Some” may suggest “not all,” but that suggestion can be cancelled.'},
-    {id:'jules',title:'The market sign',text:'The same words can group differently. Clear structure prevents exclusions.'}
+    {id:'mina',title:'PIECE 1 · Original invitation',short:'The festival is ON',text:'Mina kept the original invitation: Night of Voices is happening TONIGHT in the TOWN SQUARE. A chilly forwarded tone was mistaken for a cancellation.'},
+    {id:'theo',title:'PIECE 2 · Wrong closing time',short:'Eight belongs to the library',text:'Theo identifies the cropped sign: THE LIBRARY CLOSES AT 8 PM. That is not the time the town-square festival finishes.'},
+    {id:'prof',title:'PIECE 3 · Misleading “some”',short:'No cancellation follows from “some”',text:'Lin wrote “Some students finished the posters.” “Some” often suggests “not all”, but it does not logically prove posters are unfinished or an event is cancelled.'},
+    {id:'jules',title:'PIECE 4 · Who is invited?',short:'Everyone is welcome',text:'Jules shows the original guest list: PEOPLE OF ALL AGES ARE WELCOME. The ambiguous grouping on his market sign made some neighbours think they were excluded.'},
+    {id:'nova',title:'PIECE 5 · Verified schedule',short:'Stories begin at 7:30 PM',text:'Dr. Nova checks the original festival programme: TOWN SQUARE OPENS AT 7:00 PM; STORIES BEGIN AT 7:30 PM. This source predates the confusing forwarded message.'}
+  ];
+  const caseQuestions = [
+    {id:'mina',question:'PIECE 1 · What did the original invitation actually say?',options:['Story Night is still on tonight in the town square.','Only Mina’s friends may attend the festival.','The festival moved into the café.'],correct:0,reason:'The forwarded message lost its context and sounded distant, but the original invitation explicitly confirms the event.'},
+    {id:'theo',question:'PIECE 2 · What does “closes at eight” describe?',options:['The entire town closes at 8 PM.','The library closes at 8 PM, not Story Night.','The festival must finish before the library does.'],correct:1,reason:'The missing subject changed the meaning. Eight is the library closing time, not a festival deadline.'},
+    {id:'prof',question:'PIECE 3 · What can you conclude from “some students finished the posters”?',options:['The other students definitely failed to finish.','The statement alone cannot prove that the other students did not finish.','All posters must have been cancelled.'],correct:1,reason:'The “not all” inference is a defeasible implicature. It is not logically entailed by “some”.'},
+    {id:'jules',question:'PIECE 4 · How should we clarify who may come?',options:['Only the oldest guests should be admitted.','Invite young people but not grandparents.','Say explicitly that people of all ages are welcome.'],correct:2,reason:'The market sign had a grouping ambiguity. A direct all-ages invitation removes the competing interpretation.'},
+    {id:'nova',question:'PIECE 5 · What time does the verified festival programme give?',options:['The stories end when the library closes at eight.','Town square opens at 7 PM; storytelling starts at 7:30 PM.','The festival is postponed until tomorrow.'],correct:1,reason:'The unedited programme gives a reliable source for the actual festival schedule.'}
   ];
   const finalAnnouncements = [
     {title:'Clear and detailed',message:'Story Night is ON! The town square opens at 7 PM and stories begin at 7:30. The library closes at 8, but the festival is separate. Everyone is welcome.',ending:'The missing pieces finally fit. Theo pins the correct hours beside the library door. Neighbours who worried about the eight o’clock deadline head towards the square. Your detailed note helps readers find the practical information they needed.',tone:'clarity'},
     {title:'Warm and inviting',message:'Story Night is still happening 💛 Come to the town square from 7! Stories start at 7:30. We’d love to see you there.',ending:'Mina reads the announcement aloud and grins. The message feels like an invitation, not an order. A few people still ask about the library closing time, and Theo cheerfully explains. Warmth brought people together; a follow-up supplies the extra detail.',tone:'warmth'},
     {title:'Formal town notice',message:'NOTICE: The Night of Voices will take place in the town square. Entry opens at 7:00 PM, and storytelling begins at 7:30 PM. All are welcome.',ending:'Professor Lin posts your notice on the community board. Its formal register fits an official announcement and leaves the schedule unambiguous. Mina adds a handwritten welcome beside it, adapting the message for people passing the café.',tone:'official'}
   ];
+  function openCaseboard(){
+    if(!dialogue||!storyClues.every(c=>completed(characters.find(n=>n.id===c.id))))return;
+    dialogue.mode='caseboard';dialogue.caseStep=0;dialogue.caseHint='';drawDialogue();
+  }
+  function solveCase(i){
+    if(dialogue?.mode!=='caseboard')return;
+    const item=caseQuestions[dialogue.caseStep];if(!item)return;
+    if(i!==item.correct){dialogue.caseHint='Look at the recovered '+storyClues[dialogue.caseStep].title.toLowerCase()+'. Which meaning does that evidence support?';drawDialogue();return;}
+    dialogue.caseHint='';dialogue.caseStep++;
+    if(dialogue.caseStep>=caseQuestions.length){
+      saved.world.caseSolved=true;persist();renderJournal();dialogue.mode='victory';
+      announce('✦ THE FOUR PIECES FIT TOGETHER!');
+    }
+    drawDialogue();
+  }
   function storyChapter(){
     const clues=storyClues.filter(c=>saved.progress[c.id]>=2).length;
-    return saved.world.storyEnding?'EPILOGUE · A TOWN TOGETHER':clues===4?'CHAPTER III · THE FINAL MESSAGE':clues>=2?'CHAPTER II · THE MISSING CONTEXT':'CHAPTER I · THE RUMOUR';
+    return saved.world.storyEnding?'EPILOGUE · A TOWN TOGETHER':clues===5?'CHAPTER III · THE FINAL MESSAGE':clues>=2?'CHAPTER II · THE MISSING CONTEXT':'CHAPTER I · THE RUMOUR';
   }
 
   function renderJournal(){
@@ -260,24 +294,24 @@
     const clues=storyClues.filter(c=>completed(characters.find(n=>n.id===c.id)));
     const chapter=storyChapter();
     document.getElementById('storyAct').textContent=chapter;
-    document.getElementById('storyTitle').textContent=saved.world.storyEnding?'The festival is back!':clues.length===4?'One announcement left':'A rumour in pieces';
-    document.getElementById('storySummary').textContent=saved.world.storyEnding?'The town found its voice. Revisit your friends or try another announcement.':clues.length===4?'The forwarded scraps were about different situations. Visit Dr. Nova to reunite the town.':`Tonight's Story Night is in doubt. You've recovered ${clues.length} of 4 missing context clues.`;
-    document.getElementById('objectiveText').textContent=saved.world.storyEnding?'The Night of Voices is saved. Revisit Dr. Nova to choose another ending.':clues.length===4?'All four clues found. Go to Dr. Nova in the lab and prepare the festival announcement.':`Visit the neighbours. Find ${4-clues.length} more context ${4-clues.length===1?'clue':'clues'} before the lab opens.`;
+    document.getElementById('storyTitle').textContent=saved.world.storyEnding?'The festival is back!':clues.length===5?'One announcement left':'A rumour in pieces';
+    document.getElementById('storySummary').textContent=saved.world.storyEnding?'The town found its voice. Revisit your friends or try another announcement.':clues.length===5?'All five fragments are recovered. Reconstruct the truth with Dr. Nova.':`A rumour divided the town. You hold ${clues.length} of 5 pieces of the original message.`;
+    document.getElementById('objectiveText').textContent=saved.world.storyEnding?'The festival is saved. Return to Nova to try another ending.':saved.world.caseSolved?'The puzzle is solved! Choose your town announcement with Nova.':clues.length===5?'Visit Dr. Nova. Fit all five pieces together on the caseboard.':`NEXT LEAD: ${nextLead().name} · ${5-clues.length} more puzzle ${5-clues.length===1?'piece':'pieces'} to find.`;
     const clueList=document.getElementById('clueList');
-    clueList.replaceChildren(...storyClues.map(c=>h('li',`${clues.includes(c)?'✓':'○'} ${c.title}${clues.includes(c)?' — '+c.text:''}`,clues.includes(c)?'found':'missing')));
+    clueList.replaceChildren(...storyClues.map(c=>h('li',`${clues.includes(c)?'✦':'◇'} ${c.title}${clues.includes(c)?' — '+c.text:' — not yet found'}`,clues.includes(c)?'found':'missing')));
     document.getElementById('memoryList').replaceChildren(...saved.memories.map(m=>h('li',m)));
     document.querySelector('.location-title').textContent=`THE NIGHT OF VOICES ✦ ${chapter}`;
 
     for(const npc of characters){
       const button=document.createElement('button');button.type='button';
-      button.className=`quest-item ${completed(npc)?'done':''} ${unlocked(npc)?'':'locked'}`;
+      button.className=`quest-item ${completed(npc)?'done':''} ${unlocked(npc)?'':'locked'} ${nextLead()===npc?'current-lead':''}`;
       button.title=`Find ${npc.name} in the town`;
       const avatar=document.createElement('span');avatar.className='quest-avatar';avatar.textContent=npc.icon;
       const details=document.createElement('span');details.className='quest-details';
       const strong=document.createElement('strong');strong.textContent=npc.name;
-      const small=document.createElement('small');small.textContent=completed(npc)?'Badge earned!':!unlocked(npc)?'Unlock after four lessons':`${saved.progress[npc.id]} / 2 · ${npc.subject}`;
+      const small=document.createElement('small');small.textContent=completed(npc)?'Clue collected ✓':!unlocked(npc)?`Follow ${characters[characters.indexOf(npc)-1].name}'s lead first`:nextLead()===npc?`NEXT LEAD · ${npc.subject}`:`${saved.progress[npc.id]} / 2 · ${npc.subject}`;
       details.append(strong,small); const mood=h('small',saved.relationships[npc.id]||'Ready to talk','relationship');details.append(mood);
-      const mark=document.createElement('span');mark.className='quest-mark';mark.textContent=completed(npc)?'✓':unlocked(npc)?'→':'🔒';
+      const mark=document.createElement('span');mark.className='quest-mark';mark.textContent=completed(npc)?'✓':nextLead()===npc?'★':unlocked(npc)?'→':'🔒';
       button.append(avatar,details,mark);
       button.addEventListener('click',()=>{
         if(modalOpen){closeIntro();} if(dialogue)closeDialogue();
@@ -304,6 +338,10 @@
   function talkTo(npc){
     if(modalOpen||player.move)return;
     route=[];routeTalk=null;
+    // Face the other character before the DS-style camera moves in.
+    const dx=npc.x-player.x,dy=npc.y-player.y;
+    player.facing=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';
+    encounterStarted=performance.now();
     dialogue={npc,mode:!unlocked(npc)?'locked':saved.turns[npc.id]?'branch':saved.pending[npc.id]?'repair':completed(npc)?'done':'greeting'};pressed.clear();
     drawDialogue();
     // Field-guide navigation can scroll the page below the game on phones.
@@ -312,7 +350,7 @@
     renderNearby();
   }
   function closeDialogue(){
-    dialogue?.comparison?.dispose();dialogue=null;pressed.clear();
+    dialogue?.comparison?.dispose();dialogue=null;pressed.clear();encounterStarted=0;
     topScreen.classList.remove('in-dialogue');dialoguePanel.setAttribute('aria-hidden','true');
     setPortrait(null);drawIdlePanel();renderNearby();canvas.focus({preventScroll:true});
   }
@@ -331,8 +369,11 @@
     const phase=dialogue.mode;
     if(phase==='comparison'){drawComparison();return;}
     if(phase==='locked'){
-      heading(npc.name+' · LINGO LAB','The lab door is still locked.');
-      paragraph('Dr. Nova: "The rumour spread because two messages lost their contexts. Talk to Mina, Theo, Professor Lin, and Jules. Each holds one clue. Bring all four here and we can save Story Night!"');
+      const lead=nextLead();
+      heading(npc.name+' · INVESTIGATION','You need the previous clue first.');
+      paragraph(`“I have part of the story,” ${npc.name} says, “but ${lead.name} has the next lead. Follow their trail and come back when the pieces connect.”`);
+      paragraph('Every villager holds one distinct part of the same mystery. Follow the highlighted character in your Field Guide.','story-hint');
+      action(`FIND ${lead.name.toUpperCase()}`,()=>{closeDialogue();walkToNPC(lead);});
       action('I’LL BE BACK',closeDialogue);
       return;
     }
@@ -342,7 +383,7 @@
       paragraph(`Badge collected: ${npc.badge}.`,'dialogue-mini');
       if(npc.id==='jules')action('PRACTICE TILES',()=>{dialogue.practice=true;dialogue.mode='question';drawDialogue();},true);
       if(npc.id==='nova'){
-        action(saved.world.storyEnding?'READ OR CHANGE YOUR ENDING':'FINISH THE NIGHT OF VOICES',()=>{dialogue.mode='victory';drawDialogue();});
+        action(saved.world.caseSolved?(saved.world.storyEnding?'READ OR CHANGE YOUR ENDING':'CHOOSE THE TOWN ANNOUNCEMENT'):'ASSEMBLE THE FOUR CLUES',()=>{if(saved.world.caseSolved){dialogue.mode='victory';drawDialogue();}else openCaseboard();});
         action('BLIND A/B DESK · OPTIONAL',openComparison,true);
       }
       action('BACK TO TOWN',closeDialogue);
@@ -392,16 +433,39 @@
       dialogueContent.append(h('span',q.concept,'concept-tag'));
       const notes=h('details',undefined,'lesson-notes');notes.append(h('summary','Field note · concept and example'),h('p',q.explanation),h('p',q.prompt),h('p',q.discussion||q.choices[q.correct]));dialogueContent.append(notes);
       const bridge=stories[npc.id]?.[saved.progress[npc.id]-1]?.next;if(bridge)paragraph(bridge,'dialogue-mini');
-      if(completed(npc) && npc.id!=='nova'){
+      if(completed(npc)){
         const clue=storyClues.find(c=>c.id===npc.id);
-        if(clue)paragraph(`✦ CONTEXT CLUE RECOVERED — ${clue.title}: ${clue.text}`,'story-clue-reveal');
-        if(storyClues.every(c=>saved.progress[c.id]>=2))paragraph('All four clues connect. The Night of Voices can be saved—Dr. Nova is waiting in the lab.','story-hint');
+        if(clue){
+          paragraph(`✦ PUZZLE PIECE ${storyClues.indexOf(clue)+1}/${storyClues.length} · ${clue.short}`,'story-clue-reveal');
+          paragraph(clue.text,'story-hint');
+        }
+        const next=nextAfter(npc);
+        if(next){
+          paragraph(`${npc.name}: “You have my piece. ${next.name} knows what happened next—take this clue to them!”`,'spoken-line');
+          action(`FOLLOW THE LEAD → ${next.name.toUpperCase()}`,()=>{closeDialogue();walkToNPC(next);});
+        }
+        if(storyClues.every(c=>saved.progress[c.id]>=2))paragraph('All five clues are collected. Reconstruct the rumour at Dr. Nova’s caseboard.','story-hint');
       }
       if(completed(npc))action(npc.id==='nova'?'THE FINAL SCENE':'KEEP THE CLUE & EXPLORE',advance);
       else action('CONTINUE CONVERSATION',advance);
       return;
     }
+    if(phase==='caseboard'){
+      if(dialogue.caseStep>=caseQuestions.length){dialogue.mode='victory';drawDialogue();return;}
+      const q=caseQuestions[dialogue.caseStep];
+      heading('DR. NOVA · RECONSTRUCTION DESK',`Assemble the message · ${dialogue.caseStep+1}/${caseQuestions.length}`);
+      paragraph('Five witnesses, five scraps of context. To clear the rumour, identify what each piece actually tells us.','story-hint');
+      const found=storyClues[dialogue.caseStep];
+      paragraph(`✦ ${found.title}: ${found.text}`,'story-clue-reveal');
+      paragraph(q.question,'spoken-line');
+      if(dialogue.caseHint)paragraph(dialogue.caseHint,'feedback wrong');
+      choiceButtons(q.options,solveCase);
+      paragraph('This is a deduction puzzle about the story, not a score for naturalness or AI authorship.','dialogue-mini');
+      action('PAUSE RECONSTRUCTION',closeDialogue,true);
+      return;
+    }
     if(phase==='victory'){
+      if(!saved.world.caseSolved){openCaseboard();return;}
       heading('CHAPTER III · THE FINAL MESSAGE','The Night of Voices is not cancelled.');
       paragraph('Dr. Nova spreads the four clues over a desk. “The forwarded scraps came from different conversations. Eight is the library closing time, not the festival’s. ‘Some students finished’ did not mean the others failed. No one actually cancelled tonight.”','spoken-line');
       paragraph('Outside, the square is almost empty. People are waiting for a reliable announcement. How should the town invite them back?','story-hint');
@@ -520,9 +584,9 @@
     if(dialogue.mode==='greeting'){dialogue.mode='question';drawDialogue();}
     else if(dialogue.mode==='feedback'){
       if(completed(dialogue.npc)){
-        if(dialogue.npc.id==='nova'){dialogue.mode='victory';drawDialogue();}else closeDialogue();
+        if(dialogue.npc.id==='nova'){if(saved.world.caseSolved){dialogue.mode='victory';drawDialogue();}else openCaseboard();}else closeDialogue();
       } else {dialogue.mode='question';delete dialogue.tiles;drawDialogue();}
-    }else if(['done','locked','victory','epilogue'].includes(dialogue.mode))closeDialogue();
+    }else if(['done','locked','victory','epilogue','caseboard'].includes(dialogue.mode))closeDialogue();
   }
   // Movable phrase tiles: drag, tap two positions, or use Alt + arrow keys.
   function drawPuzzle(){
@@ -647,6 +711,7 @@
     if(ev.target.closest?.('button, input, textarea, select, summary')&&['Enter',' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(keyName))return;
     if(modalOpen&&keyName==='Tab'){ev.preventDefault();document.getElementById('startBtn').focus();return;}
     if(modalOpen){if(keyName==='Escape'){closeIntro();}else if(keyName==='Enter'){ev.preventDefault();closeIntro();}return;}
+    if(dialogue?.mode==='caseboard'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)solveCase(Number(keyName)-1);return;}
     if(dialogue?.mode==='victory'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)chooseEnding(Number(keyName)-1);return;}
     if(dialogue?.mode==='comparison'&&['1','2','3','4'].includes(keyName)){ev.preventDefault();if(!ev.repeat)chooseComparison(Number(keyName)-1);return;}
     if(dialogue?.mode==='branch'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)answerBranch(Number(keyName)-1);return;}
@@ -873,11 +938,12 @@
     block(-13,-11-lift,5,5,n.skin);block(8,-11-lift,5,5,n.skin);
     block(-10,-40-lift,20,17,'#27324a');block(-8,-39-lift,16,15,n.skin);
     block(-11,-42-lift,22,9,hat);block(-11,-33-lift,5,5,hat);block(7,-34-lift,4,7,hat);
-    const look=isPlayer?(player.facing==='left'?-2:player.facing==='right'?2:0):0;
+    const face=isPlayer?player.facing:(dialogue?.npc?.id===n.id?(player.x<n.x?'left':player.x>n.x?'right':player.y<n.y?'up':'down'):'down');
+    const look=face==='left'?-2:face==='right'?2:0;
     block(-4+look,-30-lift,3,blink?1:3,'#20243b');block(4+look,-30-lift,3,blink?1:3,'#20243b');
     if(mood==='Needs repair'){block(-5,-34-lift,5,2,'#493b60');block(4,-35-lift,4,2,'#493b60');}
     if(mood==='Trust restored'||mood==='In sync'){block(-3,-26-lift,2,2,'#c98176');block(3,-26-lift,2,2,'#c98176');}
-    if(isPlayer&&player.facing==='up'){block(-8,-36-lift,16,12,hat);}
+    if(face==='up'){block(-8,-36-lift,16,12,hat);}
     block(-1,-25-lift,4,2,'#c98176');
     if(isPlayer){block(9,-23-lift,6,14,'#344f69');block(-11,-42-lift,21,5,'#c84d6b');block(-8,-46-lift,16,8,'#d9687c');block(5,-38-lift,10,5,'#c84d6b');block(-6,-20-lift,13,5,'#f8e4af');}
     else{block(-3,-21-lift,6,8,n.accent);if(n.id==='theo'){block(-9,-30-lift,7,6,'#39475b');block(2,-30-lift,7,6,'#39475b');block(-2,-29-lift,4,2,'#d8caba');}if(n.id==='prof'){block(-11,-20-lift,4,9,'#d9cab7');block(8,-20-lift,4,9,'#d9cab7');}if(n.id==='nova'){block(-12,-26-lift,5,8,'#8ed5d1');block(8,-26-lift,5,8,'#8ed5d1');}}
@@ -892,7 +958,7 @@
   function drawMapUI(){
     fill(12,12,200,34,'#0f1b34e8');fill(14,14,196,2,'#8f8db6');
     ctx.fillStyle='#f5d6a2';ctx.font='bold 13px monospace';
-    ctx.fillText(`✦ CLUES ${Math.min(4,characters.slice(0,4).filter(completed).length)}/4`,24,34);
+    ctx.fillText(`✦ CLUES ${characters.filter(completed).length}/${storyClues.length}`,24,34);
     if(completedCount()===4){
       fill(W*T-208,12,196,34,'#3f365de6');ctx.fillStyle='#f4d3ac';ctx.fillText('LINGO LAB OPEN!',W*T-194,33);
     }
@@ -987,6 +1053,21 @@
 
     function drawWorld(time){
     if(reducedMotion)time=0;
+    const active=dialogue?.npc;
+    // A DS-era challenger encounter: camera frames the two facing sprites in the visible upper map.
+    const elapsed=Math.max(0,performance.now()-encounterStarted);
+    const blend=active?(reducedMotion?1:Math.min(1,elapsed/460)):0;
+    const eased=blend*blend*(3-2*blend);
+    const zoom=1+eased*.55;
+    const fx=active?(player.px+active.x)*T/2+T/2:W*T/2;
+    const fy=active?(player.py+active.y)*T/2+T/2:H*T/2;
+    ctx.save();
+    if(active){
+      fill(0,0,W*T,H*T,'#0b172b');
+      const x=eased*(W*T/2-fx*zoom);
+      const y=eased*(H*T*.31-fy*zoom);
+      ctx.translate(x,y);ctx.scale(zoom,zoom);
+    }
     if(scene==='town'){
     drawGround();
     drawBuilding(2,2,7,5,'CAFÉ','#81536b','#b57a86');
@@ -1021,6 +1102,8 @@
       drawCharacter(ctx,npc.x*T+16,npc.y*T+27,npc,1,false,walk);
       if(saved.relationships[npc.id]==='Needs repair'){
         fill(npc.x*T+7,npc.y*T-25,20,18,'#f4c799');ctx.fillStyle='#6d4057';ctx.font='bold 15px monospace';ctx.fillText('?!',npc.x*T+8,npc.y*T-11);
+      }else if(nextLead()===npc){
+        fill(npc.x*T+4,npc.y*T-26,25,21,'#f4cf83');ctx.fillStyle='#31415f';ctx.font='bold 15px monospace';ctx.fillText('★',npc.x*T+10,npc.y*T-9);
       }else if(!unlocked(npc)){
         fill(npc.x*T+9,npc.y*T-22,15,16,'#e8e0b6');ctx.fillStyle='#3e4771';ctx.font='bold 13px monospace';ctx.fillText('!',npc.x*T+13,npc.y*T-9);
       } else if(completed(npc)){
@@ -1034,7 +1117,13 @@
     drawCharacter(ctx,plx,ply,{hair:'#29375b',skin:'#dba77d',outfit:'#6188bd',accent:'#f0d09a'},1,true,player.move?time/90:0);
     // Small gold cursor above player.
     fill(plx-4,ply-58+(reducedMotion?0:Math.sin(time/290)*2),8,8,'#f8dc9b');fill(plx-2,ply-60+(reducedMotion?0:Math.sin(time/290)*2),4,4,'#fff3bb');
+    ctx.restore();
     drawMapUI();
+    if(active){
+      fill(W*T-219,51,204,28,'#192849ee');fill(W*T-216,53,198,2,'#edbf86');
+      ctx.fillStyle='#ffe3ae';ctx.font='bold 11px monospace';
+      ctx.fillText(`✦ ENCOUNTER: ${active.name.toUpperCase()}`,W*T-208,69);
+    }
     if(dialogue&&dialogue.npc)setPortrait(dialogue.npc);
   }
   function animationLoop(time){
@@ -1058,7 +1147,7 @@
     requestAnimationFrame(animationLoop);
   }
   // Test hooks for browser tests only: no game data sent anywhere.
-  window.__LINGUA_DEBUG__={getState:()=>({x:player.x,y:player.y,progress:{...saved.progress},scene,relationships:{...saved.relationships},repairs:{...saved.repairs},turns:JSON.parse(JSON.stringify(saved.turns)),world:{...saved.world},pending:{...saved.pending},dialogue:dialogue?.mode||null,modalOpen}),moveTo:walkToNPC,characters};
+  window.__LINGUA_DEBUG__={getState:()=>({x:player.x,y:player.y,progress:{...saved.progress},scene,relationships:{...saved.relationships},repairs:{...saved.repairs},turns:JSON.parse(JSON.stringify(saved.turns)),world:{...saved.world},pending:{...saved.pending},dialogue:dialogue?.mode||null,caseStep:dialogue?.caseStep||0,nextLead:nextLead().id,modalOpen}),moveTo:walkToNPC,characters};
   setPortrait(null);renderJournal();drawIdlePanel();
   if(saved.started&&saved.world.storyIntroSeen){modalOpen=false;introModal.classList.add('hidden');}
   if(modalOpen){document.querySelector('.shell').inert=true;document.getElementById('startBtn').focus();}
