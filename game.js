@@ -21,8 +21,8 @@
     {
       id:'mina', name:'Mina', role:'The Café Regular', subject:'Register & Audience', x:7, y:8,
       icon:'☕', hair:'#26244d', skin:'#db9a70', outfit:'#df8099', accent:'#ffd0a7',
-      greeting:"Hey, traveler! I keep accidentally sounding like I'm writing business emails to my friends. Help?",
-      done:"I finally get it: different people and situations call for different registers. Thanks, friend!",
+      greeting:"You heard the Story Night rumour? I helped send invitations, but one friend thought I was pushing them away. Before we fix the town's message, can we fix ours?",
+      done:"The café is ready for Story Night. An invitation feels welcoming when it fits the person receiving it. Come by after the stories!",
       badge:'THE SOCIAL CHAMELEON',
       questions:[
         {
@@ -50,8 +50,8 @@
     {
       id:'theo', name:'Theo', role:'The Librarian', subject:'Conversation Rules', x:21, y:8,
       icon:'📚', hair:'#69513d', skin:'#bc855f', outfit:'#77a6a6', accent:'#ffe1a0',
-      greeting:"Shhh... just kidding. Welcome! A good conversation is a little like a cooperative game.",
-      done:"You're a pro at giving people the information they actually need. The shelves thank you.",
+      greeting:"I think I know where that scary 'Closes at 8' message came from. That's the LIBRARY, not the storytelling festival! Help me make the difference clear.",
+      done:"The library closes at eight; the festival is in the square. That missing detail made all the difference. Thanks for helping me clear it up!",
       badge:'THE CONVERSATION KEEPER',
       questions:[
         {
@@ -79,18 +79,18 @@
     {
       id:'prof', name:'Professor Lin', role:'The Linguist', subject:'Meaning & Context', x:6, y:11,
       icon:'🎓', hair:'#53506d', skin:'#f1bd8d', outfit:'#7486ba', accent:'#faf0d0',
-      greeting:"Good afternoon! Want to discover how much we communicate without actually saying it?",
-      done:"An excellent reminder: interpreting language is not the same as reading words in isolation.",
+      greeting:"Did you see the other half of the rumour—'Some students finished'? It was my classroom announcement! Let's explore what those words do and don't imply.",
+      done:"I can confirm the students finished their work. 'Some' never proved that others hadn't. Thanks for asking what the words actually allowed.",
       badge:'THE MEANING DETECTIVE',
       questions:[
         {
           title:'Some is a subtle word',
-          prompt:"I tell the class, 'Some students finished the assignment.' What might a listener infer?",
+          prompt:"I say, 'Some students finished the Story Night posters.' What might a listener infer?",
           choices:["We should plan for unfinished work because ‘some’ suggests not all.","I may be suggesting not everyone finished, but that isn't logically guaranteed.","We should ask whether everyone finished before making the plan."],
           correct:1, concept:'SCALAR IMPLICATURE',
           success:"Correct. 'Some' often suggests 'not all,' but the suggestion can be cancelled.",
           hint:"Think about what 'some' literally allows and what someone might infer because 'all' wasn't said.",
-          explanation:"'Some' literally permits the possibility of all. In conversation, choosing 'some' instead of 'all' can suggest that not all students finished. This extra inference is a scalar implicature, not a logical certainty."
+          explanation:"'Some' literally permits the possibility of all. In conversation, choosing 'some' instead of 'all' can suggest that not all students finished their posters. This extra inference is a scalar implicature, not a logical certainty."
         },
         {
           title:'A request in disguise',
@@ -107,8 +107,8 @@
     {
       id:'jules', name:'Jules', role:'The Market Seller', subject:'Ambiguity & Structure', x:18, y:10,
       icon:'🍎', hair:'#382f54', skin:'#a96b4d', outfit:'#eeb15c', accent:'#a2ddb8',
-      greeting:"Welcome to the market! I have apples, postcards, and sentences that don't mean just one thing.",
-      done:"A sentence can hide multiple structures under the same words. Quite a bargain, huh?",
+      greeting:"My signs for Story Night caused a second misunderstanding. Same words, different groupings! Could you help me make the market welcome everyone?",
+      done:"The market signs are clear again, and nobody gets left out by a poorly grouped phrase. Now the town's ready to welcome its guests.",
       badge:'THE AMBIGUITY EXPLORER',
       questions:[
         {
@@ -134,8 +134,8 @@
     {
       id:'nova', name:'Dr. Nova', role:'The AI Researcher', subject:'Writing & Perception', x:21, y:11,
       icon:'🤖', hair:'#2e4167', skin:'#cf9b7b', outfit:'#8a80d7', accent:'#b9eeeb',
-      greeting:"Welcome to the Lingo Lab. Let's explore how writing feels to different readers—and what those feelings can and cannot tell us.",
-      done:"Our exhibit is open! Readers can disagree about a style without proving who wrote it. The blind comparison desk is here whenever you want to explore.",
+      greeting:"You found the clues. Now we know the festival wasn't cancelled! But people are still confused. Help me decide how to tell the whole town—then we can investigate writing impressions.",
+      done:"We recovered the missing context and reopened the Night of Voices. Remember: a style can shape an impression without revealing its writer.",
       badge:'MASTER OF CONTEXT',
       questions:[
         {
@@ -234,6 +234,22 @@
   function completedCount(){return characters.filter(completed).length;}
   function announce(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('visible'),2600);}
   function numberEmoji(){return ['①','②','③'];}
+  // Short-story arc: completion reveals context, never a correct "human" writing style.
+  const storyClues = [
+    {id:'mina',title:'The invitation',text:'Tone depends on who is listening. A formal invitation can feel distant to a friend.'},
+    {id:'theo',title:'The closing time',text:'8 PM is when the LIBRARY closes—not when the festival ends.'},
+    {id:'prof',title:'The word “some”',text:'“Some” may suggest “not all,” but that suggestion can be cancelled.'},
+    {id:'jules',title:'The market sign',text:'The same words can group differently. Clear structure prevents exclusions.'}
+  ];
+  const finalAnnouncements = [
+    {title:'Clear and detailed',message:'Story Night is ON! The town square opens at 7 PM and stories begin at 7:30. The library closes at 8, but the festival is separate. Everyone is welcome.',ending:'The missing pieces finally fit. Theo pins the correct hours beside the library door. Neighbours who worried about the eight o’clock deadline head towards the square. Your detailed note helps readers find the practical information they needed.',tone:'clarity'},
+    {title:'Warm and inviting',message:'Story Night is still happening 💛 Come to the town square from 7! Stories start at 7:30. We’d love to see you there.',ending:'Mina reads the announcement aloud and grins. The message feels like an invitation, not an order. A few people still ask about the library closing time, and Theo cheerfully explains. Warmth brought people together; a follow-up supplies the extra detail.',tone:'warmth'},
+    {title:'Formal town notice',message:'NOTICE: The Night of Voices will take place in the town square. Entry opens at 7:00 PM, and storytelling begins at 7:30 PM. All are welcome.',ending:'Professor Lin posts your notice on the community board. Its formal register fits an official announcement and leaves the schedule unambiguous. Mina adds a handwritten welcome beside it, adapting the message for people passing the café.',tone:'official'}
+  ];
+  function storyChapter(){
+    const clues=storyClues.filter(c=>saved.progress[c.id]>=2).length;
+    return saved.world.storyEnding?'EPILOGUE · A TOWN TOGETHER':clues===4?'CHAPTER III · THE FINAL MESSAGE':clues>=2?'CHAPTER II · THE MISSING CONTEXT':'CHAPTER I · THE RUMOUR';
+  }
 
   function renderJournal(){
     const count=completedCount();
@@ -241,8 +257,16 @@
     document.getElementById('progressFill').style.width=`${count*20}%`;
     const list=document.getElementById('questList');list.replaceChildren();
     const next=characters.find(n=>!completed(n));
-    document.getElementById('objectiveText').textContent=next?`Help ${next.name} · ${next.subject}`:'All five badges earned. Revisit friends and practice sentence puzzles.';
+    const clues=storyClues.filter(c=>completed(characters.find(n=>n.id===c.id)));
+    const chapter=storyChapter();
+    document.getElementById('storyAct').textContent=chapter;
+    document.getElementById('storyTitle').textContent=saved.world.storyEnding?'The festival is back!':clues.length===4?'One announcement left':'A rumour in pieces';
+    document.getElementById('storySummary').textContent=saved.world.storyEnding?'The town found its voice. Revisit your friends or try another announcement.':clues.length===4?'The forwarded scraps were about different situations. Visit Dr. Nova to reunite the town.':`Tonight's Story Night is in doubt. You've recovered ${clues.length} of 4 missing context clues.`;
+    document.getElementById('objectiveText').textContent=saved.world.storyEnding?'The Night of Voices is saved. Revisit Dr. Nova to choose another ending.':clues.length===4?'All four clues found. Go to Dr. Nova in the lab and prepare the festival announcement.':`Visit the neighbours. Find ${4-clues.length} more context ${4-clues.length===1?'clue':'clues'} before the lab opens.`;
+    const clueList=document.getElementById('clueList');
+    clueList.replaceChildren(...storyClues.map(c=>h('li',`${clues.includes(c)?'✓':'○'} ${c.title}${clues.includes(c)?' — '+c.text:''}`,clues.includes(c)?'found':'missing')));
     document.getElementById('memoryList').replaceChildren(...saved.memories.map(m=>h('li',m)));
+    document.querySelector('.location-title').textContent=`THE NIGHT OF VOICES ✦ ${chapter}`;
 
     for(const npc of characters){
       const button=document.createElement('button');button.type='button';
@@ -308,7 +332,7 @@
     if(phase==='comparison'){drawComparison();return;}
     if(phase==='locked'){
       heading(npc.name+' · LINGO LAB','The lab door is still locked.');
-      paragraph('Dr. Nova: "Before the final lab conversation, learn from Mina, Theo, Professor Lin, and Jules. Come back with their four badges!"');
+      paragraph('Dr. Nova: "The rumour spread because two messages lost their contexts. Talk to Mina, Theo, Professor Lin, and Jules. Each holds one clue. Bring all four here and we can save Story Night!"');
       action('I’LL BE BACK',closeDialogue);
       return;
     }
@@ -317,14 +341,20 @@
       paragraph(saved.repairs[npc.id]?'I remember how you listened when we misunderstood each other. Thanks for working through it with me.':'We made a good team. The town feels a little more connected now.','feedback');
       paragraph(`Badge collected: ${npc.badge}.`,'dialogue-mini');
       if(npc.id==='jules')action('PRACTICE TILES',()=>{dialogue.practice=true;dialogue.mode='question';drawDialogue();},true);
-      if(npc.id==='nova')action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+      if(npc.id==='nova'){
+        action(saved.world.storyEnding?'READ OR CHANGE YOUR ENDING':'FINISH THE NIGHT OF VOICES',()=>{dialogue.mode='victory';drawDialogue();});
+        action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+      }
       action('BACK TO TOWN',closeDialogue);
       return;
     }
     if(phase==='greeting'){
       heading(npc.name+' · '+npc.role,'Hey there, explorer!');
       paragraph(npc.greeting);
-      paragraph(`Lesson: ${npc.subject} · ${saved.progress[npc.id]} of ${npc.questions.length} conversations completed`,'dialogue-mini');
+      paragraph(`STORY · ${storyChapter()} · ${npc.subject}`,'dialogue-mini');
+      if(npc.id!=='nova' && saved.progress[npc.id]===0)paragraph('The rumour is missing context. Your choices here will help reveal another piece of the truth.','story-hint');
+      if(npc.id==='nova')paragraph('The pieces say different things: “some” was not a cancellation, and eight was the library closing time. Now the town needs one clear message.','story-hint');
+      paragraph(`Conversation ${saved.progress[npc.id]+1} of ${npc.questions.length}`,'dialogue-mini');
       action('LET’S TALK',()=>{dialogue.mode='question';drawDialogue();});
       if(npc.id==='nova')action('BLIND A/B DESK · OPTIONAL',openComparison,true);
       return;
@@ -362,17 +392,52 @@
       dialogueContent.append(h('span',q.concept,'concept-tag'));
       const notes=h('details',undefined,'lesson-notes');notes.append(h('summary','Field note · concept and example'),h('p',q.explanation),h('p',q.prompt),h('p',q.discussion||q.choices[q.correct]));dialogueContent.append(notes);
       const bridge=stories[npc.id]?.[saved.progress[npc.id]-1]?.next;if(bridge)paragraph(bridge,'dialogue-mini');
-      if(completed(npc))action(npc.id==='nova'?'SEE YOUR RESULTS':'COLLECT BADGE & EXPLORE',advance);
+      if(completed(npc) && npc.id!=='nova'){
+        const clue=storyClues.find(c=>c.id===npc.id);
+        if(clue)paragraph(`✦ CONTEXT CLUE RECOVERED — ${clue.title}: ${clue.text}`,'story-clue-reveal');
+        if(storyClues.every(c=>saved.progress[c.id]>=2))paragraph('All four clues connect. The Night of Voices can be saved—Dr. Nova is waiting in the lab.','story-hint');
+      }
+      if(completed(npc))action(npc.id==='nova'?'THE FINAL SCENE':'KEEP THE CLUE & EXPLORE',advance);
       else action('CONTINUE CONVERSATION',advance);
       return;
     }
     if(phase==='victory'){
-      heading('LINGUA TOWN · ALL FIVE BADGES','You are a language detective! ✦');
-      paragraph('You explored register, conversational cooperation, implicature, speech acts, ambiguity, and the limits of AI-authorship guesses.');
-      paragraph('The most important lesson? Meaning depends on people and context—not just words on a page.','feedback');
-      action('KEEP EXPLORING',closeDialogue);
+      heading('CHAPTER III · THE FINAL MESSAGE','The Night of Voices is not cancelled.');
+      paragraph('Dr. Nova spreads the four clues over a desk. “The forwarded scraps came from different conversations. Eight is the library closing time, not the festival’s. ‘Some students finished’ did not mean the others failed. No one actually cancelled tonight.”','spoken-line');
+      paragraph('Outside, the square is almost empty. People are waiting for a reliable announcement. How should the town invite them back?','story-hint');
+      choiceButtons(finalAnnouncements.map(c=>`${c.title}: ${c.message}`),chooseEnding);
+      paragraph('All three messages are viable. Style changes how different audiences may receive the news; there is no single “most human” answer.','dialogue-mini');
       action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+      action('BACK TO THE SQUARE',closeDialogue,true);
+      return;
     }
+    if(phase==='epilogue'){
+      const ending=finalAnnouncements.find(c=>c.tone===saved.world.storyEnding)||finalAnnouncements[0];
+      heading('EPILOGUE · THE NIGHT OF VOICES','The stories begin. ✦');
+      paragraph(`Your announcement: “${ending.message}”`,'spoken-line');
+      paragraph(ending.ending,'story-hint');
+      const touches=[];
+      if(saved.world.cafeStyle==='quiet')touches.push('Mina saves a quiet café table for guests who want a moment away from the crowd.');
+      if(saved.world.cafeStyle==='playful')touches.push('Mina raises her cup for the one-silly-toast tradition you started.');
+      if(saved.world.classroomComfort==='sunny')touches.push('Professor Lin brings the lecture notes out to the sunny corner.');
+      if(saved.world.classroomComfort==='window')touches.push('Professor Lin opens the now-comfortable classroom to visiting storytellers.');
+      if(saved.world.libraryHelp==='map')touches.push('Theo posts an easy-to-follow map so nobody misses the square.');
+      if(saved.world.libraryHelp==='escort')touches.push('Theo walks late guests from the library to the square.');
+      if(touches.length)paragraph(touches.join(' '));
+      paragraph('The mystery was never about finding a guilty author. It was about listening, checking what words implied, and restoring the context people needed. Your conversations changed how this night unfolded.','feedback');
+      action('TRY ANOTHER ANNOUNCEMENT',()=>{dialogue.mode='victory';drawDialogue();});
+      action('EXPLORE AFTER THE FESTIVAL',closeDialogue,true);
+      action('BLIND A/B DESK · OPTIONAL',openComparison,true);
+      return;
+    }
+  }
+  function chooseEnding(i){
+    if(dialogue?.mode!=='victory'||!finalAnnouncements[i])return;
+    saved.world.storyEnding=finalAnnouncements[i].tone;
+    saved.memories.push(`Story Night: The town reunited through ${finalAnnouncements[i].title.toLowerCase()}.`);
+    saved.memories=saved.memories.slice(-5);
+    persist();renderJournal();dialogue.mode='epilogue';drawDialogue();
+    announce('✦ STORY NIGHT IS BACK!');
   }
   function choiceButtons(choices,handler){
     const group=h('div',undefined,'choice-grid');
@@ -457,7 +522,7 @@
       if(completed(dialogue.npc)){
         if(dialogue.npc.id==='nova'){dialogue.mode='victory';drawDialogue();}else closeDialogue();
       } else {dialogue.mode='question';delete dialogue.tiles;drawDialogue();}
-    }else if(['done','locked','victory'].includes(dialogue.mode))closeDialogue();
+    }else if(['done','locked','victory','epilogue'].includes(dialogue.mode))closeDialogue();
   }
   // Movable phrase tiles: drag, tap two positions, or use Alt + arrow keys.
   function drawPuzzle(){
@@ -563,7 +628,7 @@
     else announce('Choose an open tile or tap a character.');
     canvas.focus({preventScroll:true});
   }
-  function closeIntro(){document.querySelector('.shell').inert=false;introModal.classList.add('hidden');modalOpen=false;saved.started=true;persist();renderNearby();canvas.focus({preventScroll:true});}
+  function closeIntro(){document.querySelector('.shell').inert=false;introModal.classList.add('hidden');modalOpen=false;saved.started=true;saved.world.storyIntroSeen=true;persist();renderNearby();canvas.focus({preventScroll:true});}
   function showIntro(){document.querySelector('.shell').inert=true;modalOpen=true;pressed.clear();introModal.classList.remove('hidden');document.getElementById('startBtn').focus();}
   document.getElementById('startBtn').addEventListener('click',closeIntro);
   document.getElementById('helpBtn').addEventListener('click',showIntro);
@@ -573,15 +638,16 @@
   document.getElementById('restartBtn').addEventListener('click',()=>{
     if(!window.confirm('Start a new game and clear all earned badges on this device?'))return;
     for(const n of characters)saved.progress[n.id]=0;
-    saved.relationships={};saved.repairs={};saved.pending={};saved.turns={};saved.world={};saved.memories=[];travelTarget=null;routeEnter=null;
+    saved.relationships={};saved.repairs={};saved.pending={};saved.turns={};saved.world={};saved.started=false;saved.memories=[];travelTarget=null;routeEnter=null;
     if(scene!=='town')changeScene('town');
-    persist();renderJournal();route=[];routeTalk=null;player.x=player.px=12;player.y=player.py=12;player.move=null;closeDialogue();announce('NEW ADVENTURE STARTED!');
+    persist();renderJournal();route=[];routeTalk=null;player.x=player.px=12;player.y=player.py=12;player.move=null;closeDialogue();showIntro();announce('NEW STORY STARTED!');
   });
   window.addEventListener('keydown',ev=>{
     const keyName=ev.key;
     if(ev.target.closest?.('button, input, textarea, select, summary')&&['Enter',' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(keyName))return;
     if(modalOpen&&keyName==='Tab'){ev.preventDefault();document.getElementById('startBtn').focus();return;}
     if(modalOpen){if(keyName==='Escape'){closeIntro();}else if(keyName==='Enter'){ev.preventDefault();closeIntro();}return;}
+    if(dialogue?.mode==='victory'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)chooseEnding(Number(keyName)-1);return;}
     if(dialogue?.mode==='comparison'&&['1','2','3','4'].includes(keyName)){ev.preventDefault();if(!ev.repeat)chooseComparison(Number(keyName)-1);return;}
     if(dialogue?.mode==='branch'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)answerBranch(Number(keyName)-1);return;}
     if(dialogue&&dialogue.mode==='repair'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)repairConversation(Number(keyName)-1);return;}
@@ -667,6 +733,30 @@
   function drawBench(x,y){let px=x*T,py=y*T;fill(px+1,py+10,31,9,'#6e5c5b');fill(px+2,py+11,28,5,'#b18c6f');fill(px+5,py+22,5,9,'#46596f');fill(px+22,py+22,5,9,'#46596f');}
   function drawStand(x,y){let px=x*T,py=y*T;fill(px-4,py+15,42,20,'#79564c');fill(px,py+19,36,13,'#c58f63');fill(px-7,py+6,48,12,'#fff0b1');for(let i=0;i<4;i++)fill(px-6+i*12,py+6,11,9,i%2?'#f5d79e':'#d77384');fill(px+7,py+20,8,6,'#e18d74');fill(px+20,py+20,8,6,'#a1d07f');}
   function drawSign(x,y,text){let px=x*T,py=y*T;fill(px+14,py+13,4,23,'#795d4a');fill(px-14,py,62,23,'#293959');fill(px-11,py+3,56,17,'#f7e7b4');ctx.fillStyle='#36516e';ctx.font='bold 9px monospace';ctx.textAlign='center';ctx.fillText(text,px+17,py+15);ctx.textAlign='start';}
+  function drawStoryFestival(time){
+    // A bunting trail frames the central courtyard, turning lit after the finale.
+    const isSaved=!!saved.world.storyEnding;
+    const left=9*T,right=17*T,y=2*T+10;
+    fill(left,y,right-left,3,'#564d7b');
+    for(let i=0;i<12;i++){
+      const x=left+i*21, color=['#eea4ac','#f6d183','#9adac9','#a99ad2'][i%4];
+      fill(x,y+4,16,10,isSaved?color:'#b4b0bc');
+      fill(x+4,y+14,8,5,isSaved?color:'#b4b0bc');
+      if(isSaved){fill(x+6,y-3,4,4,'#fff3ae');if(!reducedMotion&&i%3===0)fill(x+6,y-5+Math.sin(time/300+i)*2,4,4,'#fffde4');}
+    }
+    // A noticeboard near the plaza changes from uncertain rumour to clear invitation.
+    const sx=15*T,sy=11*T+4;
+    fill(sx+29,sy+36,7,18,'#866456');
+    fill(sx,sy,66,39,'#3e4a67');fill(sx+4,sy+4,58,31,isSaved?'#fdf0c4':'#e5d9cc');
+    ctx.fillStyle=isSaved?'#406d57':'#955e60';ctx.font='bold 9px monospace';
+    ctx.textAlign='center';ctx.fillText(isSaved?'STORY ON!':'STORY ???',sx+33,sy+17);ctx.fillText(isSaved?'7:30 PM':'8 PM?',sx+33,sy+29);ctx.textAlign='start';
+    if(isSaved){
+      // Guests gather around the fountain, but never block movement or interaction.
+      for(const [x,y,col] of [[9,12,'#d68194'],[10,13,'#8d99cf'],[16,9,'#ddaf73'],[14,13,'#8cc6a0']]){
+        fill(x*T+7,y*T+8,12,12,col);fill(x*T+9,y*T+2,8,8,'#e1b38c');
+      }
+    }
+  }
   function drawCharacter(g,x,y,n,scale=1,isPlayer=false,walk=0){
     // x,y marks the sprite centre and ground line. Blocks make it legible at native DS-like resolution.
     const block=(px,py,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x+px*scale),Math.round(y+py*scale),Math.round(w*scale),Math.round(h*scale));};
@@ -745,7 +835,8 @@
     for(const [x,y] of trees)drawTree(x,y);
     for(const [x,y] of benches)drawBench(x,y);
     for(const [x,y] of boxes)drawStand(x,y);
-    drawSign(10,5,'TOWN');
+    drawSign(10,5,'STORY');
+    drawStoryFestival(time);
     // Flower patches and flags.
     for(const [x,y] of [[3,8],[8,11],[3,11],[23,9],[15,14],[9,4],[25,11]]){
       fill(x*T+7,y*T+8,4,4,'#f9e29f');fill(x*T+13,y*T+14,4,4,'#f3a7a9');fill(x*T+22,y*T+20,4,4,'#f7eea0');
@@ -805,7 +896,7 @@
   // Test hooks for browser tests only: no game data sent anywhere.
   window.__LINGUA_DEBUG__={getState:()=>({x:player.x,y:player.y,progress:{...saved.progress},scene,relationships:{...saved.relationships},repairs:{...saved.repairs},turns:JSON.parse(JSON.stringify(saved.turns)),world:{...saved.world},pending:{...saved.pending},dialogue:dialogue?.mode||null,modalOpen}),moveTo:walkToNPC,characters};
   setPortrait(null);renderJournal();drawIdlePanel();
-  if(saved.started){modalOpen=false;introModal.classList.add('hidden');}
+  if(saved.started&&saved.world.storyIntroSeen){modalOpen=false;introModal.classList.add('hidden');}
   if(modalOpen){document.querySelector('.shell').inert=true;document.getElementById('startBtn').focus();}
   renderNearby();requestAnimationFrame(animationLoop);
 })();

@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#151d38" />
-    <meta name="description" content="Lingua Town: a pixel-art conversation adventure that teaches introductory linguistics." />
-    <title>Lingua Town — A Conversation Adventure</title>
+    <meta name="description" content="The Night of Voices: a short pixel-art story about a town, a rumour, and the meaning we make with words." />
+    <title>Lingua Town: The Night of Voices — A Short Story RPG</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -14,7 +14,7 @@
         <div class="brand-wrap">
           <span class="star-logo" aria-hidden="true">✦</span>
           <div>
-            <p class="eyebrow">LINGO LAB · AN ORIGINAL PIXEL-ART ADVENTURE</p>
+            <p class="eyebrow">A SHORT STORY RPG · ORIGINAL PIXEL ART</p>
             <h1>LINGUA <span>TOWN</span><span class="title-dot">.</span></h1>
           </div>
         </div>
@@ -29,7 +29,7 @@
           <div class="device">
             <div class="device-bar">
               <div class="device-led"><span></span> NOW EXPLORING</div>
-              <div class="location-title" aria-live="polite">LINGUA TOWN <span>✦</span> DAY 01</div>
+              <div class="location-title" aria-live="polite">THE NIGHT OF VOICES <span>✦</span> CHAPTER I</div>
               <div class="device-indicator"><span></span><span></span><span></span></div>
             </div>
             <div class="top-screen">
@@ -51,7 +51,7 @@
                 </div>
               </section>
             </div>
-            <div class="explore-bar"><span>✦ FOLLOW THE GOLD DOORSTEPS</span><button type="button" id="leaveRoomBtn" hidden>RETURN TO TOWN ↗</button></div>
+            <div class="explore-bar"><span>✦ FIND THE FOUR MISSING CONTEXT CLUES</span><button type="button" id="leaveRoomBtn" hidden>RETURN TO TOWN ↗</button></div>
             <div class="hinge"><span class="speaker-holes">•••••</span><span>LINGUA SYSTEM · 01</span><span class="speaker-holes">•••••</span></div>
             <div class="device-footer">
               <div class="control-group"><span class="button-key">E</span> TALK <span class="small-sep">/</span> <span class="button-key">↵</span> CONTINUE <span class="small-sep">/</span> <span class="button-key">1–3</span> CHOOSE</div>
@@ -74,14 +74,19 @@
         <aside class="journal" aria-label="Field guide">
           <div class="journal-top"><span class="journal-icon">✎</span><div><p class="eyebrow">YOUR ADVENTURE</p><h2>FIELD GUIDE</h2></div></div>
           <div class="journal-inner">
-            <div class="journal-progress"><div class="progress-top"><span>LINGUIST BADGES</span><strong id="progressCount">0 / 5</strong></div><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div></div>
-            <div class="current-objective"><span>CURRENT OBJECTIVE</span><p id="objectiveText"></p></div>
+            <div class="journal-progress"><div class="progress-top"><span>STORY CLUES & BADGES</span><strong id="progressCount">0 / 5</strong></div><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div></div>
+            <div class="story-case" aria-label="Your story so far">
+                <p class="story-act" id="storyAct">CHAPTER I · THE RUMOUR</p>
+                <h3 id="storyTitle">The Night of Voices</h3>
+                <p id="storySummary">The festival is tonight. But two forwarded scraps of text have everyone convinced it's off.</p>
+              </div>
+              <div class="current-objective"><span>CURRENT OBJECTIVE</span><p id="objectiveText"></p></div>
             <h3>PEOPLE TO MEET <span>05</span></h3>
             <div id="questList" class="quest-list"></div>
-            <div class="journal-rule"></div><div class="memory-section"><p class="field-title">TOWN MEMORIES</p><ul id="memoryList" class="memory-list"></ul></div>
+            <div class="story-clues"><p class="field-title">YOUR CONTEXT CLUES</p><ul id="clueList" aria-live="polite"></ul></div><div class="journal-rule"></div><div class="memory-section"><p class="field-title">TOWN MEMORIES</p><ul id="memoryList" class="memory-list"></ul></div>
             <p class="field-title">WHAT YOU'LL LEARN</p>
             <p class="journal-copy">How meaning depends on context, why sentences can be ambiguous, and why sounding natural isn't the same as being human-written.</p>
-            <div class="journal-note"><span>✦</span><p><strong>YOUR MISSION</strong><br/>Listen, respond, and repair misunderstandings. Help four neighbors to open the lab.</p></div>
+            <div class="journal-note"><span>✦</span><p><strong>YOUR MISSION</strong><br/>Find what the messages really meant, then help the town announce Story Night clearly.</p></div>
             <p id="saveStatus" class="save-status">● PROGRESS AUTOSAVES</p>
           </div>
         </aside>
@@ -93,10 +98,12 @@
       <div class="intro-card">
         <span class="intro-spark">✦ ✧ ✦</span>
         <p class="eyebrow">A CONVERSATION ADVENTURE</p>
-        <h2 id="introTitle">WELCOME TO<br/><em>LINGUA TOWN!</em></h2>
-        <p>Step inside. Make a connection. A stiff reply can confuse a friend; a thoughtful repair can bring you closer. Your words change this town.</p>
-        <div class="intro-steps"><span><strong>01</strong> EXPLORE</span><span><strong>02</strong> TALK</span><span><strong>03</strong> REPAIR</span></div>
-        <button id="startBtn" class="primary-btn" type="button">LET'S EXPLORE <span>→</span></button>
+        <h2 id="introTitle">THE NIGHT<br/><em>OF VOICES</em></h2>
+        <p>Tonight is Lingua Town's annual storytelling festival. But a forwarded message says <strong>“Some students finished…”</strong> and <strong>“Closes at eight.”</strong> Now everyone thinks the festival is cancelled.</p>
+        <div class="rumor-note"><span>FORWARDED MESSAGE · CONTEXT MISSING</span><strong>Some students finished…<br/>Closes at 8.</strong><em>STORY NIGHT IS OFF?!</em></div>
+        <p>Something doesn't add up. Visit four neighbours, discover what each message really meant, and help Dr. Nova bring the town together before the stories begin.</p>
+        <div class="intro-steps"><span><strong>I</strong> INVESTIGATE</span><span><strong>II</strong> CONNECT</span><span><strong>III</strong> UNITE</span></div>
+        <button id="startBtn" class="primary-btn" type="button">BEGIN THE STORY <span>→</span></button>
         <p class="intro-caption">WASD / ARROWS TO MOVE · E AT GOLD DOORS TO ENTER<br/>TAP PEOPLE TO VISIT · MOVE WORD TILES TO CHANGE MEANING</p>
       </div>
     </div>

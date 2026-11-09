@@ -3,7 +3,7 @@
 window.LinguaConversations = {
   mina: [
     {
-      line: "Hey! Class is finally over. Want to do something together? I'm tired, but I could use some company.",
+      line: "Hey! Class is finally over, and Story Night's tonight. Everyone's nervous about that rumour. I'm tired, but I could use some company before the festival. Want to hang out?",
       replies: ["Would you be available for refreshments this afternoon?", "Bubble tea after class? We could find a quiet table.", "Tea mission? I'll buy if you help me choose a ridiculous flavor."],
       routes: [{repair:true}, {branch:'quiet'}, {branch:'playful'}],
       reaction: ["Mina hesitates. ‘Available for refreshments? Is this an official appointment, or are we just hanging out?’"],
@@ -18,7 +18,7 @@ window.LinguaConversations = {
           {reaction:"‘To surviving class!’ Mina grins, then settles in. The joke worked because you checked whether she wanted to keep it going.", consequence:"Mina starts a one-toast café tradition with you.", effect:{cafeStyle:'playful'}},
           {reaction:"‘Deal. I like the joke, just not a whole performance today.’ Mina feels heard. Register can change within one conversation.", consequence:"Mina chooses the quiet table after your playful invitation.", effect:{cafeStyle:'quiet'}}]}
       },
-      next:"Mina takes out her phone. ‘Now, a different audience: I need to ask Professor Chen about office hours.’"
+      next:"Mina glances at the empty café seats. ‘Maybe people thought our invitation sounded too cold. Now, another audience: I need to ask Professor Chen about office hours.’"
     },
     {
       line:"I haven't met Professor Chen. The syllabus says office hours are by appointment. Which opening should I send?",
@@ -36,9 +36,9 @@ window.LinguaConversations = {
   ],
   theo: [
     {
-      line:"A student asks, ‘What time does the library close tonight?’ We close at 8 PM, and checkout stays open until then. They're holding a book.",
+      line:"A student asks, ‘What time does the library close tonight?’ We close at 8 PM, but Story Night is in the town square. Someone forwarded only 'Closes at eight' and now thinks the festival is ending. The student needs the exact time.",
       replies:["You've still got time to borrow that.", "8 PM tonight.", "8 PM tonight. Would you like help finding anything before then?"],
-      routes:[{repair:true},{outcome:{reaction:"‘Great, I'll be back by half past seven.’ The student can plan their evening. Theo nods: ‘The short answer gave them what they asked for.’",consequence:"The queue clears; Theo can help with the lecture archive.",effect:{libraryHelp:'concise'}}},{branch:'help'}],
+      routes:[{repair:true},{outcome:{reaction:"‘Great, I'll be back by half past seven.’ The student can plan their evening. Theo nods: ‘The short answer gave them what they asked for.’",consequence:"The library closing time is clear, and Theo can help with the Story Night archive.",effect:{libraryHelp:'concise'}}},{branch:'help'}],
       reaction:["‘Thanks, but when exactly?’ the student asks. Theo whispers, ‘Your reassurance was relevant; it just didn't give them a time.’"],
       repair:"The student has a bus to catch. Add the information they need to plan.",
       repairs:["Sorry—8 PM tonight. You can check it out any time before then.", "You should be fine if you come back later.", "We close at 8 PM. Do you need a quick checkout before your bus?"],
@@ -46,7 +46,7 @@ window.LinguaConversations = {
       branches:{help:{line:"‘Actually, yes—where's the returns desk?’ The student accepts your offer. Theo points out a map and an open aisle.",replies:["Point out the desk on the map so they can go straight there.", "Offer to walk them over, if they'd like."],outcomes:[
         {reaction:"‘Perfect, I can find it from here.’ The student heads off. Theo smiles: ‘Extra information helped because you checked that it was wanted.’",consequence:"Theo leaves a clear route map out for visitors.",effect:{libraryHelp:'map'}},
         {reaction:"‘Yes, please.’ You walk over together. Theo says, ‘A short answer and an offer of help can both cooperate; the next turn tells us what helps this person.’",consequence:"Theo offers visitors a choice of directions or a short escort.",effect:{libraryHelp:'escort'}}]}},
-      next:"Theo pulls out a lecture flyer. ‘A friend said, “Well, the slides were colorful.” That's all I know about the talk.’"
+      next:"Theo finds an old Story Night lecture flyer. ‘A friend said, “Well, the slides were colorful.” That's all I know about the talk.’"
     },
     {
       line:"A friend answered ‘Was the lecture interesting?’ with ‘Well, the slides were colorful.’ Should I recommend the lecture to a student?",
@@ -63,14 +63,14 @@ window.LinguaConversations = {
   ],
   prof: [
     {
-      line:"‘Some students finished the assignment,’ Lin tells the study group. They need to decide whether to review unfinished work.",
+      line:"‘Some students finished the Story Night posters,’ Lin tells the study group. Rumour has it that the others left the event unfinished. What should the group infer?",
       replies:["Then we'll plan around the students who haven't finished yet.", "You may mean not everyone finished, but ‘some’ doesn't guarantee that. Shall we check?", "Do you know whether all of them finished, or only some?"],
-      routes:[{repair:true},{outcome:{reaction:"‘In fact, all of them did,’ Lin adds. The group puts away its unfinished-work plan. ‘My second sentence cancels the suggestion without contradicting the first.’",consequence:"The study group checks the facts before planning its review."}},{branch:'check'}],
+      routes:[{repair:true},{outcome:{reaction:"‘In fact, all the festival posters are finished,’ Lin adds. The group puts away its unfinished-poster plan. ‘My second sentence cancels the suggestion without contradicting the first.’",consequence:"The study group checks the facts before planning its review."}},{branch:'check'}],
       reaction:["Lin stops the plan. ‘That's a reasonable inference from “some,” but in fact all finished. I hadn't said anyone was still working.’"],
       repair:"Adjust the group's plan after the new information. An understandable inference can still be revised.",
       repairs:["Then let's review questions they have about the completed work instead.", "Maybe we should keep the unfinished-work session because “some” suggested they needed it.", "Let's ask which parts they found difficult even though they finished."],
       repairRoutes:[{outcome:{reaction:"‘Good adjustment,’ Lin says. The group switches plans without treating the earlier inference as foolish—or certain.",consequence:"The group reviews questions about the completed work."}},{hint:"‘The suggestion has been cancelled,’ Lin reminds you. ‘We now know all finished. What plan uses that new information?’"},{branch:'check'}],
-      branches:{check:{line:"‘All finished,’ Lin confirms. ‘But finishing isn't the same as understanding.’ What should the group ask next?",replies:["Which part would you like to discuss together?", "Would you prefer a worked example or a short explanation?"],outcomes:[
+      branches:{check:{line:"‘All the posters were finished,’ Lin confirms. ‘But finishing isn't the same as being ready for the crowd.’ What should the group ask next?",replies:["Which part would you like to discuss together?", "Would you prefer a worked example or a short explanation?"],outcomes:[
         {reaction:"Students name two difficult steps. Lin nods: ‘You asked for the missing information instead of building a plan on an inference.’",consequence:"The study group chooses two difficult steps to discuss."},
         {reaction:"The group asks for a worked example. Lin smiles: ‘You checked their preference. Completion alone didn't tell us which kind of help they wanted.’",consequence:"The study group chooses a worked example."}]}},
       next:"Lin gestures toward the study area. ‘It's pretty chilly in here…’"

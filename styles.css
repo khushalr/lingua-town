@@ -94,3 +94,22 @@ button:focus-visible,canvas:focus-visible{outline:3px solid #e6a24f;outline-offs
   .dialogue-overlay .word-tray{gap:7px}
   .dialogue-overlay .word-tile{font-size:12px;padding:8px}
 }
+
+/* The Night of Voices · narrative case-file presentation */
+.story-case{background:#252f53;color:#f6efdc;border:3px solid #b8a7e4;border-radius:8px;padding:14px 14px 12px;margin:0 0 17px;box-shadow:4px 4px 0 #d4c9e1}
+.story-case .story-act{font:8px/1.7 var(--pixel);color:#f5c682;margin:0 0 7px}
+.story-case h3{font:12px/1.6 var(--pixel);margin:0 0 8px;color:#fff6d9;display:block}
+.story-case>p:last-child{font-size:12px;line-height:1.55;color:#e1ddf5;margin:0}
+.story-clues{margin-top:16px}
+.story-clues ul{list-style:none;padding:0;margin:9px 0 13px}
+.story-clues li{font-size:12px;line-height:1.55;border-left:3px solid #cad3e9;padding:7px 9px;margin:5px 0;background:#f3f3f9;color:#6b7390}
+.story-clues li.found{background:#e5f7ed;border-color:#5aba8f;color:#315f53}
+.story-clue-reveal{background:#fff6da!important;color:#655027!important;border:2px dashed #d5af5a;padding:11px;border-radius:5px;font-weight:650}
+.story-hint{background:#f3eefe!important;color:#544c79!important;border-left:4px solid #9782d5;padding:9px 11px;border-radius:4px}
+.rumor-note{transform:rotate(-1deg);display:grid;gap:7px;margin:4px auto 18px;max-width:360px;background:#fff5d9;border:2px dashed #ba985c;padding:13px;box-shadow:3px 5px 0 #e0d4aa}
+.rumor-note span{font:8px/1.5 var(--pixel);color:#8a7451}
+.rumor-note strong{font:12px/1.75 var(--pixel);color:#4b4765}
+.rumor-note em{font:10px/1.5 var(--pixel);color:#ad4b5e;font-style:normal}
+.intro-card{max-width:540px;max-height:94vh;overflow-y:auto}
+.intro-card .rumor-note{margin-top:-3px}
+@media(max-width:680px){.story-case{margin-top:3px}.rumor-note strong{font-size:9px}.intro-card{max-height:92vh}.intro-card .rumor-note{padding:10px}}
