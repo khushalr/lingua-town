@@ -312,3 +312,21 @@ button:focus-visible,canvas:focus-visible,.word-tile:focus-visible,
 .story-clue-reveal {background:linear-gradient(140deg,#454057,#313d56)!important;color:#ffe7b5!important;border:2px dashed #d7ac77!important;border-radius:7px;padding:11px!important;box-shadow:3px 4px 0 #10192d;}
 .story-clues li.found {border-left:3px solid #ddbc83;padding-left:8px;}
 .story-clues li.missing {opacity:.65;}
+
+/* The paper contains only the message; its evidence captions belong to the scene. */
+.opening-evidence {margin:0 auto 22px;max-width:360px;}
+.evidence-location {font:8px/1.7 var(--pixel);letter-spacing:.4px;color:#c9b8dd;margin-bottom:12px;}
+.intro-card .opening-evidence .rumor-note {margin:0 auto;padding:20px 13px;}
+.evidence-question {font:9px/1.7 var(--pixel);color:#f1c991;margin:14px 0 0;}
+.learning-overview {margin:26px 0 0;padding:18px;text-align:left;border:1px solid #53617e;background:#1c2d46;border-radius:6px;}
+.learning-overview h3,.learning-card-title {font:9px/1.7 var(--pixel);color:#eed4a6;margin:0 0 12px;}
+.learning-overview dl {margin:0;}
+.learning-overview dl>div+div {margin-top:12px;}
+.learning-overview dt {font-size:14px;font-weight:700;line-height:1.5;color:#e5d6fa;}
+.learning-overview dd {margin:3px 0 0;font-size:13px;line-height:1.55;color:#d0e0ef;}
+.learning-overview>p {font-size:12px;line-height:1.6;color:#b9cce0;margin:15px 0 0;border-top:1px solid #465777;padding-top:12px;}
+.learning-card {margin:14px 0;padding:13px 15px;background:#27364f;border:1px solid #71819e;border-left:4px solid #c8afe9;border-radius:6px;}
+.dialogue-content .learning-card p {font-size:14px;line-height:1.65;color:#e0e9f5;margin:8px 0 0;}
+.learning-card .concept-tag {margin:0;line-height:1.7;}
+.learning-card-title {margin-bottom:8px;}
+@media(max-width:680px){.learning-overview{padding:14px;}.learning-card{padding:11px;}.evidence-location{font-size:7px;}.evidence-question{font-size:8px;}}

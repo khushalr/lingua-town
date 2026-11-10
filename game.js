@@ -541,8 +541,11 @@
       heading(npc.name+' · '+(dialogue.repaired?'UNDERSTOOD AGAIN':'CONNECTION MADE'),dialogue.repaired?'You repaired the conversation.':'The conversation moves forward.');
       paragraph(dialogue.reaction,'spoken-line');
       paragraph(dialogue.consequence,'feedback');
-      dialogueContent.append(h('span',q.concept,'concept-tag'));
-      const notes=h('details',undefined,'lesson-notes');notes.append(h('summary','Field note · concept and example'),h('p',q.explanation),h('p',q.prompt),h('p',q.discussion||q.choices[q.correct]));dialogueContent.append(notes);
+      const lesson=h('section',undefined,'learning-card');
+      lesson.setAttribute('aria-label','What you learned');
+      lesson.append(h('h3','WHAT YOU LEARNED','learning-card-title'),h('span',q.concept,'concept-tag'),h('p',q.explanation));
+      dialogueContent.append(lesson);
+      const notes=h('details',undefined,'lesson-notes');notes.append(h('summary','Revisit the activity'),h('p',q.prompt),h('p',q.discussion||q.choices[q.correct]));dialogueContent.append(notes);
       const bridge=stories[npc.id]?.[saved.progress[npc.id]-1]?.next;if(bridge)paragraph(bridge,'dialogue-mini');
       if(completed(npc)){
         const clue=storyClues.find(c=>c.id===npc.id);
@@ -804,7 +807,7 @@
     canvas.focus({preventScroll:true});
   }
   function closeIntro(){document.querySelector('.shell').inert=false;introModal.classList.add('hidden');modalOpen=false;saved.started=true;saved.world.storyIntroSeen=true;persist();renderNearby();canvas.focus({preventScroll:true});}
-  function showIntro(){document.querySelector('.shell').inert=true;modalOpen=true;pressed.clear();introModal.classList.remove('hidden');document.getElementById('startBtn').focus();}
+  function showIntro(){document.querySelector('.shell').inert=true;modalOpen=true;pressed.clear();introModal.classList.remove('hidden');document.getElementById('startBtn').focus({preventScroll:true});}
   document.getElementById('startBtn').addEventListener('click',closeIntro);
   document.getElementById('helpBtn').addEventListener('click',showIntro);
   document.getElementById('talkBtn').addEventListener('click',advance);
@@ -820,7 +823,7 @@
   window.addEventListener('keydown',ev=>{
     const keyName=ev.key;
     if(ev.target.closest?.('button, input, textarea, select, summary')&&['Enter',' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(keyName))return;
-    if(modalOpen&&keyName==='Tab'){ev.preventDefault();document.getElementById('startBtn').focus();return;}
+    if(modalOpen&&keyName==='Tab'){ev.preventDefault();document.getElementById('startBtn').focus({preventScroll:true});return;}
     if(modalOpen){if(keyName==='Escape'){closeIntro();}else if(keyName==='Enter'){ev.preventDefault();closeIntro();}return;}
     if(dialogue?.mode==='caseboard'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)solveCase(Number(keyName)-1);return;}
     if(dialogue?.mode==='victory'&&['1','2','3'].includes(keyName)){ev.preventDefault();if(!ev.repeat)chooseEnding(Number(keyName)-1);return;}
@@ -1261,6 +1264,6 @@
   window.__LINGUA_DEBUG__={getState:()=>({x:player.x,y:player.y,progress:{...saved.progress},scene,relationships:{...saved.relationships},repairs:{...saved.repairs},turns:JSON.parse(JSON.stringify(saved.turns)),world:{...saved.world},pending:{...saved.pending},dialogue:dialogue?.mode||null,caseStep:dialogue?.caseStep||0,nextLead:nextLead().id,modalOpen}),moveTo:walkToNPC,characters};
   setPortrait(null);renderJournal();drawIdlePanel();
   if(saved.started&&saved.world.storyIntroSeen){modalOpen=false;introModal.classList.add('hidden');}
-  if(modalOpen){document.querySelector('.shell').inert=true;document.getElementById('startBtn').focus();}
+  if(modalOpen){document.querySelector('.shell').inert=true;document.getElementById('startBtn').focus({preventScroll:true});}
   renderNearby();requestAnimationFrame(animationLoop);
 })();
